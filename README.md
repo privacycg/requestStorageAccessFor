@@ -239,7 +239,7 @@ By exposing a new access-granting API, especially one that relaxes the current `
 
 ### Elevated Trust Requirement
 
-To prevent unrelated sites from requesting access, browsers should seek additional trust signals to enable the API to resolve successfully. First-Party Sets is one such mechanism; it could ensure that a relationship exists between the caller and the passed-in site. However, sites designated as part of the "service" subset should not be allowed to gain access on behalf of other sites in the set. Browsers that don’t support First-Party Sets could utilize other mechanisms, like user prompts, allowlists, denylists, or other heuristics. 
+To prevent unrelated sites from requesting access, browsers should seek additional trust signals to enable the API to resolve successfully. First-Party Sets is one such mechanism; it could ensure that a relationship exists between the caller and the passed-in site. However, sites designated as part of [the "service" subset](https://github.com/krgovind/first-party-sets#defining-a-set-through-use-case-based-subsets) should not be allowed to gain access on behalf of other sites in the set. Browsers that don’t support First-Party Sets could utilize other mechanisms, like user prompts, allowlists, denylists, or other heuristics. 
 
 
 ### Cross-Site Protections
