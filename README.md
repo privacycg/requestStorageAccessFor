@@ -7,7 +7,7 @@
 
 ## Participate
 
-* [Issues on this repo are welcome!](https://github.com/mreichhoff/ExtendingStorageAccessAPI/issues)
+* [Issues on this repo are welcome!](https://github.com/mreichhoff/requestStorageAccessForSite/issues)
 
 ## Introduction
 
