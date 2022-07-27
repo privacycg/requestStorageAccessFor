@@ -13,7 +13,7 @@
 
 Enabled-by-default cross-site cookie access is in the process of being deprecated by several major browsers. Multiple substitutes have been proposed, like [the Storage Access API](https://webkit.org/blog/8124/introducing-storage-access-api/) and the [SameParty cookie attribute](https://github.com/WICG/first-party-sets#sameparty-cookies-and-first-party-sets) in the [First-Party Sets](https://github.com/WICG/first-party-sets) proposal.
 
-With the proposal to abandon active development of the `SameParty` cookie attribute in favor of requiring a call to the Storage Access API to enable cross-site cookie use cases, this document briefly discusses how the existing Storage Access API works and how First-Party Set membership can be applied as part of it.
+With the proposal to [abandon active development of the `SameParty`](https://github.com/WICG/first-party-sets/issues/92) cookie attribute in favor of requiring a call to the Storage Access API to enable cross-site cookie use cases, this document briefly discusses how the existing Storage Access API works and how First-Party Set membership can be applied as part of it.
 
 While the integration of Storage Access API with First-Party Sets alone will solve some use cases, many legacy issues with 3rd party cookie usage involve instances where user interaction within an `<iframe>` is difficult to retrofit, e.g. because of the use of images or script tags requiring cookies.
 
