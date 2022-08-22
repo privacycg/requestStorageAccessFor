@@ -8,6 +8,7 @@
 ## Participate
 
 * [Issues on this repo are welcome!](https://github.com/mreichhoff/requestStorageAccessForSite/issues)
+* Feedback on [the issue in the storage access repo](https://github.com/privacycg/storage-access/issues/107) is also welcome!
 
 ## Introduction
 
