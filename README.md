@@ -7,7 +7,7 @@
 
 ## Participate
 
-* [Issues on this repo are welcome!](https://github.com/mreichhoff/requestStorageAccessForSite/issues)
+* [Issues on this repo are welcome!](https://github.com/mreichhoff/requestStorageAccessForOrigin/issues)
 * Feedback on [the issue in the storage access repo](https://github.com/privacycg/storage-access/issues/107) is also welcome!
 
 ## Introduction
@@ -30,7 +30,7 @@ Accordingly, this document proposes a variant of this API as an extension to the
 
 ## Non-goals
 * Maintaining parity with the existing `SameParty` cookie proposal, particularly in characteristics like synchronicity, is not a goal.
-* Enforcement of a specific browser treatment or behavior for StorageAccessAPI requests (either the existing `requestStorageAccess` or the proposed `requestStorageAccessForSite`) as part of the implementation defined steps is not a goal. Every user agent should still be free to take custom steps, including prompting users or other heuristics.
+* Enforcement of a specific browser treatment or behavior for StorageAccessAPI requests (either the existing `requestStorageAccess` or the proposed `requestStorageAccessForOrigin`) as part of the implementation defined steps is not a goal. Every user agent should still be free to take custom steps, including prompting users or other heuristics.
 
 ## Current requestStorageAccess Behavior
 The existing Storage Access API [specifies](https://privacycg.github.io/storage-access/#the-document-object) `requestStorageAccess`, but [delegates](https://privacycg.github.io/storage-access/#ua-policy) the decision on whether to grant access to the browser. Firefox and Safari have each implemented their own set of requirements, such as whether the user has previously interacted with the requester in a top-level context; the number of existing grants for the origin in the session; whether the user consents to the sharing; and others.
@@ -68,15 +68,15 @@ This is compatible with the requestStorageAccess specification. The user activat
 
 
 
-## Proposed Extension: requestStorageAccessForSite
+## Proposed Extension: requestStorageAccessForOrigin
 
 Since the `requestStorageAccess` API was [originally designed](https://webkit.org/blog/8124/introducing-storage-access-api/) for authenticated embeds, it has requirements that are perhaps uniquely well-suited for that category of use-cases. Specifically, it is only possible for the embedded party to request access, and only from within `<iframe>` elements that have received user interaction. However, these restrictions place adoption costs on websites that have functionality deployed across multiple sites, where cross-site subresources may include images or JavaScript files instead of `<iframe>`-embedded documents. [A similar discussion](https://github.com/privacycg/storage-access/issues/3) previously resulted in the existing `requestStorageAccess` API operating at the page level, rather than frame-only.
 
-This document proposes a similar API, `document.requestStorageAccessForSite`, which would allow the embedding site to request access it knows it needs on behalf of its embedded sites. 
+This document proposes a similar API, `document.requestStorageAccessForOrigin`, which would allow the embedding site to request access it knows it needs on behalf of origins it embeds.
 
 This new API would be very similar to the existing `requestStorageAccess`. It would still require activation, though of the top-level document; would still delegate to per-browser logic, so that each browser can customize the experience to their user' expectations; and would functionally be equivalent to if `requestStorageAccess` had been called by the passed-in domain with the same top-level context.
 
-This API could be treated as similar in principle to browser-specific compatibility measures, implemented in [Safari](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp#L1131-L1163) and [Firefox](https://searchfox.org/mozilla-central/rev/287583a4a605eee8cd2d41381ffaea7a93d7b987/dom/base/Document.cpp#17051), where an internal API is invoked, based on site-based allowlists, that requests cross-site cookie access on behalf of embedded sites.
+This API could be treated as similar in principle to browser-specific compatibility measures, implemented in [Safari](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp#L1131-L1163) and [Firefox](https://searchfox.org/mozilla-central/rev/287583a4a605eee8cd2d41381ffaea7a93d7b987/dom/base/Document.cpp#17051), where an internal API is invoked, based on site-based allowlists, that requests cross-site cookie access on behalf of embedded origins.
 
 Like with the proposed `requestStorageAccess` implementation described in the previous section of this document, granting access could be determined by First-Party Set membership.
 
@@ -84,7 +84,7 @@ Requiring user interaction in `<iframe>` elements helps the original `requestSto
 
 
 ## Key scenarios
-### Embedded Sites
+### Embedded Content
 This is the standard use of the `requestStorageAccess` API; usage would be equivalent to that implemented in other browsers. The browser-specific logic, as described above, would simply be a check on First-Party Set membership.
 
 See the numerous [examples available elsewhere](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#examples) for sample code; this proposal does not modify developer-facing use of the existing `requestStorageAccess` API.
@@ -107,10 +107,10 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
 <html>
 <head>
   <script>
-    document.requestStorageAccessForSite('https://fps-member2.example')
+    document.requestStorageAccessForOrigin('https://fps-member2.example')
      .then(
            /*not called;no activation.*/)
-     .catch(/*called due to top-level site lacking activation at load time*/);
+     .catch(/*called due to top-level document lacking activation at load time*/);
   </script>
 </head>
 
@@ -119,7 +119,7 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
 <script>
   const playButton = document.getElementById('play-button');
   playButton.addEventListener('click', function(){
-    document.requestStorageAccessForSite('https://fps-member2.example')
+    document.requestStorageAccessForOrigin('https://fps-member2.example')
      .then(
        /*
        called;has activation, same First-Party Set is sufficient.
@@ -132,7 +132,7 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
      )
      .catch(/*not called due to lacking activation*/);
   
-    document.requestStorageAccessForSite('https://other-party.example')
+    document.requestStorageAccessForOrigin('https://other-party.example')
      .then(/*for v1, rejected; not in the same First-Party Set*/)
      .catch(/*called due to not being in the same First-Party Set*/);
   });
@@ -144,7 +144,7 @@ Would have access to its cross-site cookies, after the button is clicked and the
 -->
 <iframe src='https://fps-member2.example'></iframe>
 <!--
-Would not require a separate call to requestStorageAccessForSite, because of site, not origin, scoping.
+Would require a separate call to requestStorageAccessForOrigin, because of origin, not site, scoping.
 -->
 <iframe src='https://sub-domain.fps-member2.example'></iframe>
 </body>
@@ -155,11 +155,11 @@ Would not require a separate call to requestStorageAccessForSite, because of sit
 ## Detailed design discussion
 ### Proposed Draft Spec Addition
 
-The proposed spec could include a set of steps for the browser to follow, much like is done with <code>[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access)</code>. The spec could include a function that takes a <code>string</code> as the site:
+The proposed spec could include a set of steps for the browser to follow, much like is done with <code>[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access)</code>. The spec could include a function that takes a <code>string</code> as the origin:
 
 
 ```
-function requestStorageAccessForSite(site)
+function requestStorageAccessForOrigin(origin)
 ```
 
 Where a draft set of steps could be:
@@ -169,9 +169,9 @@ Where a draft set of steps could be:
 1. If the document's frame is not the main frame, reject.
 1. If the requested origin is equal to the main frame's, resolve.
 1. Check any additional rules that the browser has. Reject if some rule is not fulfilled.
-    1. If the browser implements First-Party Sets, this could entail a check equivalent to `IsSameParty(top_level_site, requested_site)`
+    1. If the browser implements First-Party Sets, this could entail a check equivalent to `IsSameParty(top_level_site, requested_origin)`
     1. Other browsers could continue with their own rules, e.g., requiring prior first party interaction with the requested origin, prompting the user, etc. 
-1. Grant future subresource requests access to cookies and store that fact for the purposes of future calls to requestStorageAccessForSite()
+1. Grant future subresource requests access to cookies and store that fact for the purposes of future calls to requestStorageAccessForOrigin()
 
 ### Plural vs Singular API
 
@@ -180,14 +180,14 @@ One could imagine either a singular API:
 ```
 // follows the existing 1x1 pattern established by requestStorageAccess
 // returns a Promise similarly
-requestStorageAccessForSite("site.example")
+requestStorageAccessForOrigin("origin.example")
 ```
 
 Or a plural one:
 
 ```
 // allows, for example, use of Promise.all()
-requestStorageAccessForSites(["site1.example","site2.example"])
+requestStorageAccessForOrigins(["origin1.example","origin2.example"])
 ```
 
 Given the increased complexity with potential user prompts, and the 1x1 nature of the existing `requestStorageAccess` API, the singular version is recommended. Note that it is also simpler to switch from singular to plural than from plural to singular, should that ever become necessary. 
@@ -195,9 +195,11 @@ Given the increased complexity with potential user prompts, and the 1x1 nature o
 
 ### Site vs Origin Scope
 
-The existing `requestStorageAccess` API is scoped to site for the top-level page in both Safari and Firefox, but to origin for the embedded requester in Firefox, but site in Safari.
+The existing `requestStorageAccess` API is scoped to site for the top-level page in both Safari and Firefox. The embeddee, however, is scoped to site in Safari and origin in Firefox.
 
-This has been [the subject of debate](https://github.com/privacycg/storage-access/issues/39). This proposal is to scope the grant to site for both sides of the call, thus avoiding a requirement of repeated calls for origins like `www.site.example` and `site.example`.
+This has been [the subject of debate](https://github.com/privacycg/storage-access/issues/39). This proposal is to scope the grant similarly to Firefox, with a key like: `{top-level site, requested origin}`. This does mean repeated calls for origins like `www.site.example` and `site.example`.
+
+A previous version of this proposal suggested embedded site scoping. See [a recent security analysis](https://github.com/privacycg/storage-access/issues/113) for information about the benefits of embedded origin scoping.
 
 
 ## Considered alternatives
@@ -222,7 +224,7 @@ In a similar way to using the `allow` attribute on an `iframe` to enable specifi
 For example, the JavaScript call:
 
 ```
-document.requestStorageAccessForSite('https://fps-member2.example')
+document.requestStorageAccessForOrigin('https://fps-member2.example')
 ```
 
 Could be equivalent to an HTTP header, possibly using [permissions policy syntax](https://developer.chrome.com/en/docs/privacy-sandbox/permissions-policy/):
@@ -246,14 +248,14 @@ To prevent unrelated sites from requesting access, browsers should seek addition
 
 ### Cross-Site Protections
 
-Existing cross-site protections, like the `SameSite` cookie attribute, will continue to be respected; access granted by `requestStorageAccessForSite` would apply only to `SameSite=None` cookies. By ensuring a default `SameSite` setting of at least `Lax`, browsers can ensure that the embedded resources opted into cross-domain sharing by setting `SameSite` to `None`. 
+Existing cross-site protections, like the `SameSite` cookie attribute, will continue to be respected; access granted by `requestStorageAccessForOrigin` would apply only to `SameSite=None` cookies. By ensuring a default `SameSite` setting of at least `Lax`, browsers can ensure that the embedded resources opted into cross-domain sharing by setting `SameSite` to `None`.
 
-However, this protection (alongside `x-frame-options` and others) may not be sufficient, since sites may globally set `SameSite=None` cookies that are required only on a subset of resources that are intended to be consumed across site boundaries. Additional explicit opt-in, perhaps by ensuring that cookies are not sent except on CORS-enabled endpoints, or by ensuring that only certain domains in a First-Party Set are authorized to successfully call `requestStorageAccessForSite`, may be desirable.
+However, this protection (alongside `x-frame-options` and others) may not be sufficient, since sites may globally set `SameSite=None` cookies that are required only on a subset of resources that are intended to be consumed across site boundaries. Additional explicit opt-in, perhaps by ensuring that cookies are not sent except on CORS-enabled endpoints, or by ensuring that only certain domains in a First-Party Set are authorized to successfully call `requestStorageAccessForOrigin`, may be desirable.
 
 
 #### CSRF Considerations
 
-A side effect of disabling `SameSite=None` cookies is that attacks like CSRF become significantly harder to carry out. While the existing `requestStorageAccess` API already allows a mechanism to opt out of this protection (especially due to the fact that the API [unlocks](https://github.com/privacycg/storage-access/pull/27) cross-site cookies for all requests to subresources on the requesting site, not just the specific document making the request), `requestStorageAccessForSite` could be used more broadly due to its relaxation of the `<iframe>` requirement. Additionally, `requestStorageAccessForSite` is invoked by the embedder, as opposed to the embedded origin which gets access to cross-site cookies. This may make additional opt-in requirements for embedded resources, like those described above, more attractive.
+A side effect of disabling `SameSite=None` cookies is that attacks like CSRF become significantly harder to carry out. While the existing `requestStorageAccess` API already allows a mechanism to opt out of this protection (especially due to the fact that the API [unlocks](https://github.com/privacycg/storage-access/pull/27) cross-site cookies for all requests to subresources on the requesting site, not just the specific document making the request), `requestStorageAccessForOrigin` could be used more broadly due to its relaxation of the `<iframe>` requirement. Additionally, `requestStorageAccessForOrigin` is invoked by the embedder, as opposed to the embedded origin which gets access to cross-site cookies. This may make additional opt-in requirements for embedded resources, like those described above, more attractive.
 
 
 ### Abuse Prevention
