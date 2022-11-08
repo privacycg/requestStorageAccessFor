@@ -133,7 +133,7 @@ Authenticated embeds are the primary use case targeted by the `requestStorageAcc
 
 ### Proposed Draft Spec Addition
 
-The proposed spec could include a set of steps for the browser to follow that are somewhat similar to those done with <code>[requestStorageAccess](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access)</code>. The spec could include a function that takes a <code>string</code> as the origin:
+The proposed spec could include a set of steps for the browser to follow that are somewhat similar to those done with [`requestStorageAccess`](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access). The spec could include a function that takes a `string` as the origin:
 
 
 ```
@@ -152,7 +152,7 @@ Where a draft set of steps could be:
 1. If the requested `origin` already has been granted access, resolve.
 1. Check for embeddee opt-in:
     1. Run implementation-defined embeddee opt-in checks.
-        1. FPS, excluding service domains, would be one example
+        1. One example: if FPS is supported and enabled, check if embeddee and embedder are in the same FPS. Membership in the same set is treated as embeddee opt-in, unless the embedder is a service domain.
         1. TBD: over time, such opt-in signals can be standardized.
     1. If opt-in is not found, reject the requestStorageAccessForOrigin call.
 1. Check for user approval, if required:
@@ -244,7 +244,7 @@ While this option may be attractive in the future, and would be doable in a Firs
 
 ## Privacy and Security Considerations
 
-By exposing a new access-granting API, especially one that relaxes the current `<iframe>` requirement of requestStorageAccess and allows for arbitrary domains to be passed in, care must be taken not to open additional security issues or abuse vectors. It is easy to imagine an untrusted top-level domain requesting access on behalf of an unrelated origin. Such access (or even asking for such access) could be reputation-damaging, or enable CSRF, clickjacking, or other attacks against the embeddee.
+By exposing a new access-granting API, especially one that relaxes the current `<iframe>` requirement of requestStorageAccess and allows for arbitrary domains to be passed in, care must be taken not to open additional security issues or abuse vectors relative to comprehensive cross-site cookie blocking. It is easy to imagine an untrusted top-level domain requesting access on behalf of an unrelated origin. Such access (or even asking for such access) could be reputation-damaging, or enable CSRF, clickjacking, or other attacks against the embeddee.
 
 Generally, there are two separate issues that must both be addressed: abuse and security concerns.
 
@@ -279,12 +279,12 @@ Note that a much-more-detailed analysis is available in [a recent security analy
 *   Only cookies marked `SameSite=None` should be granted by the API. This indicates explicit intent on the part of the embeddee to allow cross-site use. By ensuring a default `SameSite` setting of at least `Lax`, browsers can ensure that the embedded resources opted into cross-domain sharing by setting `SameSite` to `None`. 
 *   The permission should be scoped to `{top-level site, embedded origin}`. In other words, a grant for `jokes.example.com` should not imply a grant for `auth.example.com`. While this does not stop the top-level site from later requesting `auth.example.com`, it does ensure that the permission is scoped to avoid accidental leakage.
 *   For nested resource loads, [a variant of the site for cookies algorithm](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-10#section-5.2.1) should be used to avoid unrelated iframes from using a grant, with a permission policy opt-out, as suggested in.
-*   `SameSite=None` cookies granted via requestStorageAccessForOrigin on subresources should only be attached on CORS-enabled requests. For example, an `<img>` without a <code>[crossorigin attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin)</code> would not have <code>SameSite=None</code> cookies attached, even with a valid grant. This ensures the server is aware of the caller and can react accordingly. Note that CORS is not possible on navigations; this protection is not intended to protect `<iframe>` elements, which have other mechanisms for forbidding embedding (e.g., `x-frame-options` or `CSP`).
+*   `SameSite=None` cookies granted via requestStorageAccessForOrigin on subresources should only be attached on CORS-enabled requests. For example, an `<img>` without a [`crossorigin` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) would not have `SameSite=None` cookies attached, even with a valid grant. This ensures the server is aware of the caller and can react accordingly. Note that CORS is not possible on navigations; this requirement is not intended to protect `<iframe>` elements, which have other mechanisms for forbidding embedding (e.g., `x-frame-options` or `CSP`).
 
 
 #### CSRF Considerations
 
-A side effect of disabling `SameSite=None` cookies is that attacks like CSRF become significantly harder to carry out. While the existing `requestStorageAccess` API already allows a mechanism to opt a specific frame out of this protection, `requestStorageAccessForOrigin` could be used more broadly due to its relaxation of the `<iframe>` requirement. Additionally, `requestStorageAccessForOrigin` is invoked by the embedder, as opposed to the embedded origin which gets access to cross-site cookies. This makes additional opt-in requirements for embedded resources, like those described above, more attractive.
+A side effect of disabling `SameSite=None` cookies is that attacks like CSRF become significantly harder to carry out. While the existing `requestStorageAccess` API already allows a mechanism to opt a specific frame out of this protection, `requestStorageAccessForOrigin` could be used more broadly due to its relaxation of the `<iframe>` requirement. Additionally, `requestStorageAccessForOrigin` is invoked by the embedder, as opposed to the embedded origin which gets access to cross-site cookies. This makes additional opt-in requirements for embedded resources, like those described above, more attractive. Note that the suggested CORS requirement would not block cookies from being sent other than on pre-flighted requests, though causing such cookies to be sent could also potentially be done via opening popups or triggering other navigations, reducing the concern.
 
 
 ## Stakeholder Feedback / Opposition
