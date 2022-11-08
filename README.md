@@ -13,9 +13,9 @@
 
 ## Introduction
 
-Enabled-by-default cross-site cookie access is in the process of being deprecated by several major browsers. Multiple substitutes have been proposed, like [the Storage Access API](https://webkit.org/blog/8124/introducing-storage-access-api/) and the [SameParty cookie attribute](https://github.com/WICG/first-party-sets#sameparty-cookies-and-first-party-sets) in the [First-Party Sets](https://github.com/WICG/first-party-sets) proposal.
+Enabled-by-default cross-site cookie access is in the process of being deprecated (or is already deprecated) by several major browsers. Multiple substitutes have been proposed, like [the Storage Access API](https://webkit.org/blog/8124/introducing-storage-access-api/), the [SameParty cookie attribute](https://github.com/WICG/first-party-sets#sameparty-cookies-and-first-party-sets) in the [First-Party Sets](https://github.com/WICG/first-party-sets) proposal, and partitioned cookies in [the CHIPS proposal](https://developer.chrome.com/en/docs/privacy-sandbox/chips/).
 
-However, `SameParty` [has been abandoned](https://github.com/WICG/first-party-sets/issues/92), and the Storage Access API is primarily [intended](https://github.com/privacycg/storage-access/issues/122) for authenticated embeds, a use case which entails `<iframe>` use. This raises questions like:
+However, the Storage Access API is primarily [intended](https://github.com/privacycg/storage-access/issues/122) for authenticated embeds, a use case which entails `<iframe>` use, `SameParty` [has been abandoned](https://github.com/WICG/first-party-sets/issues/92), and partitioned cookies (while preferred for most cases) aren't always applicable. This raises questions like:
 
 
 
@@ -30,16 +30,15 @@ This document proposes a version of this API that could be web-exposed, with a r
 ## Goals
 
 
-*   Enable legacy use cases by allowing requests for cross-site cookies to be made from top-level browsing contexts, with access applying at the page level (rather than to a specific frame). 
+*   Enable user functionality in legacy use cases by allowing requests for unpartitioned cross-site cookies to be made from top-level browsing contexts, with access applying at the page level (rather than to a specific frame).
     *   Note that page specificity is similar to [the prior behavior](https://github.com/privacycg/storage-access/issues/122) of `requestStorageAccess`. That behavior is being changed to focus the API on authenticated embed use cases and to improve security, which leaves top-level access a gap.
-*   Ensure that the security, privacy, and abuse concerns with legacy cross-site cookie behavior remain mitigated.
+*   Ensure that the security, privacy, and abuse concerns with legacy cross-site cookie behavior remain mitigated post-deprecation.
 
 ## Non-goals
 
 *   Maintaining parity with the `SameParty` cookie proposal, particularly in characteristics like synchronicity, is not a goal.
-*   Re-creating legacy passive cross-site cookie behavior is not a goal; additional guardrails must be in place.
+*   Re-creating unconstrained legacy passive cross-site cookie behavior is not a goal; additional guardrails must be in place.
 *   Although prior art like `requestStorageAccess` will inform the proposal, it is intended to be a separate API. The access it grants (which would be page-level) would be separate from that obtained by a successful `requestStorageAccess` call (which would be applicable only to the calling frame).
-*   Much like the implementation-defined steps in `requestStorageAccess`, disallowing or otherwise undermining user agent-defined steps to determine whether to grant access is not a goal. Every user agent should still be free to take custom steps, including prompting users or other heuristics.
 
 ## Proposed API: requestStorageAccessForOrigin
 
@@ -154,10 +153,10 @@ Where a draft set of steps could be:
 1. Check for embeddee opt-in:
     1. Run implementation-defined embeddee opt-in checks.
         1. FPS, excluding service domains, would be one example
-        1. The hope is that, over time, such opt-in signals can be standardized.
+        1. TBD: over time, such opt-in signals can be standardized.
     1. If opt-in is not found, reject the requestStorageAccessForOrigin call.
 1. Check for user approval, if required:
-    1. Check implementation-defined acceptance or rejection steps; if any are triggered, reject the requestStorageAccessForOrigin call or skip to step 4.
+    1. Check implementation-defined acceptance or rejection steps; if any are triggered, reject the requestStorageAccessForOrigin call or skip to the permission-saving step.
         1. Browsers could choose to accept or reject based on their own rules. Allowing sharing within the same FPS, allowing some limited number of implicit grants, or always choosing to prompt users would all be possible.
     1. Prompt the user, return their acceptance or denial.
 1. If acceptance is returned, save a permission for the pair `{top-level site, requested origin}`. Note that the permission would be separate from the permission granted by `requestStorageAccess`.
@@ -165,7 +164,7 @@ Where a draft set of steps could be:
 Fetch could then be modified to include cross-site cookies when appropriate (though the modification may depend on [cookie layering changes](https://github.com/httpwg/http-extensions/issues/2084)). A draft of such a spec change follows:
 
 1. At request time, if the request is cross-site and the appropriate permission for `{top-level site, requested origin}` exists, attach cookies only if all of the below checks are met:
-    1. Run a modified ancestor check, like that of the site for cookies algorithm, but allowing ancestors that are same-site with either the embeddee or the top-level site, to prevent any unrelated iframes from getting access. This is recommended in . Permission policy set by the top-level document can opt trusted `<iframe>`s out of this protection.
+    1. Run a modified ancestor check, like that of the site for cookies algorithm, but allowing only scenarios where every ancestor is same-site with either the embeddee or the top-level site, to prevent any unrelated iframes from getting access. This is recommended in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113). Permission policy set by the top-level document can potentially opt trusted `<iframe>`s out of this protection.
     1. If the request is for a subresource (i.e., not a navigation), the request must be CORS-enabled. In other words, a plain `<img>` or `<script>` without a `crossorigin` attribute would not have cross-site `SameSite=None` cookies attached, regardless of whether access had been granted. Similarly, a `fetch` or `XHR` request would omit cross-site `SameSite=None` cookies unless CORS was enabled.
     1. The cookies to be included must be marked `SameSite=None`. In other words, the cookies must have been explicitly opted in by the requested domain. Cookies with any other `SameSite` option are ignored and not sent, regardless of whether a grant exists.
 
