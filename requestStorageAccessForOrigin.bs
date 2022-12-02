@@ -1,6 +1,6 @@
 <pre class="metadata">
 Title: requestStorageAccessForOrigin API
-Shortname: legacy-cross-site-cookie-api
+Shortname: top-level-storage-access-api
 Abstract: The requestStorageAccessForOrigin API allows top-level sites to request access to cross-site cookies on behalf of embedded origins.
 Status Text: This specification is intended to be merged into the HTML Living Standard. It is neither a WHATWG Living Standard nor is it on the standards track at W3C.
 Text Macro: LICENSE <a href=https://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License</a>
@@ -40,6 +40,13 @@ urlPrefix: https://w3c.github.io/webdriver/webdriver-spec.html#; spec: webdriver
         text: unsupported operation; url: dfn-unsupported-operation
         text: session; url: dfn-session
         text: success; url: dfn-success
+urlPrefix: https://privacycg.github.io/storage-access/#; spec: storage-access
+    type: dfn
+        text: determine the storage access policy; url: determine-the-storage-access-policy
+        text: determine if a site has storage access; url: determine-if-a-site-has-storage-access
+urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
+    type: dfn
+        text: http network or cache fetch; url: http-network-or-cache-fetch
 </pre>
 
 <section class="non-normative">
@@ -100,50 +107,69 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 1. Let |origin| be |parsedURL|'s [=url/origin=].
 1. If |origin| is an [=opaque origin=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=Document/origin=] is [=same origin=] with |origin|, [=/resolve=] and return |p|.
-1. Let |descriptor| be a newly created {{CrossSiteCookieAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>cross-site-cookie-access</code></a>" and with <code>origin</code> set to |origin|.
+1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>top-level-storage-access</code></a>" and with <code>requestedOrigin</code> set to |origin|.
 1. Let |global| be |doc|'s [=relevant global object=].
 1. Run these steps [=in parallel=]:
     1. Let |hasAccess| be [=a new promise=].
-    1. [=Determine the cross-site cookie access policy=] with |descriptor|, |doc| and |hasAccess|.
+    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc| and |hasAccess|.
     1. [=Queue a global task=] on the [=permission task source=] given |global| to resolve or reject |p| based on the result of |hasAccess|.
 1. Return |p|.
 
-<h3 id="ua-policies">User Agent cross-site cookie access policies</h3>
+<h3 id="ua-policies">User Agent top-level storage access policies</h3>
 
-To <dfn type="abstract-op">determine the cross-site cookie access policy</dfn> for {{CrossSiteCookieAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc| and {{Promise}} |p|, run these steps:
+To <dfn type="abstract-op">determine if a site has top-level storage access</dfn> with {{Document}} |doc| and an optional [=url/origin=] |embedded origin|, run these steps:
+
+<!-- TODO: can we simplify by applying requestStorageAccessForOrigin only to subresources? -->
+1. Let |ancestorNavigables| be |doc|'s [=Document/ancestor navigables=].
+1. Let |settings| be |doc|'s [=relevant settings object=].
+1. If |embedded origin| is null:
+    1. Let |embedded origin| be |doc|'s [=Document/origin=].
+1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |settings|' [=top-level origin=].
+1. For each |ancestorNavigable| of |ancestorNavigables|:
+    1. If |ancestorNavigable|'s [=navigable/active document=] is not null:
+        1. Let |current origin| be |ancestorNavigable|'s [=navigable/active document=]'s [=Document/origin=].
+        1. If |current origin| and |top-level site| are not [=same site=] with one another and |current origin| and |embedded origin| are not [=same origin=] with one another, return false.
+1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>top-level-storage-access</code></a>" and with <code>requestedOrigin</code> set to |embedded origin|.
+1. Let |existing state| be the result of checking |descriptor|'s [=permission state=] with |settings|.
+1. If |existing state| is "granted", return true.
+1. Return false.
+
+To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc| and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 <!-- TODO: where to check this, exactly? -->
 1. Let |existing state| be the result of checking |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is "granted", [=queue a global task=] on the [=permission task source=] given |global| to [=/resolve=] |p|, and return.
+1. If |existing state| is "denied", [=queue a global task=] on the [=permission task source=] given |global| to [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+<!-- note that this assumes |doc| is top-level. -->
 1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |settings|'s [=environment settings object/origin=].
-1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s <code>origin</origin> opts into sharing on |top-level site|.
+1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s <code>requestedOrigin</origin> opts into sharing on |top-level site|.
 1. If |embeddee opt-in| is false, [=queue a global task=] on the [=permission task source=] given |global| to [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return |p|.
-1. Let |implicitly granted| and |implicitly denied| (each a [=boolean=]) be the result of running an [=implementation-defined=] set of steps to determine if |top-level site|'s request for |descriptor|'s <code>origin</code> should be granted or denied without prompting the user.
+1. Let |implicitly granted| and |implicitly denied| (each a [=boolean=]) be the result of running an [=implementation-defined=] set of steps to determine if |top-level site|'s request for |descriptor|'s <code>requestedOrigin</code> should be granted or denied without prompting the user.
 1. Let |global| be |doc|'s [=relevant global object=].
 1. If |implicitly granted| is true, [=queue a global task=] on the [=permission task source=] given |global| to [=/resolve=] |p|, and return.
 1. If |implicitly denied| is true, [=queue a global task=] on the [=permission task source=] given |global| to [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return |p|.
-1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>cross-site-cookie-access</code></a>" with |descriptor|.
+1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
 1. If |permissionState| is "granted", [=queue a global task=] on the [=permission task source=] given |global| to [=/resolve=] |p|, and return.
 1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
 1. [=Queue a global task=] on the [=permission task source=] given |global| to [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
 
 <h2 id="permissions-integration">Permissions Integration</h2>
 
-The requestStorageAccessForOrigin API defines a [=powerful feature=] identified by the [=powerful feature/name=] "<dfn export permission><code>cross-site-cookie-access</code></dfn>". It defines the following permission-related algorithms:
+The requestStorageAccessForOrigin API defines a [=powerful feature=] identified by the [=powerful feature/name=] "<dfn export permission><code>top-level-storage-access</code></dfn>". It defines the following permission-related algorithms:
 
 <dl>
   <dt>{{PermissionDescriptor}}</dt>
   <dd>
-    The "<a permission><code>cross-site-cookie-access</code></a>" [=powerful feature=] defines a {{PermissionDescriptor}} as follows:
+    The "<a permission><code>top-level-storage-access</code></a>" [=powerful feature=] defines a {{PermissionDescriptor}} as follows:
     <pre class="idl">
-        dictionary CrossSiteCookieAccessPermissionDescriptor : PermissionDescriptor {
-            USVString origin = "";
+        dictionary TopLevelStorageAccessPermissionDescriptor : PermissionDescriptor {
+            USVString requestedOrigin = "";
         };
     </pre>
   </dd>
   <dt>[=powerful feature/permission query algorithm=]</dt>
   <dd>
-    To query the "<a permission><code>cross-site-cookie-access</code></a>" permission, given a {{PermissionDescriptor}} |permissionDesc| and a {{PermissionStatus}} |status|, run the following steps:
+    To query the "<a permission><code>top-level-storage-access</code></a>" permission, given a {{PermissionDescriptor}} |permissionDesc| and a {{PermissionStatus}} |status|, run the following steps:
 
     1. Set |status|'s {{PermissionStatus/state}} to |permissionDesc|'s [=permission state=].
     1. If |status|'s {{PermissionStatus/state}} is [=permission/denied=], set |status|'s {{PermissionStatus/state}} to [=permission/prompt=].
@@ -152,14 +178,13 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
   </dd>
   <dt>[=powerful feature/permission key generation algorithm=]</dt>
   <dd>
-    To generate a new [=permission store key=] for the "<a permission><code>cross-site-cookie-access</code></a>" feature, given an [=environment settings object=] |settings| and [=url/origin=] |requestedOrigin|, run the following steps:
-
-    1. Let |topLevelSite| be |settings|' [=top-level site=].
-    1. Return (|topLevelSite|, |requestedOrigin|).
+    To generate a new [=permission store key=] for the "<a permission><code>top-level-storage-access</code></a>" feature, given an [=environment settings object=] |settings|, run the following steps:
+    <!-- TODO: the key would ideally use the requested origin on the descriptor...the permission is scoped to (top-level site, embedded origin) -->
+    1. Return |settings|' [=top-level site=].
   </dd>
   <dt>[=powerful feature/permission key comparison algorithm=]</dt>
   <dd>
-    To compare the [=permission keys=] |key1| and |key2| for the "<a permission><code>cross-site-cookie-access</code></a>" feature, run the following steps:
+    To compare the [=permission keys=] |key1| and |key2| for the "<a permission><code>top-level-storage-access</code></a>" feature, run the following steps:
     1. If |key1|[0] is not [=same site=] with |key2|[0], return false.
     1. If |key1|[1] is not [=same origin=] with |key2|[1], return false.
     1. Return true.
@@ -168,31 +193,32 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
 <h2 id="permissions-policy-integration">Permissions Policy Integration</h2>
 
-requestStorageAccessForOrigin defines a [=policy-controlled feature=] identified by the string "<dfn export permissionpolicy><code>cross-site-cookie-access</code></dfn>". Its [=default allowlist=] is `"self"`.
+requestStorageAccessForOrigin defines a [=policy-controlled feature=] identified by the string "<dfn export permissionpolicy><code>top-level-storage-access</code></dfn>". Its [=default allowlist=] is `"self"`.
 
     Note: A {{Document}}’s [=Document/permissions policy=] determines whether the document can be exempted from cross-origin ancestor checks when determining whether to attach cookies.
 
 <h2 id="fetch-integration">Fetch Integration</h2>
 
-TODO:
-* if the permission exists
-* and the doc making the request has no cross-origin ancestors that aren't marked with the permissions policy
-* and if the request is for a subresource:
-  * it must be CORS protected
+In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
+<!-- this long chain pulled from fetch, but may be unusual or unsafe -->
+1. Let |has top-level access| be the result of running [=determine if a site has top-level storage access=] on |request|'s [=request/client=]'s [=relevant global object=]'s [=associated document=] and |request|'s [=request/url=].
+1. Let |is subresource| be true if |request| is a [=subresource request=] and false otherwise.
+1. Let |allowed subresource mode| be true if |request|'s [=request/mode=] is "cors" and false otherwise.
+1. If |has top-level access| is false, return false.
+1. If |is subresource| is true and |allowed mode| is false, return false.
+1. Return true.
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
 <!-- TODO: export of [=determine if a site has storage access=] and [=determine the storage access policy=]? -->
-Modify the [=determine if a site has storage access=] algorithm by prepending the following steps:
+Modify the [=determine if a site has storage access=] algorithm by prepending the following step:
 
-1. Let |settings| be |doc|'s [=relevant settings object=].
-1. Let |origin| be |settings|' [=environment settings object/origin=].
-1. Let |descriptor| be a newly created {{CrossSiteCookieAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>cross-site-cookie-access</code></a>" and with <code>origin</code> set to |origin|.
-1. If |descriptor|'s [=permission state=] is "granted", return true.
+1. Let |existing access| be the result of [=determine if a site has top-level storage access|determining if a site has top-level storage access=] with |doc|.
+1. If |existing access| is true, return true.
 
 Modify the [=determine the storage access policy=] algorithm by prepending the following steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 1. Let |origin| be |settings|' [=environment settings object/origin=].
-1. Let |descriptor| be a newly created {{CrossSiteCookieAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>cross-site-cookie-access</code></a>" and with <code>origin</code> set to |origin|.
+1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with <code>name</code> set to "<a permission><code>top-level-storage-access</code></a>" and with <code>requestedOrigin</code> set to |origin|.
 1. If |descriptor|'s [=permission state=] is "granted", [=queue a global task=] on the [=permission task source=] given |global| to [=/resolve=] |p|, and return.
 
 <h2 id="privacy">Privacy considerations</h2>
@@ -202,51 +228,3 @@ ISSUE: Write this section.
 <h2 id="security">Security considerations</h2>
 
 ISSUE: Write this section.
-
-<h2 id="automation">Automation</h2>
-<!-- TODO: this may be fine without any further modifications? -->
-For the purposes of user-agent automation and application testing, this document defines the following [=extension command=] for the [[WebDriver]] specification.
-
-<h3 id="set-cross-site-cookie-access-command">Set Cross-Site Cookie Access</h3>
-
-<table>
-    <tbody>
-    <tr>
-        <th>HTTP Method</th>
-        <th>URI Template</th>
-    </tr>
-    <tr>
-        <td>POST</td>
-        <td>/session/{session id}/crosssitecookieaccess</td>
-    </tr>
-    </tbody>
-</table>
-
-The <dfn export>Set Cross-Site Cookie Access</dfn> [=extension command=] modifies the cross-site cookie access policy for the [=current browsing context=].
-
-The [=remote end steps=] are:
-
-1. Let |blocked| be the result of [=getting a property=] from |parameters| named `blocked`.
-1. If |blocked| is not a [=boolean=] return a [=WebDriver error=] with [=WebDriver error code=] [=invalid argument=].
-1. Let |embedded origin| be the result of [=getting a property=] from |parameters| named `origin`.
-1. If |embedded origin| is not a single U+002A ASTERISK character (*), then:
-    1. Let |parsedURL| be the the result of running the [=URL parser=] on |embedded origin|.
-    1. If |parsedURL| is failure, then return a [=WebDriver error=] with [=WebDriver error code=] [=invalid argument=].
-    1. Set |embedded origin| to |parsedURL|'s [=url/origin=].
-1. If the [=current browsing context=] is not a [=top-level browsing context=] return a [=WebDriver error=] with [=WebDriver error code=] [=unsupported operation=].
-1. Let |doc| be the [=current browsing context=]'s [=active document=].
-1. Let |settings| be |doc|'s [=relevant settings object=].
-1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |settings|'s [=environment settings object/origin=].
-1. If |embedded origin| is a single U+002A ASTERISK character (*), then:
-    1. If |blocked| is `true`, then:
-        1. Run an [=implementation-defined=] set of steps to ensure that no site has access to its [=unpartitioned data=] when loaded in a [=third party context=] on |top-level site|.
-    1. Otherwise, if |blocked| is `false`, then:
-        1. Run an [=implementation-defined=] set of steps to ensure that any site has access to its [=unpartitioned data=] when loaded in a [=third party context=] on |top-level site|.
-1. Otherwise:
-    1. If |embedded origin| is [=same site=] with |top-level site| return a [=WebDriver error=] with [=WebDriver error code=] [=unsupported operation=].
-    1. If |blocked| is `true`, then:
-        1. Run an [=implementation-defined=] set of steps to ensure that |embedded origin| does not have access to its [=unpartitioned data=] when loaded in a [=third party context=] on |top-level site|.
-    1. Otherwise, if |blocked| is `false`, then:
-        1. Run an [=implementation-defined=] set of steps to ensure that |embedded origin| has access to its [=unpartitioned data=] when loaded in a [=third party context=] on |top-level site|.
-1. If the above [=implementation-defined=] step of steps resulted in failure, return a [=WebDriver error=] with [=WebDriver error code=] [=unknown error=].
-1. Return [=success=] with data `null`.
