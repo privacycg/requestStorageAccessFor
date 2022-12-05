@@ -176,6 +176,11 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
         Note: The "denied" permission state is not revealed to avoid exposing the user's decision to developers. This is done to prevent retaliation against the user and repeated prompting to the detriment of the user experience.
   </dd>
+  <dt>[=powerful feature/permission key generation algorithm=]</dt>
+  <dd>
+    To generate a new [=permission store key=] for the "<a permission><code>top-level-storage-access</code></a>" feature, given an [=environment settings object=] |settings|, run the following steps:
+    1. Return |settings|' [=top-level site=].
+  </dd>
 </dl>
 
 <h2 id="permissions-policy-integration">Permissions Policy Integration</h2>
