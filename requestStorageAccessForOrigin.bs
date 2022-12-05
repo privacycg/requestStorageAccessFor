@@ -176,19 +176,6 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
         Note: The "denied" permission state is not revealed to avoid exposing the user's decision to developers. This is done to prevent retaliation against the user and repeated prompting to the detriment of the user experience.
   </dd>
-  <dt>[=powerful feature/permission key generation algorithm=]</dt>
-  <dd>
-    To generate a new [=permission store key=] for the "<a permission><code>top-level-storage-access</code></a>" feature, given an [=environment settings object=] |settings|, run the following steps:
-    <!-- TODO: the key would ideally use the requested origin on the descriptor...the permission is scoped to (top-level site, embedded origin) -->
-    1. Return |settings|' [=top-level site=].
-  </dd>
-  <dt>[=powerful feature/permission key comparison algorithm=]</dt>
-  <dd>
-    To compare the [=permission keys=] |key1| and |key2| for the "<a permission><code>top-level-storage-access</code></a>" feature, run the following steps:
-    1. If |key1|[0] is not [=same site=] with |key2|[0], return false.
-    1. If |key1|[1] is not [=same origin=] with |key2|[1], return false.
-    1. Return true.
-  </dd>
 </dl>
 
 <h2 id="permissions-policy-integration">Permissions Policy Integration</h2>
@@ -205,7 +192,7 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 1. If |has top-level access| is false, return false.
 1. Let |is subresource| be true if |request| is a [=subresource request=] and false otherwise.
 1. Let |allowed subresource mode| be true if |request|'s [=request/mode=] is "cors" and false otherwise.
-1. If |is subresource| is true and |allowed mode| is false, return false.
+1. If |is subresource| is true and |allowed subresource mode| is false, return false.
 1. Return true.
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
