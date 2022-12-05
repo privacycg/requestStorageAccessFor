@@ -202,9 +202,9 @@ requestStorageAccessForOrigin defines a [=policy-controlled feature=] identified
 In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
 <!-- this long chain pulled from fetch, but may be unusual or unsafe -->
 1. Let |has top-level access| be the result of running [=determine if a site has top-level storage access=] on |request|'s [=request/client=]'s [=relevant global object=]'s [=associated document=] and |request|'s [=request/url=].
+1. If |has top-level access| is false, return false.
 1. Let |is subresource| be true if |request| is a [=subresource request=] and false otherwise.
 1. Let |allowed subresource mode| be true if |request|'s [=request/mode=] is "cors" and false otherwise.
-1. If |has top-level access| is false, return false.
 1. If |is subresource| is true and |allowed mode| is false, return false.
 1. Return true.
 
