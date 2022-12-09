@@ -14,7 +14,6 @@ Markup Shorthands: markdown yes, css no
 Complain About: accidental-2119 true
 </pre>
 
-<!-- TODO: evaluate which is needed -->
 <pre class=link-defaults>
 spec:html; type:dfn; for:site; text:same site
 spec:webidl; type:dfn; text:resolve
@@ -123,7 +122,7 @@ To <dfn type="abstract-op">determine the top-level storage access policy</dfn> f
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is [=permission/granted=], [=queue a global task=] on the [=permission task source=] given |global| to [=/resolve=] |p|, and return.
 1. If |existing state| is [=permission/granted=], [=queue a global task=] on the [=permission task source=] given |global| to [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
-1. Assert that document's browsing context is a top-level browsing context.
+1. Assert that |doc|'s [=Document/browsing context=] is a [=top-level browsing context=].
 1. If this algorithm was invoked when |doc|'s {{Window}} object did not have [=transient activation=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
 1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |settings|'s [=environment settings object/origin=].
 1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s <code>requestedOrigin</origin> opts into sharing on |top-level site|.
@@ -183,8 +182,10 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 1. Let |has top-level access| be the result of running [=determine if a request has top-level storage access=] on |request|.
 1. If |has top-level access| is false, return false.
 1. Let |is subresource| be true if |request| is a [=subresource request=] and false otherwise.
-1. Let |allowed subresource mode| be true if |request|'s [=request/mode=] is "cors" and false otherwise.
+1. Let |allowed subresource mode| be true if |request|'s [=request/mode=] is "cors" and |request|'s [=request/credentials mode=] is "include", and false otherwise.
 1. If |is subresource| is true and |allowed subresource mode| is false, return false.
+<!-- TODO: this call chain is dubious...it may not be possible to reach into the browsing context like this -->
+1. If |request|'s [=request/client=]'s [=relevant global object=]'s [=associated document=]'s [=Document/browsing context=] is not a [=top-level browsing context=], return false.
 1. Return true.
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
