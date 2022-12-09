@@ -260,6 +260,10 @@ Other potential embeddee opt-in mechanisms, especially for those user agents tha
 *   Specification of a `.well-known` configuration that can be checked to ensure embeddee opt-in.
 *   Checking the passed-in origin against the origin of the script making the call.
 
+Note that these call-time opt-in mechanisms are largely to avoid abuse of prompting. The wording of any prompts would then also be critical: it should be clear which domain is requesting access for whom.
+
+For embeddee opt-in of those endpoints that could receive storage access as a result of a `requestStorageAccessForOrigin` call, which is quite relevant for security, see the security protections section.
+
 Additional prompt spam abuse mechanisms could be:
 
 *   Limiting the number of calls to the API on a given page load.
@@ -272,14 +276,17 @@ Over time, standardization of such signals is desired, though it may also be imp
 
 Besides abuse concerns, security issues must also be addressed; browsers must ensure that SameSite=None cookies are not sent when they shouldn’t be, and that the scope of access is not overly broad.
 
-Note that a much-more-detailed analysis is available in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113). Its recommendations are summarized here:
+Note that a much-more-detailed analysis is available in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113). Its recommendations are summarized here, alongside some other ideas:
 
 
 
 *   Only cookies marked `SameSite=None` should be granted by the API. This indicates explicit intent on the part of the embeddee to allow cross-site use. By ensuring a default `SameSite` setting of at least `Lax`, browsers can ensure that the embedded resources opted into cross-domain sharing by setting `SameSite` to `None`. 
 *   The permission should be scoped to `{top-level site, embedded origin}`. In other words, a grant for `jokes.example.com` should not imply a grant for `auth.example.com`. While this does not stop the top-level site from later requesting `auth.example.com`, it does ensure that the permission is scoped to avoid accidental leakage.
-*   For nested resource loads, [a variant of the site for cookies algorithm](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-10#section-5.2.1) should be used to avoid unrelated iframes from using a grant, with a permission policy opt-out, as suggested in.
-*   `SameSite=None` cookies granted via requestStorageAccessForOrigin on subresources should only be attached on CORS-enabled requests. For example, an `<img>` without a [`crossorigin` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) would not have `SameSite=None` cookies attached, even with a valid grant. This ensures the server is aware of the caller and can react accordingly. Note that CORS is not possible on navigations; this requirement is not intended to protect `<iframe>` elements, which have other mechanisms for forbidding embedding (e.g., `x-frame-options` or `CSP`).
+*   For nested resource loads, [a variant of the site for cookies algorithm](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-10#section-5.2.1) could be used to avoid unrelated iframes from using a grant, potentially with a permission policy opt-out, as suggested in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113).
+  * Another alternative would be requiring explicit per-frame opt-in via normal `requestStorageAccess` call; see below.
+*   `SameSite=None` cookies granted via `requestStorageAccessForOrigin` on subresources should only be attached on CORS-enabled requests. For example, an `<img>` without a [`crossorigin` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) set to `use-credentials` would not have `SameSite=None` cookies attached, even with a valid grant. This ensures the server is aware of the caller and can react accordingly; because the response must have the appropriate header to be read by the embedder, this ensures the embeddee has opted in. Note that CORS is not possible on navigations; this requirement is not intended to protect `<iframe>` elements.
+  * Subresource requests outside the top-level document that invoked `requestStorageAccessForOrigin` could also exclude cookies granted by the API (preventing unrelated frames from getting access).
+* For `<iframe>` elements, an explicit call to `requestStorageAccess` could be required before any cookies were made available. This would ensure opt-in by the embeddee, and align with the per-frame model of `requestStorageAccess`. The `requestStorageAccessForOrigin` call would still lift the `<iframe>` user interaction requirement and give loading control to the top-level document, and thus improve utility.
 
 
 #### CSRF Considerations
