@@ -95,7 +95,8 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 1. Let |global| be |doc|'s [=relevant global object=].
 1. Run these steps [=in parallel=]:
     1. Let |hasAccess| be [=a new promise=].
-    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc|, and |hasAccess|.
+    1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |doc|'s [=relevant settings object=]'s [=environment settings object/origin=].
+    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc|, |top-level site|, and |hasAccess|.
     1. [=Queue a global task=] on the [=permission task source=] given |global| to resolve or reject |p| based on the result of |hasAccess|.
 1. Return |p|.
 
@@ -113,7 +114,7 @@ ISSUE: should all cross-site subresource requests behave this way, or only those
 1. If |existing state| is [=permission/granted=], return true.
 1. Return false.
 
-To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc| and {{Promise}} |p|, run these steps:
+To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 <!-- TODO: where to check this, exactly? --> 
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
@@ -127,13 +128,11 @@ To <dfn type="abstract-op">determine the top-level storage access policy</dfn> f
 1. If this algorithm was invoked when |doc|'s {{Window}} object did not have [=transient activation=]:
     1. [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}}.
     1. Return.
-1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |settings|'s [=environment settings object/origin=].
 1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s <code>requestedOrigin</origin> opts into sharing on |top-level site|.
 1. If |embeddee opt-in| is false:
     1. [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Let |implicitly granted| and |implicitly denied| (each a [=boolean=]) be the result of running an [=implementation-defined=] set of steps to determine if |top-level site|'s request for |descriptor|'s <code>requestedOrigin</code> should be granted or denied without prompting the user.
-1. Let |global| be |doc|'s [=relevant global object=].
 1. If |implicitly granted| is true:
     1. [=resolve=] |p|.
     1. Return.
