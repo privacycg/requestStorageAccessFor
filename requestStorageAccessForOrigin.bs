@@ -6,7 +6,7 @@ Status Text: This specification is intended to be merged into the HTML Living St
 Text Macro: LICENSE <a href=https://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License</a>
 Group: None
 ED: https://github.com/mreichhoff/requestStorageAccessForOrigin
-Status: w3c/UD
+Status: DREAM
 Editor: Matt Reichhoff, w3cid 138889, Google https://google.com, mreichhoff@google.com
 Editor: Johann Hofmann, w3cid 120436, Google https://google.com, johannhof@google.com
 Level: None
@@ -104,8 +104,6 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 <div algorithm>
 To <dfn type="abstract-op">determine if a request has top-level storage access</dfn> with [=request=] |request|, run these steps:
 
-ISSUE: should all cross-site subresource requests behave this way, or only those initiated by the top-level document, or top-level plus those requested from an iframe that is same-site with the top-level document, or only those that have explicitly requested access (in which case a set of requested origins would be maintained)?
-
 1. Let |settings| be |request|'s [=request/client=]'s [=relevant global object=]'s [=relevant settings object=].
 1. Let |embedded origin| be |request|'s [=request/url=]'s [=/origin=].
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |embedded origin|.
@@ -119,7 +117,6 @@ ISSUE: should all cross-site subresource requests behave this way, or only those
 To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 1. Let |global| be |doc|'s [=relevant global object=].
-<!-- TODO: where to check this, exactly? --> 
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is [=permission/granted=]:
     1. [=Queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|.
@@ -193,9 +190,7 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
 <h2 id="fetch-integration">Fetch Integration</h2>
 
-Note that the existing [=environment/obtained storage access flag=] will continue to be used for frame-level access.
-
-ISSUE: export of the flag blocked until merge of https://github.com/privacycg/storage-access/pull/141
+ISSUE(mreichhoff/requestStorageAccessForOrigin#8): Flesh out the exact scope of cookie access.
 
 <div algorithm='cookie-blocking-modification'>
 In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
@@ -211,6 +206,8 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 </div>
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
+
+ISSUE: This algorithm will need adjustments based on outcome of https://github.com/privacycg/storage-access/pull/141
 
 <div algorithm='storage-access-policy-modification'>
 Modify the [=determine the storage access policy=] algorithm by prepending the following steps:
