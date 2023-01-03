@@ -92,9 +92,10 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 1. If |origin| is an [=opaque origin=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=Document/origin=] is [=same origin=] with |origin|, [=resolve=] and return |p|.
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
+1. Let |has activation| be true if |doc|'s {{Window}} object has [=transient activation=], and false otherwise.
 1. Run these steps [=in parallel=]:
     1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |doc|'s [=relevant settings object=]'s [=environment settings object/origin=].
-    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc|, |top-level site|, and |p|.
+    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc|, |top-level site|, |has activation|, and |p|.
 1. Return |p|.
 
 </div>
@@ -105,7 +106,7 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 To <dfn type="abstract-op">determine if a request has top-level storage access</dfn> with [=request=] |request|, run these steps:
 
 1. Let |settings| be |request|'s [=request/client=]'s [=relevant global object=]'s [=relevant settings object=].
-1. Let |embedded origin| be |request|'s [=request/url=]'s [=/origin=].
+1. Let |embedded origin| be |request|'s [=request/url=]'s [=url/origin=].
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |embedded origin|.
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is [=permission/granted=], return true.
@@ -114,7 +115,7 @@ To <dfn type="abstract-op">determine if a request has top-level storage access</
 </div>
 
 <div algorithm>
-To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, and {{Promise}} |p|, run these steps:
+To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, [=boolean=] |has activation|, and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 1. Let |global| be |doc|'s [=relevant global object=].
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
@@ -125,7 +126,7 @@ To <dfn type="abstract-op">determine the top-level storage access policy</dfn> f
     1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
-1. If this algorithm was invoked when |doc|'s {{Window}} object did not have [=transient activation=]:
+1. If |has activation| is false:
     1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
     1. Return.
 1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} opts into sharing on |top-level site|.
@@ -137,7 +138,7 @@ To <dfn type="abstract-op">determine the top-level storage access policy</dfn> f
     1. [=Queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|.
     1. Return.
 1. If |implicitly denied| is true:
-    1. [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
 1. If |permissionState| is [=permission/granted=]:
