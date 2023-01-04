@@ -4,9 +4,9 @@ Shortname: storage-access-for-origin
 Abstract: The requestStorageAccessForOrigin API allows top-level sites to request access to cross-site cookies on behalf of embedded origins.
 Status Text: This specification is intended to be merged into the HTML Living Standard. It is neither a WHATWG Living Standard nor is it on the standards track at W3C.
 Text Macro: LICENSE <a href=https://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License</a>
-Group: None
-ED: https://github.com/mreichhoff/requestStorageAccessForOrigin
-Status: DREAM
+Group: privacycg
+ED: https://github.com/privacycg/requestStorageAccessForOrigin
+Status: CG-DRAFT
 Editor: Matt Reichhoff, w3cid 138889, Google https://google.com, mreichhoff@google.com
 Editor: Johann Hofmann, w3cid 120436, Google https://google.com, johannhof@google.com
 Level: None
@@ -190,7 +190,7 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
 <h2 id="fetch-integration">Fetch Integration</h2>
 
-ISSUE(mreichhoff/requestStorageAccessForOrigin#8): Flesh out the exact scope of cookie access.
+ISSUE(privacycg/requestStorageAccessForOrigin#8): Flesh out the exact scope of cookie access.
 
 <div algorithm='cookie-blocking-modification'>
 In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
