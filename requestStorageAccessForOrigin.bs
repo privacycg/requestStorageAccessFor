@@ -29,8 +29,6 @@ urlPrefix: https://privacycg.github.io/storage-access/#; spec: storage-access
         text: determine the storage access policy; url: determine-the-storage-access-policy
         text: determine if a site has storage access; url: determine-if-a-site-has-storage-access
         text: requestStorageAccess; url: dom-document-requeststorageaccess
-        text: Storage Access API security; url: security
-        text: Storage Access API privacy; url: privacy
 urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
     type: dfn
         text: http network or cache fetch; url: http-network-or-cache-fetch
@@ -226,10 +224,11 @@ Modify the [=determine the storage access policy=] algorithm by prepending the f
 
 Like the Storage Access API, {{Document/requestStorageAccessForOrigin(origin)}} is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.
 
-Note that many of the same considerations as in [=Storage Access API privacy=] apply. This section primarily covers the differences.
+Note that many of the same considerations as in <a href="https://privacycg.github.io/storage-access/#privacy">Storage Access API privacy</a> apply. This section primarily covers the differences.
 
 [=requestStorageAccess=] requires interaction with an embedded document. By requiring interaction only with the top-level document, {{Document/requestStorageAccessForOrigin(origin)}} 
-lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction). [=Implementation-defined=] acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
+lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction).
+[=Implementation-defined=] acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
 The prompts used have to be careful to indicate the direction of the request, such that the user is able to understand who is requesting access.
 
 As with [=requestStorageAccess=], the same tension between user consent and prompt fatigue exists with {{Document/requestStorageAccessForOrigin(origin)}}; much like the Storage Access API, 
@@ -241,15 +240,15 @@ It is important that {{Document/requestStorageAccessForOrigin(origin)}} not degr
 Third-party cookie removal has potential benefits for security, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF. 
 We do not wish {{Document/requestStorageAccessForOrigin(origin)}} to be a foothold for such attacks to leverage.
 
-Note that the [=Storage Access API security=] properties hold for much of this proposal. Specifically, frame-level access is only granted once [=requestStorageAccess=] is successfully invoked.
+Note that <a href="https://privacycg.github.io/storage-access/#security">the Storage Access API security</a> properties hold for much of this proposal. Specifically, frame-level access is only granted once [=requestStorageAccess=] is successfully invoked.
 For frame access, {{Document/requestStorageAccessForOrigin(origin)}} merely simplifies the activation and prompting requirements.
 
-{{Document/requestStorageAccessForOrigin(origin)}} does expand the scope of concerns in two areas: subresource requests made by the top-level document and notification abuse.
+{{Document/requestStorageAccessForOrigin(origin)}} does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.
 
 <h3 id="subresources">Subresource Requests</h3>
 
 The specific security controls proposed by the API are:
-* Any cookies included with the subresource request must be explicitly marked `SameSite=None`, indicating intent for use in [=third party contexts=].
+* Any cookies included with the subresource request have to be explicitly marked `SameSite=None`, indicating intent for use in [=third party contexts=].
 * For any `SameSite=None` cookies to be included, the request's [=request/mode=] has to be "cors", where reading of the response is blocked unless the embeddee opts-in via sending the appropriate [:http-access-control-allow-credentials:] header. The sending of the [:http-origin:] header ensures the embeddee is aware of the embedder's identity.
 
 Additionally, only requests initiated from the top-level document will be eligible for inclusion of `SameSite=None` cookies. This ensures that other embedded frames do not receive escalated privileges.
