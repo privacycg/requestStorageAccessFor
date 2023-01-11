@@ -33,6 +33,18 @@ urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
     type: dfn
         text: http network or cache fetch; url: http-network-or-cache-fetch
 </pre>
+<pre class="biblio">
+{
+  "STORAGE-ACCESS": {
+    "href": "https://privacycg.github.io/storage-access/",
+    "title": "Storage Access API",
+    "status": "CG Draft",
+    "deliveredBy": [
+      "https://www.w3.org/community/privacycg/"
+    ]
+  }
+}
+</pre>
 
 <section class="non-normative">
 <h2 id="intro">Introduction</h2>
@@ -64,7 +76,7 @@ Later on, Alex visits `https://video.example/`, which has an <{img}> in it which
 
 A script on `https://video.example/` could request access on behalf of `https://social.example` by calling |doc|`.`{{Document/requestStorageAccessForOrigin(origin)}} with {{USVString}} |origin| as `https://social.example`.
 
-Note that the circumstances for use of the access have to be limited to those cases where the requested origin opts into sharing.
+Note: the circumstances for use of the access have to be limited to those cases where the requested origin opts into sharing. More information is available in [[#privacy]] and [[#security]].
 
 </div>
 
@@ -205,7 +217,7 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
 
-Note that even after a successful {{Document/requestStorageAccessForOrigin(origin)}} call, frames must explicitly invoke [=requestStorageAccess=] for cookie access.
+Note: even after a successful {{Document/requestStorageAccessForOrigin(origin)}} call, frames have to explicitly invoke [=requestStorageAccess=] for cookie access.
 This modification allows {{Document/requestStorageAccessForOrigin(origin)}} to allow resolution of [=requestStorageAccess=] calls similarly to a prior successful [=requestStorageAccess=] grant.
 
 ISSUE: This algorithm may need adjustments based on outcome of https://github.com/privacycg/storage-access/pull/141
@@ -222,9 +234,9 @@ Modify the [=determine the storage access policy=] algorithm by prepending the f
 
 <h2 id="privacy">Privacy considerations</h2>
 
-Like the Storage Access API, {{Document/requestStorageAccessForOrigin(origin)}} is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.
+Like the [[STORAGE-ACCESS]], {{Document/requestStorageAccessForOrigin(origin)}} is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.
 
-Note that many of the same considerations as in <a href="https://privacycg.github.io/storage-access/#privacy">Storage Access API privacy</a> apply. This section primarily covers the differences.
+Note: many of the same considerations as in [[STORAGE-ACCESS#privacy]] apply. This section primarily covers the differences.
 
 [=requestStorageAccess=] requires interaction with an embedded document. By requiring interaction only with the top-level document, {{Document/requestStorageAccessForOrigin(origin)}} 
 lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction).
@@ -237,10 +249,10 @@ As with [=requestStorageAccess=], the same tension between user consent and prom
 <h2 id="security">Security considerations</h2>
 
 It is important that {{Document/requestStorageAccessForOrigin(origin)}} not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies. 
-Third-party cookie removal has potential benefits for security, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF. 
+Third-party cookie removal <a href="https://docs.google.com/document/d/1AsrETl-7XvnZNbG81Zy9BcZfKbqACQYBSrjM3VsIpjY/edit">has potential benefits for security</a>, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF.
 We do not wish {{Document/requestStorageAccessForOrigin(origin)}} to be a foothold for such attacks to leverage.
 
-Note that <a href="https://privacycg.github.io/storage-access/#security">the Storage Access API security</a> properties hold for much of this proposal. Specifically, frame-level access is only granted once [=requestStorageAccess=] is successfully invoked.
+Note: [[STORAGE-ACCESS#security]] properties hold for much of this proposal. Specifically, frame-level access is only granted once [=requestStorageAccess=] is successfully invoked.
 For frame access, {{Document/requestStorageAccessForOrigin(origin)}} merely simplifies the activation and prompting requirements.
 
 {{Document/requestStorageAccessForOrigin(origin)}} does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.
@@ -255,10 +267,10 @@ Additionally, only requests initiated from the top-level document will be eligib
 
 <h3 id="notification-abuse">Notification Abuse</h3>
 
-Unlike the Storage Access API, interaction is only required with the top-level document, rather than an embedded document. This does increase the likelihood of prompting.
+Unlike the [[STORAGE-ACCESS]], interaction is only required with the top-level document, rather than an embedded document. This does increase the likelihood of prompting.
 
 Like the Storage Access API, user activation is consumed on denial, which prevents repeated requests.
 
 The [=implementation-defined=] rejection steps also allow for imposition of numeric limits or denylists for abusive actors.
 
-As mentioned in privacy considerations, because of the direction of the request, prompt language has to be careful to indicate which entity is requesting access.
+As mentioned in [[#privacy]], because of the direction of the request, the language in user agents' prompts should indicate which site initiated the storage access request.

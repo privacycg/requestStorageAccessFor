@@ -10,9 +10,7 @@ When the top-level document calls `document.requestStorageAccessForOrigin(origin
 * A nested Document on `origin` is able to gain access to its `SameSite=None` cookies when it calls `document.requestStorageAccess()` to indicate explicit opt-in. The prior grant of `requestStorageAccessForOrigin` waives the user activation requirement.
   * After this point, the same security rules as [the Storage Access API](https://github.com/privacycg/storage-access/blob/c4598484df6e77dc70a3d98499573ed44389f15e/tag-security-questionnaire.md) apply.
 
-With these cookies, calls to `origin` can return user-specific information.
-
-While this functionality comes with a risk of abuse by third parties for tracking purposes, it is an explicit goal of the API and a key to its design to not undermine the gains of cross-site cookie deprecation.
+While this functionality comes with a risk of abuse by third parties for tracking purposes, it is an explicit goal of the API and a key to its design to not undermine the gains of cross-site cookie deprecation. The CORS and explicit `requestStorageAccess` requirements are also intended to protect the embeddee's security.
 
 02.  Do features in your specification expose the minimum amount of information
      necessary to enable their intended uses?
