@@ -24,6 +24,8 @@ spec:fetch; type:dfn; for:/; text:request
 <pre class="anchors">
 urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
     text: agent cluster; url: #sec-agent-clusters; type: dfn
+urlPrefix: https://w3c.github.io/permissions/; spec: permissions
+    text: permissions task source; url: #permissions-task-source; type: dfn
 urlPrefix: https://privacycg.github.io/storage-access/#; spec: storage-access
     type: dfn
         text: determine the storage access policy; url: determine-the-storage-access-policy
@@ -61,7 +63,7 @@ Alex visits `https://social.example/`. The page sets a cookie. This cookie has b
 
 Later on, Alex visits `https://video.example/`, which has an <{img}> in it which loads `https://social.example/profile-image`. In this case, the `social.example` {{Document}} |doc| is in a [=third party context=], and the cookie set previously might or might not be visible from |doc|`.`{{Document/cookie}}, depending on User Agent storage access policies.
 
-A script on `https://video.example/` could request access on behalf of `https://social.example` by calling |doc|`.`{{Document/requestStorageAccessForOrigin(origin)}} with {{USVString}} |origin| as `https://social.example`.
+A script on `https://video.example/` could request access on behalf of `https://social.example` by calling |doc|`.`{{Document/requestStorageAccessForOrigin(origin)}} with {{USVString}} <var ignore>origin</var> as `https://social.example`.
 
 </div>
 
@@ -120,32 +122,32 @@ To <dfn type="abstract-op">determine the top-level storage access policy</dfn> f
 1. Let |global| be |doc|'s [=relevant global object=].
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is [=permission/granted=]:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
     1. Return.
 1. If |existing state| is [=permission/denied=]:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
 1. If |has activation| is false:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
     1. Return.
 1. Let |embeddee opt-in| be the result of running an [=implementation-defined=] set of steps to determine if |descriptor|'s {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} opts into sharing on |top-level site|.
 1. If |embeddee opt-in| is false:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Let |implicitly granted| and |implicitly denied| (each a [=boolean=]) be the result of running an [=implementation-defined=] set of steps to determine if |top-level site|'s request for |descriptor|'s {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} should be granted or denied without prompting the user.
 1. If |implicitly granted| is true:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
     1. Return.
 1. If |implicitly denied| is true:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
     1. Return.
 1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
 1. If |permissionState| is [=permission/granted=]:
-    1. [=Queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
     1. Return.
 1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
-1. [=Queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
 
 </div>
 
@@ -212,11 +214,11 @@ ISSUE: This algorithm will need adjustments based on outcome of https://github.c
 
 <div algorithm='storage-access-policy-modification'>
 Modify the [=determine the storage access policy=] algorithm by prepending the following steps:
-1. Let |settings| be |doc|'s [=relevant settings object=].
+1. Let |settings| be <var ignore>doc</var>'s [=relevant settings object=].
 1. Let |origin| be |settings|' [=environment settings object/origin=].
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
-1. If |descriptor|'s [=permission state=] is [=permission/granted=], [=queue a global task=] on the [=permission task source=] given |global| to [=resolve=] |p|, and return.
-1. If |descriptor|'s [=permission state=] is [=permission/denied=], [=queue a global task=] on the [=permission task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return.
+1. If |descriptor|'s [=permission state=] is [=permission/granted=], [=queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|, and return.
+1. If |descriptor|'s [=permission state=] is [=permission/denied=], [=queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return.
 
 </div>
 
