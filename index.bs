@@ -120,7 +120,7 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 <h3 id="ua-policies">User Agent top-level storage access policies</h3>
 
 <div algorithm>
-To <dfn type="abstract-op">determine if a request has top-level storage access</dfn> with [=request=] |request|, run these steps:
+To <dfn>determine if a request has top-level storage access</dfn> with [=request=] |request|, run these steps:
 
 1. Let |settings| be |request|'s [=request/client=]'s [=relevant global object=]'s [=relevant settings object=].
 1. Let |embedded origin| be |request|'s [=request/url=]'s [=url/origin=].
@@ -134,7 +134,7 @@ To <dfn type="abstract-op">determine if a request has top-level storage access</
 ISSUE(privacycg/requestStorageAccessForOrigin#15): The permissions task source shouldn't be used directly.
 
 <div algorithm>
-To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, [=boolean=] |has activation|, and {{Promise}} |p|, run these steps:
+To <dfn>determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, [=boolean=] |has activation|, and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
 1. Let |global| be |doc|'s [=relevant global object=].
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
