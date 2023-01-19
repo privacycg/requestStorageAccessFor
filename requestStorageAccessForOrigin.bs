@@ -131,6 +131,8 @@ To <dfn type="abstract-op">determine if a request has top-level storage access</
 
 </div>
 
+ISSUE(privacycg/requestStorageAccessForOrigin#15): The permissions task source shouldn't be used directly.
+
 <div algorithm>
 To <dfn type="abstract-op">determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, [=boolean=] |has activation|, and {{Promise}} |p|, run these steps:
 1. Let |settings| be |doc|'s [=relevant settings object=].
@@ -264,7 +266,7 @@ For frame access, {{Document/requestStorageAccessForOrigin(origin)}} merely simp
 
 The specific security controls proposed by the API are:
 * Any cookies included with the subresource request have to be explicitly marked `SameSite=None`, indicating intent for use in [=third party contexts=].
-* For any `SameSite=None` cookies to be included, the request's [=request/mode=] has to be "cors", where reading of the response is blocked unless the embeddee opts-in via sending the appropriate [:http-access-control-allow-credentials:] header. The sending of the [:http-origin:] header ensures the embeddee is aware of the embedder's identity.
+* For any `SameSite=None` cookies to be included, the request's [=request/mode=] has to be "cors", where reading of the response is blocked unless the embeddee opts-in via sending the appropriate [:access-control-allow-credentials:] header. The sending of the [:origin:] header ensures the embeddee is aware of the embedder's identity.
 
 Additionally, only requests initiated from the top-level document will be eligible for inclusion of `SameSite=None` cookies. This ensures that other embedded frames do not receive escalated privileges.
 
