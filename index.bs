@@ -103,6 +103,7 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 1. If |doc| is not [=Document/fully active=], then [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=node navigable=] is not a [=traversable navigable=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=Document/origin=] is an [=opaque origin=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
+1. If |doc|'s [=relevant global object=] is not a [=secure context=], then [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. Let |parsedURL| be the the result of running the [=URL parser=] on |requestedOrigin|.
 1. If |parsedURL| is failure, [=reject=] |p| with a "{{TypeError}}" {{DOMException}} and return |p|.
 1. Let |origin| be |parsedURL|'s [=/origin=].
