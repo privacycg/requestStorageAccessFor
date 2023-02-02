@@ -112,9 +112,31 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
 1. Let |has activation| be true if |doc|'s {{Window}} object has [=transient activation=], and false otherwise.
 1. Run these steps [=in parallel=]:
-    1. Let |top-level site| be the result of [=obtain a site|obtaining a site=] from |doc|'s [=relevant settings object=]'s [=environment settings object/origin=].
-    1. [=Determine the top-level storage access policy=] with |descriptor|, |doc|, |top-level site|, |has activation|, and |p|.
+    1. Let |settings| be |doc|'s [=relevant settings object=].
+    1. Let |global| be |doc|'s [=relevant global object=].
+    1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
+    1. If |existing state| is [=permission/granted=]:
+        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
+        1. Return.
+    1. If |existing state| is [=permission/denied=]:
+        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+        1. Return.
+    1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
+    1. If |has activation| is false:
+        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
+        1. Return.
+    1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
+
+        NOTE: Note that when requesting permissions and deciding whether to show a prompt, user agents apply implementation-defined behavior to shape the end user experience. Particularly for `top-level-storage-access`, user agents are known to apply custom rules that will grant or deny a permission without showing a prompt.
+
+    1. If |permissionState| is [=permission/granted=]:
+        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
+        1. Return.
+    1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
+    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
 1. Return |p|.
+
+ISSUE(privacycg/requestStorageAccessForOrigin#15): The permissions task source shouldn't be used directly.
 
 </div>
 
@@ -129,39 +151,6 @@ To <dfn>determine if a request has top-level storage access</dfn> with [=request
 1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
 1. If |existing state| is [=permission/granted=], return true.
 1. Return false.
-
-</div>
-
-ISSUE(privacycg/requestStorageAccessForOrigin#15): The permissions task source shouldn't be used directly.
-
-<div algorithm>
-To <dfn>determine the top-level storage access policy</dfn> for {{TopLevelStorageAccessPermissionDescriptor}} |descriptor|, with {{Document}} |doc|, [=site=] |top-level site|, [=boolean=] |has activation|, and {{Promise}} |p|, run these steps:
-1. Let |settings| be |doc|'s [=relevant settings object=].
-1. Let |global| be |doc|'s [=relevant global object=].
-1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
-1. If |existing state| is [=permission/granted=]:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
-    1. Return.
-1. If |existing state| is [=permission/denied=]:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
-    1. Return.
-1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
-1. If |has activation| is false:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
-    1. Return.
-1. Let |implicitly granted| and |implicitly denied| (each a [=boolean=]) be the result of running an [=implementation-defined=] set of steps to determine if |top-level site|'s request for |descriptor|'s {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} should be granted or denied without prompting the user.
-1. If |implicitly granted| is true:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
-    1. Return.
-1. If |implicitly denied| is true:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
-    1. Return.
-1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
-1. If |permissionState| is [=permission/granted=]:
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
-    1. Return.
-1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
-1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
 
 </div>
 
@@ -226,10 +215,9 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 Note: even after a successful {{Document/requestStorageAccessForOrigin(origin)}} call, frames have to explicitly invoke [=requestStorageAccess=] for cookie access.
 This modification allows {{Document/requestStorageAccessForOrigin(origin)}} to allow resolution of [=requestStorageAccess=] calls similarly to a prior successful [=requestStorageAccess=] grant.
 
-ISSUE: This algorithm may need adjustments based on outcome of https://github.com/privacycg/storage-access/pull/141
-
 <div algorithm='storage-access-policy-modification'>
-Modify the [=determine the storage access policy=] algorithm by prepending the following steps:
+Modify {{Document/requestStorageAccess()}} to insert the following steps before step 13.4 (i.e. before checking transient activation):
+
 1. Let |settings| be <var ignore>doc</var>'s [=relevant settings object=].
 1. Let |origin| be |settings|' [=environment settings object/origin=].
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
