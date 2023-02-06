@@ -133,6 +133,8 @@ Authenticated embeds are the primary use case targeted by the `requestStorageAcc
 
 ### Proposed Draft Spec Addition
 
+**NOTE:** These steps are a simplified version of [the actual spec](https://privacycg.github.io/requestStorageAccessForOrigin), which is the authoritative version.
+
 The proposed spec could include a set of steps for the browser to follow that are somewhat similar to those done with [`requestStorageAccess`](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access). The spec could include a function that takes a `string` as the origin:
 
 
@@ -144,29 +146,21 @@ function requestStorageAccessForOrigin(origin)
 Where a draft set of steps could be:
 
 
-
-1. If the browser is not processing a user gesture, reject.
 1. If the document has a null origin, or if the requested domain is invalid or has a null origin, reject.
 1. If the document's frame is not the main frame, reject.
 1. If the requested origin is equal to the main frame's, resolve.
 1. If the requested `origin` already has been granted access, resolve.
-1. Check for embeddee opt-in:
-    1. Run implementation-defined embeddee opt-in checks.
-        1. One example: if FPS is supported and enabled, check if embeddee and embedder are in the same FPS. Membership in the same set is treated as embeddee opt-in, unless the embedder is a service domain.
-        1. TBD: over time, such opt-in signals can be standardized.
-    1. If opt-in is not found, reject the requestStorageAccessForOrigin call.
-1. Check for user approval, if required:
-    1. Check implementation-defined acceptance or rejection steps; if any are triggered, reject the requestStorageAccessForOrigin call or skip to the permission-saving step.
-        1. Browsers could choose to accept or reject based on their own rules. Allowing sharing within the same FPS, allowing some limited number of implicit grants, or always choosing to prompt users would all be possible.
-    1. Prompt the user, return their acceptance or denial.
+1. If the browser is not processing a user gesture, reject.
+1. Request permission via the permissions API.
+    1. This would allow implementation-defined acceptance or rejection steps; if any are triggered, reject the requestStorageAccessForOrigin call or skip to the permission-saving step.
 1. If acceptance is returned, save a permission for the pair `{top-level site, requested origin}`. Note that the permission would be separate from the permission granted by `requestStorageAccess`.
 
 Fetch could then be modified to include cross-site cookies when appropriate (though the modification may depend on [cookie layering changes](https://github.com/httpwg/http-extensions/issues/2084)). A draft of such a spec change follows:
 
 1. At request time, if the request is cross-site and the appropriate permission for `{top-level site, requested origin}` exists, attach cookies only if all of the below checks are met:
-    1. Run a modified ancestor check, like that of the site for cookies algorithm, but allowing only scenarios where every ancestor is same-site with either the embeddee or the top-level site, to prevent any unrelated iframes from getting access. This is recommended in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113). Permission policy set by the top-level document can potentially opt trusted `<iframe>`s out of this protection.
-    1. If the request is for a subresource (i.e., not a navigation), the request must be CORS-enabled. In other words, a plain `<img>` or `<script>` without a `crossorigin` attribute would not have cross-site `SameSite=None` cookies attached, regardless of whether access had been granted. Similarly, a `fetch` or `XHR` request would omit cross-site `SameSite=None` cookies unless CORS was enabled.
+    1. The request is made by the top-level frame **and** is for a subresource on the `requested origin` (i.e., not a navigation), **and** the request is CORS-enabled. In other words, a plain `<img>` or `<script>` without the appropriate `crossorigin` attribute would not have cross-site `SameSite=None` cookies attached, regardless of whether access had been granted. Similarly, a `fetch` or `XHR` request would omit cross-site `SameSite=None` cookies unless CORS was enabled. This is recommended in [a recent security analysis](https://github.com/privacycg/storage-access/issues/113).
     1. The cookies to be included must be marked `SameSite=None`. In other words, the cookies must have been explicitly opted in by the requested domain. Cookies with any other `SameSite` option are ignored and not sent, regardless of whether a grant exists.
+    1. **NOTE**: requests from `<iframe>` elements would need to invoke and be granted `requestStorageAccess` for `SameSite=None` cookies to be sent. This ensures the [per-frame semantics of `requestStorageAccess`](https://github.com/privacycg/storage-access/issues/122) are respected.
 
 ### Plural vs Singular API
 
