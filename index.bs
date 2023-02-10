@@ -192,7 +192,18 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
     1. If |current origin| is not [=same site=] with |settings|' [=top-level origin=], return null.
     1. Return the result of [=obtain a site|obtaining a site=] from |settings|' [=top-level origin=].
 
-    Note: the check for whether |settings|' [=environment settings object/origin=] is [=same site=] with |settings|' [=top-level origin=] is intended to disallow permission queries from cross-site frames.
+        Note: the check for whether |settings|' [=environment settings object/origin=] is [=same site=] with |settings|' [=top-level origin=] is intended to disallow permission queries from cross-site frames.
+        This check is only relevant in {{Permissions/query(permissionDesc)}}, because permission requests are only possible in a [=top-level browsing context=].
+
+    </div>
+  </dd>
+  <dt>[=powerful feature/permission key comparison algorithm=]</dt>
+  <dd>
+    <div algorithm='top-level-storage-access-key-comparison'>
+    To compare [=permission keys=] |key1| and |key2| for the "<a permission><code>top-level-storage-access</code></a>" feature, run the following steps:
+    1. If |key1| is null or |key2| is null, return false.
+    1. Return |key1| is [=same site=] with |key2|.
+
     </div>
   </dd>
 </dl>
