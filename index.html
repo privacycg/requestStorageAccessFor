@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 859efb4bd, updated Fri Jan 27 16:04:01 2023 -0800" name="generator">
   <link href="https://github.com/privacycg/requestStorageAccessForOrigin" rel="canonical">
-  <meta content="84a878d668da82b0f622ed1e6ba43f185ff81e5c" name="document-revision">
+  <meta content="c4268eaf7f81627e82567ebcf417d7ef54dec43b" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -596,7 +596,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <header>
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="no-ref" id="title">requestStorageAccessForOrigin API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-02-07">7 February 2023</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-02-13">13 February 2023</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -831,7 +831,24 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
        To generate a new <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key" id="ref-for-dfn-permission-key①">permission key</a> for the "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑥"><code>top-level-storage-access</code></a>" feature, given an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object" id="ref-for-environment-settings-object">environment settings object</a> <var>settings</var>, run the following steps: 
       <ol>
        <li data-md>
-        <p>Return the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site" id="ref-for-obtain-a-site">obtaining a site</a> from <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin①">top-level origin</a>.</p>
+        <p>Let <var>current origin</var> be <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin①">origin</a>.</p>
+       <li data-md>
+        <p>If <var>current origin</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site④">same site</a> with <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin①">top-level origin</a>, return null.</p>
+       <li data-md>
+        <p>Return the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site" id="ref-for-obtain-a-site">obtaining a site</a> from <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin②">top-level origin</a>.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> the check for whether <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin②">origin</a> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site⑤">same site</a> with <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin③">top-level origin</a> is intended to disallow permission queries from cross-site frames.
+This depends on the invariant that <code>top-level-storage-access</code> permission requests are only allowed in a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context" id="ref-for-top-level-browsing-context">top-level browsing context</a>. As such, this check is only relevant in <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissions-query" id="ref-for-dom-permissions-query">query(permissionDesc)</a></code>.</p>
+      </ol>
+     </div>
+    <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm" id="ref-for-dfn-permission-key-comparison-algorithm">permission key comparison algorithm</a>
+    <dd>
+     <div class="algorithm" data-algorithm="top-level-storage-access-key-comparison">
+       To compare <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key" id="ref-for-dfn-permission-key②">permission keys</a> <var>key1</var> and <var>key2</var> for the "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑦"><code>top-level-storage-access</code></a>" feature, run the following steps: 
+      <ol>
+       <li data-md>
+        <p>If <var>key1</var> is null or <var>key2</var> is null, return false.</p>
+       <li data-md>
+        <p>Return <var>key1</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site⑥">same site</a> with <var>key2</var>.</p>
       </ol>
      </div>
    </dl>
@@ -865,9 +882,9 @@ This modification allows <code class="idl"><a data-link-type="idl" href="#dom-do
      <li data-md>
       <p>Let <var>settings</var> be <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object③">relevant settings object</a>.</p>
      <li data-md>
-      <p>Let <var>origin</var> be <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin①">origin</a>.</p>
+      <p>Let <var>origin</var> be <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin③">origin</a>.</p>
      <li data-md>
-      <p>Let <var>descriptor</var> be a newly created <code class="idl"><a data-link-type="idl" href="#dictdef-toplevelstorageaccesspermissiondescriptor" id="ref-for-dictdef-toplevelstorageaccesspermissiondescriptor②">TopLevelStorageAccessPermissionDescriptor</a></code> with <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name②">name</a></code> set to "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑦"><code>top-level-storage-access</code></a>" and with <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">requestedOrigin</a></code> set to <var>origin</var>.</p>
+      <p>Let <var>descriptor</var> be a newly created <code class="idl"><a data-link-type="idl" href="#dictdef-toplevelstorageaccesspermissiondescriptor" id="ref-for-dictdef-toplevelstorageaccesspermissiondescriptor②">TopLevelStorageAccessPermissionDescriptor</a></code> with <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name②">name</a></code> set to "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑧"><code>top-level-storage-access</code></a>" and with <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">requestedOrigin</a></code> set to <var>origin</var>.</p>
      <li data-md>
       <p>If <var>descriptor</var>’s <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-state" id="ref-for-dfn-permission-state③">permission state</a> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-granted" id="ref-for-dfn-granted③">granted</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task⑤">queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source⑤">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var>, and return.</p>
      <li data-md>
@@ -880,6 +897,14 @@ This modification allows <code class="idl"><a data-link-type="idl" href="#dom-do
    <p><a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess④">requestStorageAccess</a> requires interaction with an embedded document. By requiring interaction only with the top-level document, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑦">requestStorageAccessForOrigin(origin)</a></code> lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction). <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">Implementation-defined</a> acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
 The prompts used have to be careful to indicate the direction of the request, such that the user is able to understand who is requesting access.</p>
    <p>As with <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess⑤">requestStorageAccess</a>, the same tension between user consent and prompt fatigue exists with <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑧">requestStorageAccessForOrigin(origin)</a></code>; much like the Storage Access API, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined①">implementation-defined</a> acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.</p>
+   <p>Another difference is that queries for the permission can be more sensitive, depending on the context. Note that a frame has to be unable to request the state of either of:</p>
+   <ul>
+    <li data-md>
+     <p>Whether it was <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-granted" id="ref-for-dfn-granted④">granted</a> a "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑨"><code>top-level-storage-access</code></a>" permission for some origin while a top-level document.</p>
+    <li data-md>
+     <p>Whether arbitrary other origins were <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-granted" id="ref-for-dfn-granted⑤">granted</a> the "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access①⓪"><code>top-level-storage-access</code></a>" on the current top-level site.</p>
+   </ul>
+   <p>In the former case, this would allow bogus domains (or combinations thereof) to be used as identifiers; in the latter case, it would reveal state under unrelated origins.</p>
    <h2 class="heading settled" data-level="8" id="security"><span class="secno">8. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
    <p>It is important that <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑨">requestStorageAccessForOrigin(origin)</a></code> not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies.
 Third-party cookie removal <a href="https://docs.google.com/document/d/1AsrETl-7XvnZNbG81Zy9BcZfKbqACQYBSrjM3VsIpjY/edit">has potential benefits for security</a>, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF.
@@ -1111,7 +1136,8 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-settings-object-origin">3. The requestStorageAccessForOrigin API</a>
-    <li><a href="#ref-for-concept-settings-object-origin①">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-concept-settings-object-origin①">4. Permissions Integration</a> <a href="#ref-for-concept-settings-object-origin②">(2)</a>
+    <li><a href="#ref-for-concept-settings-object-origin③">6. Storage Access API Integration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue-a-global-task">
@@ -1149,6 +1175,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <ul>
     <li><a href="#ref-for-concept-site-same-site">1. Introduction</a> <a href="#ref-for-concept-site-same-site①">(2)</a> <a href="#ref-for-concept-site-same-site②">(3)</a>
     <li><a href="#ref-for-concept-site-same-site③">3. The requestStorageAccessForOrigin API</a>
+    <li><a href="#ref-for-concept-site-same-site④">4. Permissions Integration</a> <a href="#ref-for-concept-site-same-site⑤">(2)</a> <a href="#ref-for-concept-site-same-site⑥">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-secure-context">
@@ -1164,11 +1191,17 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-site①">4. Permissions Integration</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-top-level-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-top-level-browsing-context">4. Permissions Integration</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-environment-top-level-origin">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-environment-top-level-origin">3. The requestStorageAccessForOrigin API</a>
-    <li><a href="#ref-for-concept-environment-top-level-origin①">4. Permissions Integration</a>
+    <li><a href="#ref-for-concept-environment-top-level-origin①">4. Permissions Integration</a> <a href="#ref-for-concept-environment-top-level-origin②">(2)</a> <a href="#ref-for-concept-environment-top-level-origin③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-transient-activation">
@@ -1219,6 +1252,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-dfn-granted">3.1. Changes to Document</a> <a href="#ref-for-dfn-granted①">(2)</a>
     <li><a href="#ref-for-dfn-granted②">3.2. User Agent top-level storage access policies</a>
     <li><a href="#ref-for-dfn-granted③">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-dfn-granted④">7. Privacy considerations</a> <a href="#ref-for-dfn-granted⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-permissiondescriptor-name">
@@ -1238,7 +1272,13 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <aside class="dfn-panel" data-for="term-for-dfn-permission-key">
    <a href="https://w3c.github.io/permissions/#dfn-permission-key">https://w3c.github.io/permissions/#dfn-permission-key</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-permission-key">4. Permissions Integration</a> <a href="#ref-for-dfn-permission-key①">(2)</a>
+    <li><a href="#ref-for-dfn-permission-key">4. Permissions Integration</a> <a href="#ref-for-dfn-permission-key①">(2)</a> <a href="#ref-for-dfn-permission-key②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-permission-key-comparison-algorithm">
+   <a href="https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm">https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-permission-key-comparison-algorithm">4. Permissions Integration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-permission-key-generation-algorithm">
@@ -1285,6 +1325,12 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <a href="https://w3c.github.io/permissions/#dfn-prompt">https://w3c.github.io/permissions/#dfn-prompt</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-prompt">4. Permissions Integration</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-permissions-query">
+   <a href="https://w3c.github.io/permissions/#dom-permissions-query">https://w3c.github.io/permissions/#dom-permissions-query</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-permissions-query">4. Permissions Integration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-request-permission-to-use">
@@ -1438,6 +1484,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
      <li><span class="dfn-paneled" id="term-for-concept-site-same-site">same site</span>
      <li><span class="dfn-paneled" id="term-for-secure-context">secure context</span>
      <li><span class="dfn-paneled" id="term-for-site">site</span>
+     <li><span class="dfn-paneled" id="term-for-top-level-browsing-context">top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-top-level-origin">top-level origin</span>
      <li><span class="dfn-paneled" id="term-for-transient-activation">transient activation</span>
      <li><span class="dfn-paneled" id="term-for-traversable-navigable">traversable navigable</span>
@@ -1457,6 +1504,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
      <li><span class="dfn-paneled" id="term-for-dom-permissiondescriptor-name">name <small>(for PermissionDescriptor)</small></span>
      <li><span class="dfn-paneled" id="term-for-dfn-name">name <small>(for powerful feature)</small></span>
      <li><span class="dfn-paneled" id="term-for-dfn-permission-key">permission key</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-permission-key-comparison-algorithm">permission key comparison algorithm</span>
      <li><span class="dfn-paneled" id="term-for-dfn-permission-key-generation-algorithm">permission key generation algorithm</span>
      <li><span class="dfn-paneled" id="term-for-dfn-permission-key-type">permission key type</span>
      <li><span class="dfn-paneled" id="term-for-dfn-permission-query-algorithm">permission query algorithm</span>
@@ -1464,6 +1512,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
      <li><span class="dfn-paneled" id="term-for-permissions-task-source">permissions task source</span>
      <li><span class="dfn-paneled" id="term-for-dfn-powerful-feature">powerful feature</span>
      <li><span class="dfn-paneled" id="term-for-dfn-prompt">prompt</span>
+     <li><span class="dfn-paneled" id="term-for-dom-permissions-query">query(permissionDesc)</span>
      <li><span class="dfn-paneled" id="term-for-dfn-request-permission-to-use">requesting permission to use</span>
      <li><span class="dfn-paneled" id="term-for-dom-permissionstatus-state">state</span>
     </ul>
@@ -1571,8 +1620,9 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <ul>
     <li><a href="#ref-for-permissiondef-top-level-storage-access">3.1. Changes to Document</a> <a href="#ref-for-permissiondef-top-level-storage-access①">(2)</a>
     <li><a href="#ref-for-permissiondef-top-level-storage-access②">3.2. User Agent top-level storage access policies</a>
-    <li><a href="#ref-for-permissiondef-top-level-storage-access③">4. Permissions Integration</a> <a href="#ref-for-permissiondef-top-level-storage-access④">(2)</a> <a href="#ref-for-permissiondef-top-level-storage-access⑤">(3)</a> <a href="#ref-for-permissiondef-top-level-storage-access⑥">(4)</a>
-    <li><a href="#ref-for-permissiondef-top-level-storage-access⑦">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-permissiondef-top-level-storage-access③">4. Permissions Integration</a> <a href="#ref-for-permissiondef-top-level-storage-access④">(2)</a> <a href="#ref-for-permissiondef-top-level-storage-access⑤">(3)</a> <a href="#ref-for-permissiondef-top-level-storage-access⑥">(4)</a> <a href="#ref-for-permissiondef-top-level-storage-access⑦">(5)</a>
+    <li><a href="#ref-for-permissiondef-top-level-storage-access⑧">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-permissiondef-top-level-storage-access⑨">7. Privacy considerations</a> <a href="#ref-for-permissiondef-top-level-storage-access①⓪">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-toplevelstorageaccesspermissiondescriptor">
