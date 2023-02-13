@@ -193,7 +193,7 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
     1. Return the result of [=obtain a site|obtaining a site=] from |settings|' [=top-level origin=].
 
         Note: the check for whether |settings|' [=environment settings object/origin=] is [=same site=] with |settings|' [=top-level origin=] is intended to disallow permission queries from cross-site frames.
-        This check is only relevant in {{Permissions/query(permissionDesc)}}, because permission requests are only possible in a [=top-level browsing context=].
+        This depends on the invariant that `top-level-storage-access` permission requests are only allowed in a [=top-level browsing context=]. As such, this check is only relevant in {{Permissions/query(permissionDesc)}}.
 
     </div>
   </dd>
