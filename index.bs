@@ -188,7 +188,21 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
   <dd>
     <div algorithm='top-level-storage-access-key-generation'>
     To generate a new [=permission key=] for the "<a permission><code>top-level-storage-access</code></a>" feature, given an [=environment settings object=] |settings|, run the following steps:
+    1. Let |current origin| be |settings|' [=environment settings object/origin=].
+    1. If |current origin| is not [=same site=] with |settings|' [=top-level origin=], return null.
     1. Return the result of [=obtain a site|obtaining a site=] from |settings|' [=top-level origin=].
+
+        Note: the check for whether |settings|' [=environment settings object/origin=] is [=same site=] with |settings|' [=top-level origin=] is intended to disallow permission queries from cross-site frames.
+        This depends on the invariant that `top-level-storage-access` permission requests are only allowed in a [=top-level browsing context=]. As such, this check is only relevant in {{Permissions/query(permissionDesc)}}.
+
+    </div>
+  </dd>
+  <dt>[=powerful feature/permission key comparison algorithm=]</dt>
+  <dd>
+    <div algorithm='top-level-storage-access-key-comparison'>
+    To compare [=permission keys=] |key1| and |key2| for the "<a permission><code>top-level-storage-access</code></a>" feature, run the following steps:
+    1. If |key1| is null or |key2| is null, return false.
+    1. Return |key1| is [=same site=] with |key2|.
 
     </div>
   </dd>
@@ -239,6 +253,12 @@ The prompts used have to be careful to indicate the direction of the request, su
 
 As with [=requestStorageAccess=], the same tension between user consent and prompt fatigue exists with {{Document/requestStorageAccessForOrigin(origin)}}; much like the Storage Access API, 
 [=implementation-defined=] acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.
+
+Another difference is that queries for the permission can be more sensitive, depending on the context. Note that a frame has to be unable to request the state of either of:
+* Whether it was [=permission/granted=] a "<a permission><code>top-level-storage-access</code></a>" permission for some origin while a top-level document.
+* Whether arbitrary other origins were [=permission/granted=] the "<a permission><code>top-level-storage-access</code></a>" on the current top-level site.
+
+In the former case, this would allow bogus domains (or combinations thereof) to be used as identifiers; in the latter case, it would reveal state under unrelated origins.
 
 <h2 id="security">Security considerations</h2>
 
