@@ -183,6 +183,8 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
   <dt>[=powerful feature/permission key type=]</dt>
   <dd>
     A [=permission key=] of the "<a permission><code>top-level-storage-access</code></a>" feature has the type [=site=].
+
+        Note: the {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} field ensures that the [=permission store entry=] is double-keyed.
   </dd>
   <dt>[=powerful feature/permission key generation algorithm=]</dt>
   <dd>
