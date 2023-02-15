@@ -30,7 +30,6 @@ urlPrefix: https://privacycg.github.io/storage-access/#; spec: storage-access
     type: dfn
         text: determine the storage access policy; url: determine-the-storage-access-policy
         text: determine if a site has storage access; url: determine-if-a-site-has-storage-access
-        text: requestStorageAccess; url: dom-document-requeststorageaccess
 urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
     type: dfn
         text: http network or cache fetch; url: http-network-or-cache-fetch
@@ -57,7 +56,7 @@ Many User Agents prevent content from accessing non-[=same site=] data stored in
 This can break embedded content which relies on having access to non-[=same site=] cookies.
 
 The requestStorageAccessForOrigin API enables developers to request access to non-[=same site=] cookies for embedded resources such as iframes, scripts, or images.
-It accomplishes this by specifying {{Document/requestStorageAccessForOrigin(origin)}}, which allows [=traversable navigable=]s to request access
+It accomplishes this by specifying {{Document/requestStorageAccessForOrigin(requestedOrigin)}}, which allows [=traversable navigable=]s to request access
 to unpartitioned cookies on behalf of another [=/origin=].
 
 </section>
@@ -68,7 +67,7 @@ This specification depends on the Infra standard. [[!INFRA]]
 
 <h2 id="the-rsa-for-api">The requestStorageAccessForOrigin API</h2>
 
-This specification defines a method that can be used to request access to [=unpartitioned data=] on behalf of another [=/origin=] ({{Document/requestStorageAccessForOrigin(origin)}}).
+This specification defines a method that can be used to request access to [=unpartitioned data=] on behalf of another [=/origin=] ({{Document/requestStorageAccessForOrigin(requestedOrigin)}}).
 
 <div class=example>
 
@@ -76,7 +75,7 @@ Alex visits `https://social.example/`. The page sets a cookie. This cookie has b
 
 Later on, Alex visits `https://video.example/`, which has an <{img}> in it which loads `https://social.example/profile-image`. In this case, the `social.example` {{Document}} |doc| is in a [=third party context=], and the cookie set previously might or might not be visible from |doc|`.`{{Document/cookie}}, depending on User Agent storage access policies.
 
-A script on `https://video.example/` could request access on behalf of `https://social.example` by calling |doc|`.`{{Document/requestStorageAccessForOrigin(origin)}} with {{USVString}} <var ignore>origin</var> as `https://social.example`.
+A script on `https://video.example/` could request access on behalf of `https://social.example` by calling |doc|`.`{{Document/requestStorageAccessForOrigin(requestedOrigin)}} with {{USVString}} <var ignore>requestedOrigin</var> as `https://social.example`.
 
 Note: the circumstances for use of the access have to be limited to those cases where the requested origin opts into sharing. More information is available in [[#privacy]] and [[#security]].
 
@@ -92,7 +91,7 @@ A {{Document}} is in a <dfn>third party context</dfn> if it is not in a [=first-
 
 <pre class="idl">
 partial interface Document {
-  Promise&lt;undefined> requestStorageAccessForOrigin(USVString origin);
+  Promise&lt;undefined> requestStorageAccessForOrigin(USVString requestedOrigin);
 };
 </pre>
 
@@ -212,7 +211,7 @@ The requestStorageAccessForOrigin API defines a [=powerful feature=] identified 
 
 <h2 id="fetch-integration">Fetch Integration</h2>
 
-The {{Document/requestStorageAccessForOrigin(origin)}} only directly affects cookie behavior on subresource requests made from top-level documents to the requested [=/origin=].
+The {{Document/requestStorageAccessForOrigin(requestedOrigin)}} only directly affects cookie behavior on subresource requests made from top-level documents to the requested [=/origin=].
 
 <div algorithm='cookie-blocking-modification'>
 In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
@@ -228,8 +227,8 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
 
-Note: even after a successful {{Document/requestStorageAccessForOrigin(origin)}} call, frames have to explicitly invoke [=requestStorageAccess=] for cookie access.
-This modification allows {{Document/requestStorageAccessForOrigin(origin)}} to allow resolution of [=requestStorageAccess=] calls similarly to a prior successful [=requestStorageAccess=] grant.
+Note: even after a successful {{Document/requestStorageAccessForOrigin(requestedOrigin)}} call, frames have to explicitly invoke {{Document/requestStorageAccess()}} for cookie access.
+This modification allows {{Document/requestStorageAccessForOrigin(requestedOrigin)}} to allow resolution of {{Document/requestStorageAccess()}} calls similarly to a prior successful {{Document/requestStorageAccess()}} grant.
 
 <div algorithm='storage-access-policy-modification'>
 Modify {{Document/requestStorageAccess()}} to insert the following steps before step 13.4 (i.e. before checking transient activation):
@@ -244,16 +243,16 @@ Modify {{Document/requestStorageAccess()}} to insert the following steps before 
 
 <h2 id="privacy">Privacy considerations</h2>
 
-Like the [[STORAGE-ACCESS]], {{Document/requestStorageAccessForOrigin(origin)}} is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.
+Like the [[STORAGE-ACCESS]], {{Document/requestStorageAccessForOrigin(requestedOrigin)}} is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.
 
 Note: many of the same considerations as in [[STORAGE-ACCESS#privacy]] apply. This section primarily covers the differences.
 
-[=requestStorageAccess=] requires interaction with an embedded document. By requiring interaction only with the top-level document, {{Document/requestStorageAccessForOrigin(origin)}} 
+{{Document/requestStorageAccess()}} requires interaction with an embedded document. By requiring interaction only with the top-level document, {{Document/requestStorageAccessForOrigin(requestedOrigin)}}
 lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction).
 [=Implementation-defined=] acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
 The prompts used have to be careful to indicate the direction of the request, such that the user is able to understand who is requesting access.
 
-As with [=requestStorageAccess=], the same tension between user consent and prompt fatigue exists with {{Document/requestStorageAccessForOrigin(origin)}}; much like the Storage Access API, 
+As with {{Document/requestStorageAccess()}}, the same tension between user consent and prompt fatigue exists with {{Document/requestStorageAccessForOrigin(requestedOrigin)}}; much like the Storage Access API,
 [=implementation-defined=] acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.
 
 Another difference is that queries for the permission can be more sensitive, depending on the context. Note that a frame has to be unable to request the state of either of:
@@ -264,14 +263,14 @@ In the former case, this would allow bogus domains (or combinations thereof) to 
 
 <h2 id="security">Security considerations</h2>
 
-It is important that {{Document/requestStorageAccessForOrigin(origin)}} not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies. 
+It is important that {{Document/requestStorageAccessForOrigin(requestedOrigin)}} not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies.
 Third-party cookie removal <a href="https://docs.google.com/document/d/1AsrETl-7XvnZNbG81Zy9BcZfKbqACQYBSrjM3VsIpjY/edit">has potential benefits for security</a>, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF.
-We do not wish {{Document/requestStorageAccessForOrigin(origin)}} to be a foothold for such attacks to leverage.
+We do not wish {{Document/requestStorageAccessForOrigin(requestedOrigin)}} to be a foothold for such attacks to leverage.
 
-Note: [[STORAGE-ACCESS#security]] properties hold for much of this proposal. Specifically, frame-level access is only granted once [=requestStorageAccess=] is successfully invoked.
-For frame access, {{Document/requestStorageAccessForOrigin(origin)}} merely simplifies the activation and prompting requirements.
+Note: [[STORAGE-ACCESS#security]] properties hold for much of this proposal. Specifically, frame-level access is only granted once {{Document/requestStorageAccess()}} is successfully invoked.
+For frame access, {{Document/requestStorageAccessForOrigin(requestedOrigin)}} merely simplifies the activation and prompting requirements.
 
-{{Document/requestStorageAccessForOrigin(origin)}} does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.
+{{Document/requestStorageAccessForOrigin(requestedOrigin)}} does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.
 
 <h3 id="subresources">Subresource Requests</h3>
 
