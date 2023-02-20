@@ -4,11 +4,10 @@
   <title>requestStorageAccessForOrigin API</title>
   <meta content="width=device-width" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 859efb4bd, updated Fri Jan 27 16:04:01 2023 -0800" name="generator">
+  <meta content="Bikeshed version f043d3484, updated Fri Feb 17 10:53:48 2023 -0800" name="generator">
   <link href="https://github.com/privacycg/requestStorageAccessForOrigin" rel="canonical">
-  <meta content="c4268eaf7f81627e82567ebcf417d7ef54dec43b" name="document-revision">
+  <meta content="0915b47d1ce71e5e29d300a0bc2bd80539b6b7c3" name="document-revision">
 <style>/* style-autolinks */
-
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
     font-size: inherit;
@@ -68,7 +67,8 @@ pre .property::before, pre .property::after {
 
 [data-link-type=biblio] {
     white-space: pre;
-}</style>
+}
+</style>
 <style>/* style-colors */
 
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
@@ -177,9 +177,9 @@ pre .property::before, pre .property::after {
     --outdated-shadow: red;
 
     --editedrec-bg: darkorange;
-}</style>
+}
+</style>
 <style>/* style-counters */
-
 body {
     counter-reset: example figure issue;
 }
@@ -206,9 +206,9 @@ figcaption {
 }
 figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
-}</style>
+}
+</style>
 <style>/* style-dfn-panel */
-
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
@@ -216,10 +216,10 @@ figcaption:not(.no-marker)::before {
 .dfn-panel {
     position: absolute;
     z-index: 35;
-    height: auto;
-    width: -webkit-fit-content;
-    width: fit-content;
+    width: 20em;
+    min-width: min-content;
     max-width: 300px;
+    height: auto;
     max-height: 500px;
     overflow: auto;
     padding: 0.5em 0.75em;
@@ -227,6 +227,7 @@ figcaption:not(.no-marker)::before {
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
 }
 .dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
@@ -249,7 +250,6 @@ figcaption:not(.no-marker)::before {
 .dfn-paneled { cursor: pointer; }
 </style>
 <style>/* style-issues */
-
 a[href].issue-return {
     float: right;
     float: inline-end;
@@ -259,7 +259,6 @@ a[href].issue-return {
 }
 </style>
 <style>/* style-md-lists */
-
 /* This is a weird hack for me not yet following the commonmark spec
    regarding paragraph and lists. */
 [data-md] > :first-child {
@@ -267,7 +266,8 @@ a[href].issue-return {
 }
 [data-md] > :last-child {
     margin-bottom: 0;
-}</style>
+}
+</style>
 <style>/* style-selflinks */
 
 :root {
@@ -515,6 +515,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
        which is quite common in practice... */
     img { background: white; }
 }
+
 @media (prefers-color-scheme: dark) {
     :root {
         --selflink-text: black;
@@ -529,6 +530,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
         --dfnpanel-text: var(--text);
     }
 }
+
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
 
@@ -596,7 +598,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <header>
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="no-ref" id="title">requestStorageAccessForOrigin API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-02-13">13 February 2023</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-02-20">20 February 2023</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -678,18 +680,18 @@ Learn more about <a href="http://www.w3.org/community/">W3C Community and Busine
     <p>Many User Agents prevent content from accessing non-<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site">same site</a> data stored in cookies.
 This can break embedded content which relies on having access to non-<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site①">same site</a> cookies.</p>
     <p>The requestStorageAccessForOrigin API enables developers to request access to non-<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site" id="ref-for-concept-site-same-site②">same site</a> cookies for embedded resources such as iframes, scripts, or images.
-It accomplishes this by specifying <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin">requestStorageAccessForOrigin(origin)</a></code>, which allows <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a>s to request access
+It accomplishes this by specifying <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin">requestStorageAccessForOrigin(requestedOrigin)</a></code>, which allows <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable">traversable navigable</a>s to request access
 to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin">origin</a>.</p>
    </section>
    <h2 class="heading settled" data-level="2" id="infra"><span class="secno">2. </span><span class="content">Infrastructure</span><a class="self-link" href="#infra"></a></h2>
    <p>This specification depends on the Infra standard. <a data-link-type="biblio" href="#biblio-infra" title="Infra Standard">[INFRA]</a></p>
    <h2 class="heading settled" data-level="3" id="the-rsa-for-api"><span class="secno">3. </span><span class="content">The requestStorageAccessForOrigin API</span><a class="self-link" href="#the-rsa-for-api"></a></h2>
-   <p>This specification defines a method that can be used to request access to <a data-link-type="dfn" href="#unpartitioned-data" id="ref-for-unpartitioned-data">unpartitioned data</a> on behalf of another <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a> (<code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①">requestStorageAccessForOrigin(origin)</a></code>).</p>
-   <div class="example" id="example-3dae0f9a">
-    <a class="self-link" href="#example-3dae0f9a"></a> 
+   <p>This specification defines a method that can be used to request access to <a data-link-type="dfn" href="#unpartitioned-data" id="ref-for-unpartitioned-data">unpartitioned data</a> on behalf of another <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a> (<code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①">requestStorageAccessForOrigin(requestedOrigin)</a></code>).</p>
+   <div class="example" id="example-71d75c0d">
+    <a class="self-link" href="#example-71d75c0d"></a> 
     <p>Alex visits <code>https://social.example/</code>. The page sets a cookie. This cookie has been set in a <a data-link-type="dfn" href="#first-party-site-context" id="ref-for-first-party-site-context">first-party-site context</a>.</p>
     <p>Later on, Alex visits <code>https://video.example/</code>, which has an <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element" id="ref-for-the-img-element">img</a></code> in it which loads <code>https://social.example/profile-image</code>. In this case, the <code>social.example</code> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> <var>doc</var> is in a <a data-link-type="dfn" href="#third-party-context" id="ref-for-third-party-context">third party context</a>, and the cookie set previously might or might not be visible from <var>doc</var><code>.</code><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie" id="ref-for-dom-document-cookie">cookie</a></code>, depending on User Agent storage access policies.</p>
-    <p>A script on <code>https://video.example/</code> could request access on behalf of <code>https://social.example</code> by calling <var>doc</var><code>.</code><code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin②">requestStorageAccessForOrigin(origin)</a></code> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString">USVString</a></code> <var>origin</var> as <code>https://social.example</code>.</p>
+    <p>A script on <code>https://video.example/</code> could request access on behalf of <code>https://social.example</code> by calling <var>doc</var><code>.</code><code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin②">requestStorageAccessForOrigin(requestedOrigin)</a></code> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString">USVString</a></code> <var>requestedOrigin</var> as <code>https://social.example</code>.</p>
     <p class="note" role="note"><span class="marker">Note:</span> the circumstances for use of the access have to be limited to those cases where the requested origin opts into sharing. More information is available in <a href="#privacy">§ 7 Privacy considerations</a> and <a href="#security">§ 8 Security considerations</a>.</p>
    </div>
    <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="unpartitioned-data">Unpartitioned data</dfn> is client-side storage that would be available to a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#site" id="ref-for-site">site</a> were it loaded in a <a data-link-type="dfn" href="#first-party-site-context" id="ref-for-first-party-site-context①">first-party-site context</a>.</p>
@@ -697,11 +699,11 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
    <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> is in a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="third-party-context">third party context</dfn> if it is not in a <a data-link-type="dfn" href="#first-party-site-context" id="ref-for-first-party-site-context③">first-party-site context</a>.</p>
    <h3 class="heading settled" data-level="3.1" id="the-document-object"><span class="secno">3.1. </span><span class="content">Changes to <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code></span><a class="self-link" href="#the-document-object"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④"><c- g>Document</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="requestStorageAccessForOrigin(origin)" id="dom-document-requeststorageaccessfororigin"><code><c- g>requestStorageAccessForOrigin</c-></code></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Document/requestStorageAccessForOrigin(origin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfororigin-origin-origin"><code><c- g>origin</c-></code><a class="self-link" href="#dom-document-requeststorageaccessfororigin-origin-origin"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin③"><c- g>requestStorageAccessForOrigin</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Document/requestStorageAccessForOrigin(requestedOrigin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfororigin-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code><a class="self-link" href="#dom-document-requeststorageaccessfororigin-requestedorigin-requestedorigin"></a></dfn>);
 };
 </pre>
    <div class="algorithm" data-algorithm="requestStorageAccessForOrigin(requestedOrigin)" data-algorithm-for="Document">
-     When invoked on <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> <var>doc</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②">USVString</a></code> <var>requestedOrigin</var>, the <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export id="dom-document-requeststorageaccessfororigin-requestedorigin"><code>requestStorageAccessForOrigin(requestedOrigin)</code><a class="self-link" href="#dom-document-requeststorageaccessfororigin-requestedorigin"></a></dfn> method must run these steps: 
+     When invoked on <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> <var>doc</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②">USVString</a></code> <var>requestedOrigin</var>, the <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export id="dom-document-requeststorageaccessfororigin"><code>requestStorageAccessForOrigin(requestedOrigin)</code></dfn> method must run these steps: 
     <ol>
      <li data-md>
       <p>Let <var>p</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
@@ -824,7 +826,9 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
       </ol>
      </div>
     <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key-type" id="ref-for-dfn-permission-key-type">permission key type</a>
-    <dd> A <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key" id="ref-for-dfn-permission-key">permission key</a> of the "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑤"><code>top-level-storage-access</code></a>" feature has the type <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#site" id="ref-for-site①">site</a>. 
+    <dd>
+      A <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key" id="ref-for-dfn-permission-key">permission key</a> of the "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑤"><code>top-level-storage-access</code></a>" feature has the type <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#site" id="ref-for-site①">site</a>. 
+     <p class="note" role="note"><span class="marker">Note:</span> the <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">requestedOrigin</a></code> field ensures that the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-store-entry" id="ref-for-dfn-permission-store-entry">permission store entry</a> is double-keyed.</p>
     <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm" id="ref-for-dfn-permission-key-generation-algorithm">permission key generation algorithm</a>
     <dd>
      <div class="algorithm" data-algorithm="top-level-storage-access-key-generation">
@@ -853,7 +857,7 @@ This depends on the invariant that <code>top-level-storage-access</code> permiss
      </div>
    </dl>
    <h2 class="heading settled" data-level="5" id="fetch-integration"><span class="secno">5. </span><span class="content">Fetch Integration</span><a class="self-link" href="#fetch-integration"></a></h2>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin③">requestStorageAccessForOrigin(origin)</a></code> only directly affects cookie behavior on subresource requests made from top-level documents to the requested <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin③">origin</a>.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin④">requestStorageAccessForOrigin(requestedOrigin)</a></code> only directly affects cookie behavior on subresource requests made from top-level documents to the requested <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin③">origin</a>.</p>
    <div class="algorithm" data-algorithm="cookie-blocking-modification">
      In <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-network-or-cache-fetch" id="ref-for-http-network-or-cache-fetch">http network or cache fetch</a>, when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked: 
     <ol>
@@ -874,8 +878,8 @@ This depends on the invariant that <code>top-level-storage-access</code> permiss
     </ol>
    </div>
    <h2 class="heading settled" data-level="6" id="storage-access-api-integration"><span class="secno">6. </span><span class="content">Storage Access API Integration</span><a class="self-link" href="#storage-access-api-integration"></a></h2>
-   <p class="note" role="note"><span class="marker">Note:</span> even after a successful <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin④">requestStorageAccessForOrigin(origin)</a></code> call, frames have to explicitly invoke <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess">requestStorageAccess</a> for cookie access.
-This modification allows <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑤">requestStorageAccessForOrigin(origin)</a></code> to allow resolution of <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess①">requestStorageAccess</a> calls similarly to a prior successful <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess②">requestStorageAccess</a> grant.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> even after a successful <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑤">requestStorageAccessForOrigin(requestedOrigin)</a></code> call, frames have to explicitly invoke <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess">requestStorageAccess()</a></code> for cookie access.
+This modification allows <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑥">requestStorageAccessForOrigin(requestedOrigin)</a></code> to allow resolution of <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess①">requestStorageAccess()</a></code> calls similarly to a prior successful <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess②">requestStorageAccess()</a></code> grant.</p>
    <div class="algorithm" data-algorithm="storage-access-policy-modification">
      Modify <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess③">requestStorageAccess()</a></code> to insert the following steps before step 13.4 (i.e. before checking transient activation): 
     <ol>
@@ -884,7 +888,7 @@ This modification allows <code class="idl"><a data-link-type="idl" href="#dom-do
      <li data-md>
       <p>Let <var>origin</var> be <var>settings</var>’ <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin③">origin</a>.</p>
      <li data-md>
-      <p>Let <var>descriptor</var> be a newly created <code class="idl"><a data-link-type="idl" href="#dictdef-toplevelstorageaccesspermissiondescriptor" id="ref-for-dictdef-toplevelstorageaccesspermissiondescriptor②">TopLevelStorageAccessPermissionDescriptor</a></code> with <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name②">name</a></code> set to "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑧"><code>top-level-storage-access</code></a>" and with <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">requestedOrigin</a></code> set to <var>origin</var>.</p>
+      <p>Let <var>descriptor</var> be a newly created <code class="idl"><a data-link-type="idl" href="#dictdef-toplevelstorageaccesspermissiondescriptor" id="ref-for-dictdef-toplevelstorageaccesspermissiondescriptor②">TopLevelStorageAccessPermissionDescriptor</a></code> with <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name②">name</a></code> set to "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access⑧"><code>top-level-storage-access</code></a>" and with <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin③">requestedOrigin</a></code> set to <var>origin</var>.</p>
      <li data-md>
       <p>If <var>descriptor</var>’s <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-state" id="ref-for-dfn-permission-state③">permission state</a> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-granted" id="ref-for-dfn-granted③">granted</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task⑤">queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source⑤">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var>, and return.</p>
      <li data-md>
@@ -892,11 +896,11 @@ This modification allows <code class="idl"><a data-link-type="idl" href="#dom-do
     </ol>
    </div>
    <h2 class="heading settled" data-level="7" id="privacy"><span class="secno">7. </span><span class="content">Privacy considerations</span><a class="self-link" href="#privacy"></a></h2>
-   <p>Like the <a data-link-type="biblio" href="#biblio-storage-access" title="Storage Access API">[STORAGE-ACCESS]</a>, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑥">requestStorageAccessForOrigin(origin)</a></code> is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.</p>
+   <p>Like the <a data-link-type="biblio" href="#biblio-storage-access" title="Storage Access API">[STORAGE-ACCESS]</a>, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑦">requestStorageAccessForOrigin(requestedOrigin)</a></code> is intended to enable removal of cross-site cookies. It enables developers to re-gain cross-site cookies with additional constraints.</p>
    <p class="note" role="note"><span class="marker">Note:</span> many of the same considerations as in <a href="https://privacycg.github.io/storage-access/#privacy"><cite>The Storage Access API</cite> § 6 Privacy considerations</a> apply. This section primarily covers the differences.</p>
-   <p><a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess④">requestStorageAccess</a> requires interaction with an embedded document. By requiring interaction only with the top-level document, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑦">requestStorageAccessForOrigin(origin)</a></code> lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction). <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">Implementation-defined</a> acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
+   <p><code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess④">requestStorageAccess()</a></code> requires interaction with an embedded document. By requiring interaction only with the top-level document, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑧">requestStorageAccessForOrigin(requestedOrigin)</a></code> lowers the bar for a potential prompt, though embedded documents can also be quite prominent (or use other techniques to get user interaction). <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">Implementation-defined</a> acceptance and rejection steps are intended to allow user agents to reject abusive requests based on logic they see fit.
 The prompts used have to be careful to indicate the direction of the request, such that the user is able to understand who is requesting access.</p>
-   <p>As with <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess⑤">requestStorageAccess</a>, the same tension between user consent and prompt fatigue exists with <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑧">requestStorageAccessForOrigin(origin)</a></code>; much like the Storage Access API, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined①">implementation-defined</a> acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.</p>
+   <p>As with <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess⑤">requestStorageAccess()</a></code>, the same tension between user consent and prompt fatigue exists with <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑨">requestStorageAccessForOrigin(requestedOrigin)</a></code>; much like the Storage Access API, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined①">implementation-defined</a> acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.</p>
    <p>Another difference is that queries for the permission can be more sensitive, depending on the context. Note that a frame has to be unable to request the state of either of:</p>
    <ul>
     <li data-md>
@@ -906,12 +910,12 @@ The prompts used have to be careful to indicate the direction of the request, su
    </ul>
    <p>In the former case, this would allow bogus domains (or combinations thereof) to be used as identifiers; in the latter case, it would reveal state under unrelated origins.</p>
    <h2 class="heading settled" data-level="8" id="security"><span class="secno">8. </span><span class="content">Security considerations</span><a class="self-link" href="#security"></a></h2>
-   <p>It is important that <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin⑨">requestStorageAccessForOrigin(origin)</a></code> not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies.
+   <p>It is important that <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①⓪">requestStorageAccessForOrigin(requestedOrigin)</a></code> not degrade security properties of the web platform, even when compared to post-removal of cross-site cookies.
 Third-party cookie removal <a href="https://docs.google.com/document/d/1AsrETl-7XvnZNbG81Zy9BcZfKbqACQYBSrjM3VsIpjY/edit">has potential benefits for security</a>, specifically in mitigating attacks that rely upon authenticated requests, e.g. CSRF.
-We do not wish <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①⓪">requestStorageAccessForOrigin(origin)</a></code> to be a foothold for such attacks to leverage.</p>
-   <p class="note" role="note"><span class="marker">Note:</span> <a href="https://privacycg.github.io/storage-access/#security"><cite>The Storage Access API</cite> § 7 Security considerations</a> properties hold for much of this proposal. Specifically, frame-level access is only granted once <a data-link-type="dfn" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess⑥">requestStorageAccess</a> is successfully invoked.
-For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①①">requestStorageAccessForOrigin(origin)</a></code> merely simplifies the activation and prompting requirements.</p>
-   <p><code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①②">requestStorageAccessForOrigin(origin)</a></code> does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.</p>
+We do not wish <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①①">requestStorageAccessForOrigin(requestedOrigin)</a></code> to be a foothold for such attacks to leverage.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> <a href="https://privacycg.github.io/storage-access/#security"><cite>The Storage Access API</cite> § 7 Security considerations</a> properties hold for much of this proposal. Specifically, frame-level access is only granted once <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess⑥">requestStorageAccess()</a></code> is successfully invoked.
+For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①②">requestStorageAccessForOrigin(requestedOrigin)</a></code> merely simplifies the activation and prompting requirements.</p>
+   <p><code class="idl"><a data-link-type="idl" href="#dom-document-requeststorageaccessfororigin" id="ref-for-dom-document-requeststorageaccessfororigin①③">requestStorageAccessForOrigin(requestedOrigin)</a></code> does expand the scope of concerns in two areas: subresource requests made by the top-level document and potential notification abuse.</p>
    <h3 class="heading settled" data-level="8.1" id="subresources"><span class="secno">8.1. </span><span class="content">Subresource Requests</span><a class="self-link" href="#subresources"></a></h3>
    <p>The specific security controls proposed by the API are:</p>
    <ul>
@@ -975,156 +979,155 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <li><a href="#determine-if-a-request-has-top-level-storage-access">determine if a request has top-level storage access</a><span>, in § 3.2</span>
    <li><a href="#first-party-site-context">first-party-site context</a><span>, in § 3</span>
    <li><a href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">requestedOrigin</a><span>, in § 4</span>
-   <li><a href="#dom-document-requeststorageaccessfororigin">requestStorageAccessForOrigin(origin)</a><span>, in § 3.1</span>
-   <li><a href="#dom-document-requeststorageaccessfororigin-requestedorigin">requestStorageAccessForOrigin(requestedOrigin)</a><span>, in § 3.1</span>
+   <li><a href="#dom-document-requeststorageaccessfororigin">requestStorageAccessForOrigin(requestedOrigin)</a><span>, in § 3.1</span>
    <li><a href="#third-party-context">third party context</a><span>, in § 3</span>
    <li><a href="#permissiondef-top-level-storage-access">top-level-storage-access</a><span>, in § 4</span>
    <li><a href="#dictdef-toplevelstorageaccesspermissiondescriptor">TopLevelStorageAccessPermissionDescriptor</a><span>, in § 4</span>
    <li><a href="#unpartitioned-data">Unpartitioned data</a><span>, in § 3</span>
   </ul>
-  <aside class="dfn-panel" data-for="term-for-document">
-   <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-07886e33695d0e7b473ef18f656ad7ac" class="dfn-panel" data-for="07886e33695d0e7b473ef18f656ad7ac" id="infopanel-for-07886e33695d0e7b473ef18f656ad7ac">
+   <span id="infopaneltitle-for-07886e33695d0e7b473ef18f656ad7ac" style="display:none">Info about the 'Document' external reference.</span><a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-document">3. The requestStorageAccessForOrigin API</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
     <li><a href="#ref-for-document③">3.1. Changes to Document</a> <a href="#ref-for-document④">(2)</a> <a href="#ref-for-document⑤">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document-origin">
-   <a href="https://dom.spec.whatwg.org/#concept-document-origin">https://dom.spec.whatwg.org/#concept-document-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9c5cdbb5c3dd225a70ea0af45a02c608" class="dfn-panel" data-for="9c5cdbb5c3dd225a70ea0af45a02c608" id="infopanel-for-9c5cdbb5c3dd225a70ea0af45a02c608">
+   <span id="infopaneltitle-for-9c5cdbb5c3dd225a70ea0af45a02c608" style="display:none">Info about the 'origin' external reference.</span><a href="https://dom.spec.whatwg.org/#concept-document-origin">https://dom.spec.whatwg.org/#concept-document-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document-origin">3.1. Changes to Document</a> <a href="#ref-for-concept-document-origin①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-http-access-control-allow-credentials">
-   <a href="https://fetch.spec.whatwg.org/#http-access-control-allow-credentials">https://fetch.spec.whatwg.org/#http-access-control-allow-credentials</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c95eca01532ba80a53e096fe3368501d" class="dfn-panel" data-for="c95eca01532ba80a53e096fe3368501d" id="infopanel-for-c95eca01532ba80a53e096fe3368501d">
+   <span id="infopaneltitle-for-c95eca01532ba80a53e096fe3368501d" style="display:none">Info about the 'access-control-allow-credentials' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-access-control-allow-credentials">https://fetch.spec.whatwg.org/#http-access-control-allow-credentials</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-access-control-allow-credentials">8.1. Subresource Requests</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-client">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-136f2700e84634abd2f3d42487ba7f41" class="dfn-panel" data-for="136f2700e84634abd2f3d42487ba7f41" id="infopanel-for-136f2700e84634abd2f3d42487ba7f41">
+   <span id="infopaneltitle-for-136f2700e84634abd2f3d42487ba7f41" style="display:none">Info about the 'client' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-client">3.2. User Agent top-level storage access policies</a>
     <li><a href="#ref-for-concept-request-client①">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-credentials-mode">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode">https://fetch.spec.whatwg.org/#concept-request-credentials-mode</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-28b697a3fde8f7519842ff0d1ae51f77" class="dfn-panel" data-for="28b697a3fde8f7519842ff0d1ae51f77" id="infopanel-for-28b697a3fde8f7519842ff0d1ae51f77">
+   <span id="infopaneltitle-for-28b697a3fde8f7519842ff0d1ae51f77" style="display:none">Info about the 'credentials mode' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-credentials-mode">https://fetch.spec.whatwg.org/#concept-request-credentials-mode</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-credentials-mode">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-http-network-or-cache-fetch">
-   <a href="https://fetch.spec.whatwg.org/#http-network-or-cache-fetch">https://fetch.spec.whatwg.org/#http-network-or-cache-fetch</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-31faf4a93cb5e3a5c6c24d0740dce3be" class="dfn-panel" data-for="31faf4a93cb5e3a5c6c24d0740dce3be" id="infopanel-for-31faf4a93cb5e3a5c6c24d0740dce3be">
+   <span id="infopaneltitle-for-31faf4a93cb5e3a5c6c24d0740dce3be" style="display:none">Info about the 'http network or cache fetch' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-network-or-cache-fetch">https://fetch.spec.whatwg.org/#http-network-or-cache-fetch</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-network-or-cache-fetch">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-mode">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-mode">https://fetch.spec.whatwg.org/#concept-request-mode</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-731849104592df0f69027b4122c950f6" class="dfn-panel" data-for="731849104592df0f69027b4122c950f6" id="infopanel-for-731849104592df0f69027b4122c950f6">
+   <span id="infopaneltitle-for-731849104592df0f69027b4122c950f6" style="display:none">Info about the 'mode' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-mode">https://fetch.spec.whatwg.org/#concept-request-mode</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-mode">5. Fetch Integration</a>
     <li><a href="#ref-for-concept-request-mode①">8.1. Subresource Requests</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-http-origin">
-   <a href="https://fetch.spec.whatwg.org/#http-origin">https://fetch.spec.whatwg.org/#http-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e72e329609567607510ee102a25fd5b4" class="dfn-panel" data-for="e72e329609567607510ee102a25fd5b4" id="infopanel-for-e72e329609567607510ee102a25fd5b4">
+   <span id="infopaneltitle-for-e72e329609567607510ee102a25fd5b4" style="display:none">Info about the 'origin' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-origin">https://fetch.spec.whatwg.org/#http-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-origin">8.1. Subresource Requests</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request">
-   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-491791562dd138987138e7051a96c07c" class="dfn-panel" data-for="491791562dd138987138e7051a96c07c" id="infopanel-for-491791562dd138987138e7051a96c07c">
+   <span id="infopaneltitle-for-491791562dd138987138e7051a96c07c" style="display:none">Info about the 'request' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request">3.2. User Agent top-level storage access policies</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-subresource-request">
-   <a href="https://fetch.spec.whatwg.org/#subresource-request">https://fetch.spec.whatwg.org/#subresource-request</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f4ed69327f3d25382050c1ca8bbc60b6" class="dfn-panel" data-for="f4ed69327f3d25382050c1ca8bbc60b6" id="infopanel-for-f4ed69327f3d25382050c1ca8bbc60b6">
+   <span id="infopaneltitle-for-f4ed69327f3d25382050c1ca8bbc60b6" style="display:none">Info about the 'subresource request' external reference.</span><a href="https://fetch.spec.whatwg.org/#subresource-request">https://fetch.spec.whatwg.org/#subresource-request</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-subresource-request">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-url">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-6f4775873c70787775f9c70f0f110709" class="dfn-panel" data-for="6f4775873c70787775f9c70f0f110709" id="infopanel-for-6f4775873c70787775f9c70f0f110709">
+   <span id="infopaneltitle-for-6f4775873c70787775f9c70f0f110709" style="display:none">Info about the 'url' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-request-url">3.2. User Agent top-level storage access policies</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-window">
-   <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" class="dfn-panel" data-for="d1f0a86fd49be388d8b0159e241a1172" id="infopanel-for-d1f0a86fd49be388d8b0159e241a1172">
+   <span id="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" style="display:none">Info about the 'Window' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window">3.1. Changes to Document</a> <a href="#ref-for-window①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-nav-document">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-de11cdc07a64c79878f1c3074e81554a" class="dfn-panel" data-for="de11cdc07a64c79878f1c3074e81554a" id="infopanel-for-de11cdc07a64c79878f1c3074e81554a">
+   <span id="infopaneltitle-for-de11cdc07a64c79878f1c3074e81554a" style="display:none">Info about the 'active document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document">https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-nav-document">3. The requestStorageAccessForOrigin API</a> <a href="#ref-for-nav-document①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document-window">
-   <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-04e6c32034490f45e4757ead7871de18" class="dfn-panel" data-for="04e6c32034490f45e4757ead7871de18" id="infopanel-for-04e6c32034490f45e4757ead7871de18">
+   <span id="infopaneltitle-for-04e6c32034490f45e4757ead7871de18" style="display:none">Info about the 'associated document' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document-window">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-consume-user-activation">
-   <a href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation">https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" class="dfn-panel" data-for="293dcd27f7228c1698581dc6518812f9" id="infopanel-for-293dcd27f7228c1698581dc6518812f9">
+   <span id="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" style="display:none">Info about the 'consume user activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation">https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-consume-user-activation">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-document-cookie">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie">https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-47cac6013aef2815a6f57a6a42eaafce" class="dfn-panel" data-for="47cac6013aef2815a6f57a6a42eaafce" id="infopanel-for-47cac6013aef2815a6f57a6a42eaafce">
+   <span id="infopaneltitle-for-47cac6013aef2815a6f57a6a42eaafce" style="display:none">Info about the 'cookie' external reference.</span><a href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie">https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-document-cookie">3. The requestStorageAccessForOrigin API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-environment-settings-object">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d815dc723d8b4fe4b1166e2013ec62b7" class="dfn-panel" data-for="d815dc723d8b4fe4b1166e2013ec62b7" id="infopanel-for-d815dc723d8b4fe4b1166e2013ec62b7">
+   <span id="infopaneltitle-for-d815dc723d8b4fe4b1166e2013ec62b7" style="display:none">Info about the 'environment settings object' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-environment-settings-object">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-fully-active">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active">https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-7594a09aa0c77c9e24726559a3a6da9d" class="dfn-panel" data-for="7594a09aa0c77c9e24726559a3a6da9d" id="infopanel-for-7594a09aa0c77c9e24726559a3a6da9d">
+   <span id="infopaneltitle-for-7594a09aa0c77c9e24726559a3a6da9d" style="display:none">Info about the 'fully active' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active">https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-fully-active">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-the-img-element">
-   <a href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element">https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-abfedd7f01779095e32057f505b061f5" class="dfn-panel" data-for="abfedd7f01779095e32057f505b061f5" id="infopanel-for-abfedd7f01779095e32057f505b061f5">
+   <span id="infopaneltitle-for-abfedd7f01779095e32057f505b061f5" style="display:none">Info about the 'img' external reference.</span><a href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element">https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-the-img-element">3. The requestStorageAccessForOrigin API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-in-parallel">
-   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-3a2763fcaa6bc82693554cf36780c0dd" class="dfn-panel" data-for="3a2763fcaa6bc82693554cf36780c0dd" id="infopanel-for-3a2763fcaa6bc82693554cf36780c0dd">
+   <span id="infopaneltitle-for-3a2763fcaa6bc82693554cf36780c0dd" style="display:none">Info about the 'in parallel' external reference.</span><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-in-parallel">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-node-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" class="dfn-panel" data-for="d5ad1e20f67eb03bd0608119efdd55f5" id="infopanel-for-d5ad1e20f67eb03bd0608119efdd55f5">
+   <span id="infopaneltitle-for-d5ad1e20f67eb03bd0608119efdd55f5" style="display:none">Info about the 'node navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-node-navigable">3.1. Changes to Document</a> <a href="#ref-for-node-navigable①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-obtain-a-site">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site">https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-27e69640e8fd1e1522b5ace8391212ba" class="dfn-panel" data-for="27e69640e8fd1e1522b5ace8391212ba" id="infopanel-for-27e69640e8fd1e1522b5ace8391212ba">
+   <span id="infopaneltitle-for-27e69640e8fd1e1522b5ace8391212ba" style="display:none">Info about the 'obtain a site' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site">https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-obtain-a-site">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-origin-opaque">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque">https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-23307d34220e7159f8e5d8c231db141f" class="dfn-panel" data-for="23307d34220e7159f8e5d8c231db141f" id="infopanel-for-23307d34220e7159f8e5d8c231db141f">
+   <span id="infopaneltitle-for-23307d34220e7159f8e5d8c231db141f" style="display:none">Info about the 'opaque origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque">https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-origin-opaque">3.1. Changes to Document</a> <a href="#ref-for-concept-origin-opaque①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-origin">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin">https://html.spec.whatwg.org/multipage/browsers.html#concept-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e66f9f7d45934e77669cb907bd0c7636" class="dfn-panel" data-for="e66f9f7d45934e77669cb907bd0c7636" id="infopanel-for-e66f9f7d45934e77669cb907bd0c7636">
+   <span id="infopaneltitle-for-e66f9f7d45934e77669cb907bd0c7636" style="display:none">Info about the 'origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin">https://html.spec.whatwg.org/multipage/browsers.html#concept-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-origin">1. Introduction</a>
     <li><a href="#ref-for-concept-origin①">3. The requestStorageAccessForOrigin API</a>
@@ -1132,31 +1135,31 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-concept-origin③">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-settings-object-origin">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-a95cc6f0be910557a60537e0256920b2" class="dfn-panel" data-for="a95cc6f0be910557a60537e0256920b2" id="infopanel-for-a95cc6f0be910557a60537e0256920b2">
+   <span id="infopaneltitle-for-a95cc6f0be910557a60537e0256920b2" style="display:none">Info about the 'origin (for environment settings object)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-settings-object-origin">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-concept-settings-object-origin①">4. Permissions Integration</a> <a href="#ref-for-concept-settings-object-origin②">(2)</a>
     <li><a href="#ref-for-concept-settings-object-origin③">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-queue-a-global-task">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-a8756513b792b8f203588906035a13bb" class="dfn-panel" data-for="a8756513b792b8f203588906035a13bb" id="infopanel-for-a8756513b792b8f203588906035a13bb">
+   <span id="infopaneltitle-for-a8756513b792b8f203588906035a13bb" style="display:none">Info about the 'queue a global task' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-queue-a-global-task">3.1. Changes to Document</a> <a href="#ref-for-queue-a-global-task①">(2)</a> <a href="#ref-for-queue-a-global-task②">(3)</a> <a href="#ref-for-queue-a-global-task③">(4)</a> <a href="#ref-for-queue-a-global-task④">(5)</a>
     <li><a href="#ref-for-queue-a-global-task⑤">6. Storage Access API Integration</a> <a href="#ref-for-queue-a-global-task⑥">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-relevant-global">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-2233058c8f0998915af8393ee2abbc1d" class="dfn-panel" data-for="2233058c8f0998915af8393ee2abbc1d" id="infopanel-for-2233058c8f0998915af8393ee2abbc1d">
+   <span id="infopaneltitle-for-2233058c8f0998915af8393ee2abbc1d" style="display:none">Info about the 'relevant global object' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-relevant-global">3.1. Changes to Document</a> <a href="#ref-for-concept-relevant-global①">(2)</a>
     <li><a href="#ref-for-concept-relevant-global②">3.2. User Agent top-level storage access policies</a>
     <li><a href="#ref-for-concept-relevant-global③">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-relevant-settings-object">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-bfb9cb6617f81a424ab20212af73bae3" class="dfn-panel" data-for="bfb9cb6617f81a424ab20212af73bae3" id="infopanel-for-bfb9cb6617f81a424ab20212af73bae3">
+   <span id="infopaneltitle-for-bfb9cb6617f81a424ab20212af73bae3" style="display:none">Info about the 'relevant settings object' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-relevant-settings-object">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-relevant-settings-object①">3.1. Changes to Document</a>
@@ -1164,54 +1167,54 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-relevant-settings-object③">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-same-origin">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin">https://html.spec.whatwg.org/multipage/browsers.html#same-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-3bd07dd1ec2f367091cfd0df47c118a5" class="dfn-panel" data-for="3bd07dd1ec2f367091cfd0df47c118a5" id="infopanel-for-3bd07dd1ec2f367091cfd0df47c118a5">
+   <span id="infopaneltitle-for-3bd07dd1ec2f367091cfd0df47c118a5" style="display:none">Info about the 'same origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin">https://html.spec.whatwg.org/multipage/browsers.html#same-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-same-origin">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-site-same-site">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site">https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-2d5fefde630d1aaf5a5a6d18417c70aa" class="dfn-panel" data-for="2d5fefde630d1aaf5a5a6d18417c70aa" id="infopanel-for-2d5fefde630d1aaf5a5a6d18417c70aa">
+   <span id="infopaneltitle-for-2d5fefde630d1aaf5a5a6d18417c70aa" style="display:none">Info about the 'same site' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site">https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-site-same-site">1. Introduction</a> <a href="#ref-for-concept-site-same-site①">(2)</a> <a href="#ref-for-concept-site-same-site②">(3)</a>
     <li><a href="#ref-for-concept-site-same-site③">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-concept-site-same-site④">4. Permissions Integration</a> <a href="#ref-for-concept-site-same-site⑤">(2)</a> <a href="#ref-for-concept-site-same-site⑥">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-secure-context">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context">https://html.spec.whatwg.org/multipage/webappapis.html#secure-context</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-613400696de3e8f8a5001430db03abe8" class="dfn-panel" data-for="613400696de3e8f8a5001430db03abe8" id="infopanel-for-613400696de3e8f8a5001430db03abe8">
+   <span id="infopaneltitle-for-613400696de3e8f8a5001430db03abe8" style="display:none">Info about the 'secure context' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context">https://html.spec.whatwg.org/multipage/webappapis.html#secure-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-secure-context">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-site">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#site">https://html.spec.whatwg.org/multipage/browsers.html#site</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f7e6800046257cc9fe726534da6b862b" class="dfn-panel" data-for="f7e6800046257cc9fe726534da6b862b" id="infopanel-for-f7e6800046257cc9fe726534da6b862b">
+   <span id="infopaneltitle-for-f7e6800046257cc9fe726534da6b862b" style="display:none">Info about the 'site' external reference.</span><a href="https://html.spec.whatwg.org/multipage/browsers.html#site">https://html.spec.whatwg.org/multipage/browsers.html#site</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-site">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-site①">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-top-level-browsing-context">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-c104b697744f6f246969dcc26b898f11" class="dfn-panel" data-for="c104b697744f6f246969dcc26b898f11" id="infopanel-for-c104b697744f6f246969dcc26b898f11">
+   <span id="infopaneltitle-for-c104b697744f6f246969dcc26b898f11" style="display:none">Info about the 'top-level browsing context' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-top-level-browsing-context">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-environment-top-level-origin">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fad46e4a016cd6e3ca0c81a3c004e4c3" class="dfn-panel" data-for="fad46e4a016cd6e3ca0c81a3c004e4c3" id="infopanel-for-fad46e4a016cd6e3ca0c81a3c004e4c3">
+   <span id="infopaneltitle-for-fad46e4a016cd6e3ca0c81a3c004e4c3" style="display:none">Info about the 'top-level origin' external reference.</span><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-environment-top-level-origin">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-concept-environment-top-level-origin①">4. Permissions Integration</a> <a href="#ref-for-concept-environment-top-level-origin②">(2)</a> <a href="#ref-for-concept-environment-top-level-origin③">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-transient-activation">
-   <a href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation">https://html.spec.whatwg.org/multipage/interaction.html#transient-activation</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-5b762d09d78e8674458b84982b3cb3c9" class="dfn-panel" data-for="5b762d09d78e8674458b84982b3cb3c9" id="infopanel-for-5b762d09d78e8674458b84982b3cb3c9">
+   <span id="infopaneltitle-for-5b762d09d78e8674458b84982b3cb3c9" style="display:none">Info about the 'transient activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation">https://html.spec.whatwg.org/multipage/interaction.html#transient-activation</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-transient-activation">3.1. Changes to Document</a> <a href="#ref-for-transient-activation①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-traversable-navigable">
-   <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" class="dfn-panel" data-for="9df064b89e8130a9d4cee056b2fdeb2f" id="infopanel-for-9df064b89e8130a9d4cee056b2fdeb2f">
+   <span id="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" style="display:none">Info about the 'traversable navigable' external reference.</span><a href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable">https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-traversable-navigable">1. Introduction</a>
     <li><a href="#ref-for-traversable-navigable①">3. The requestStorageAccessForOrigin API</a>
@@ -1219,35 +1222,35 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-traversable-navigable④">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-implementation-defined">
-   <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fd74d8159933c4a74d0b23390bed43e3" class="dfn-panel" data-for="fd74d8159933c4a74d0b23390bed43e3" id="infopanel-for-fd74d8159933c4a74d0b23390bed43e3">
+   <span id="infopaneltitle-for-fd74d8159933c4a74d0b23390bed43e3" style="display:none">Info about the 'implementation-defined' external reference.</span><a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-implementation-defined">7. Privacy considerations</a> <a href="#ref-for-implementation-defined①">(2)</a>
     <li><a href="#ref-for-implementation-defined②">8.2. Notification Abuse</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissiondescriptor">
-   <a href="https://w3c.github.io/permissions/#dom-permissiondescriptor">https://w3c.github.io/permissions/#dom-permissiondescriptor</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-43348714678be2dd068b6e59f237b20f" class="dfn-panel" data-for="43348714678be2dd068b6e59f237b20f" id="infopanel-for-43348714678be2dd068b6e59f237b20f">
+   <span id="infopaneltitle-for-43348714678be2dd068b6e59f237b20f" style="display:none">Info about the 'PermissionDescriptor' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissiondescriptor">https://w3c.github.io/permissions/#dom-permissiondescriptor</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissiondescriptor">4. Permissions Integration</a> <a href="#ref-for-dom-permissiondescriptor①">(2)</a> <a href="#ref-for-dom-permissiondescriptor②">(3)</a> <a href="#ref-for-dom-permissiondescriptor③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissionstatus">
-   <a href="https://w3c.github.io/permissions/#dom-permissionstatus">https://w3c.github.io/permissions/#dom-permissionstatus</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-765630ad06480a49b1773153409b6085" class="dfn-panel" data-for="765630ad06480a49b1773153409b6085" id="infopanel-for-765630ad06480a49b1773153409b6085">
+   <span id="infopaneltitle-for-765630ad06480a49b1773153409b6085" style="display:none">Info about the 'PermissionStatus' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissionstatus">https://w3c.github.io/permissions/#dom-permissionstatus</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissionstatus">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-denied">
-   <a href="https://w3c.github.io/permissions/#dfn-denied">https://w3c.github.io/permissions/#dfn-denied</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-051ae412f992e353615fc47e5159e3de" class="dfn-panel" data-for="051ae412f992e353615fc47e5159e3de" id="infopanel-for-051ae412f992e353615fc47e5159e3de">
+   <span id="infopaneltitle-for-051ae412f992e353615fc47e5159e3de" style="display:none">Info about the 'denied' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-denied">https://w3c.github.io/permissions/#dfn-denied</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-denied">3.1. Changes to Document</a>
     <li><a href="#ref-for-dfn-denied①">4. Permissions Integration</a> <a href="#ref-for-dfn-denied②">(2)</a>
     <li><a href="#ref-for-dfn-denied③">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-granted">
-   <a href="https://w3c.github.io/permissions/#dfn-granted">https://w3c.github.io/permissions/#dfn-granted</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-697f6a092b2d003a98fd492ec23942db" class="dfn-panel" data-for="697f6a092b2d003a98fd492ec23942db" id="infopanel-for-697f6a092b2d003a98fd492ec23942db">
+   <span id="infopaneltitle-for-697f6a092b2d003a98fd492ec23942db" style="display:none">Info about the 'granted' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-granted">https://w3c.github.io/permissions/#dfn-granted</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-granted">3.1. Changes to Document</a> <a href="#ref-for-dfn-granted①">(2)</a>
     <li><a href="#ref-for-dfn-granted②">3.2. User Agent top-level storage access policies</a>
@@ -1255,52 +1258,52 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-dfn-granted④">7. Privacy considerations</a> <a href="#ref-for-dfn-granted⑤">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissiondescriptor-name">
-   <a href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name">https://w3c.github.io/permissions/#dom-permissiondescriptor-name</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-ead23067700e8f952e9e56b02297f81d" class="dfn-panel" data-for="ead23067700e8f952e9e56b02297f81d" id="infopanel-for-ead23067700e8f952e9e56b02297f81d">
+   <span id="infopaneltitle-for-ead23067700e8f952e9e56b02297f81d" style="display:none">Info about the 'name (for PermissionDescriptor)' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name">https://w3c.github.io/permissions/#dom-permissiondescriptor-name</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissiondescriptor-name">3.1. Changes to Document</a>
     <li><a href="#ref-for-dom-permissiondescriptor-name①">3.2. User Agent top-level storage access policies</a>
     <li><a href="#ref-for-dom-permissiondescriptor-name②">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-name">
-   <a href="https://w3c.github.io/permissions/#dfn-name">https://w3c.github.io/permissions/#dfn-name</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-72b3319b6b09527dc28c520f687017f6" class="dfn-panel" data-for="72b3319b6b09527dc28c520f687017f6" id="infopanel-for-72b3319b6b09527dc28c520f687017f6">
+   <span id="infopaneltitle-for-72b3319b6b09527dc28c520f687017f6" style="display:none">Info about the 'name (for powerful feature)' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-name">https://w3c.github.io/permissions/#dfn-name</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-name">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-key">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-key">https://w3c.github.io/permissions/#dfn-permission-key</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-fbcb5ae7310f953d65cb9ae636968a9b" class="dfn-panel" data-for="fbcb5ae7310f953d65cb9ae636968a9b" id="infopanel-for-fbcb5ae7310f953d65cb9ae636968a9b">
+   <span id="infopaneltitle-for-fbcb5ae7310f953d65cb9ae636968a9b" style="display:none">Info about the 'permission key' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-key">https://w3c.github.io/permissions/#dfn-permission-key</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-key">4. Permissions Integration</a> <a href="#ref-for-dfn-permission-key①">(2)</a> <a href="#ref-for-dfn-permission-key②">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-key-comparison-algorithm">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm">https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-88f0d3e39c0bd193549cad006c6dec35" class="dfn-panel" data-for="88f0d3e39c0bd193549cad006c6dec35" id="infopanel-for-88f0d3e39c0bd193549cad006c6dec35">
+   <span id="infopaneltitle-for-88f0d3e39c0bd193549cad006c6dec35" style="display:none">Info about the 'permission key comparison algorithm' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm">https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-key-comparison-algorithm">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-key-generation-algorithm">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm">https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-81fceb9a9bd274a9697c0d406ca6ab51" class="dfn-panel" data-for="81fceb9a9bd274a9697c0d406ca6ab51" id="infopanel-for-81fceb9a9bd274a9697c0d406ca6ab51">
+   <span id="infopaneltitle-for-81fceb9a9bd274a9697c0d406ca6ab51" style="display:none">Info about the 'permission key generation algorithm' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm">https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-key-generation-algorithm">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-key-type">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-key-type">https://w3c.github.io/permissions/#dfn-permission-key-type</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-426da6446deb9f9bcaad1319a7aa6392" class="dfn-panel" data-for="426da6446deb9f9bcaad1319a7aa6392" id="infopanel-for-426da6446deb9f9bcaad1319a7aa6392">
+   <span id="infopaneltitle-for-426da6446deb9f9bcaad1319a7aa6392" style="display:none">Info about the 'permission key type' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-key-type">https://w3c.github.io/permissions/#dfn-permission-key-type</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-key-type">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-query-algorithm">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-query-algorithm">https://w3c.github.io/permissions/#dfn-permission-query-algorithm</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-45e4be68c2e45dae228854bea2090403" class="dfn-panel" data-for="45e4be68c2e45dae228854bea2090403" id="infopanel-for-45e4be68c2e45dae228854bea2090403">
+   <span id="infopaneltitle-for-45e4be68c2e45dae228854bea2090403" style="display:none">Info about the 'permission query algorithm' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-query-algorithm">https://w3c.github.io/permissions/#dfn-permission-query-algorithm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-query-algorithm">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-permission-state">
-   <a href="https://w3c.github.io/permissions/#dfn-permission-state">https://w3c.github.io/permissions/#dfn-permission-state</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-7e061092254567e08202b79a0f3450e7" class="dfn-panel" data-for="7e061092254567e08202b79a0f3450e7" id="infopanel-for-7e061092254567e08202b79a0f3450e7">
+   <span id="infopaneltitle-for-7e061092254567e08202b79a0f3450e7" style="display:none">Info about the 'permission state' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-state">https://w3c.github.io/permissions/#dfn-permission-state</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-permission-state">3.1. Changes to Document</a>
     <li><a href="#ref-for-dfn-permission-state①">3.2. User Agent top-level storage access policies</a>
@@ -1308,133 +1311,131 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-dfn-permission-state③">6. Storage Access API Integration</a> <a href="#ref-for-dfn-permission-state④">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-permissions-task-source">
-   <a href="https://w3c.github.io/permissions/#permissions-task-source">https://w3c.github.io/permissions/#permissions-task-source</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-23009417c11fcc1b42c8fd86132d7272" class="dfn-panel" data-for="23009417c11fcc1b42c8fd86132d7272" id="infopanel-for-23009417c11fcc1b42c8fd86132d7272">
+   <span id="infopaneltitle-for-23009417c11fcc1b42c8fd86132d7272" style="display:none">Info about the 'permission store entry' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-permission-store-entry">https://w3c.github.io/permissions/#dfn-permission-store-entry</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-permission-store-entry">4. Permissions Integration</a>
+   </ul>
+  </aside>
+  <aside aria-labelledby="infopaneltitle-for-073cfa170359aab618d74bf28b7be2ab" class="dfn-panel" data-for="073cfa170359aab618d74bf28b7be2ab" id="infopanel-for-073cfa170359aab618d74bf28b7be2ab">
+   <span id="infopaneltitle-for-073cfa170359aab618d74bf28b7be2ab" style="display:none">Info about the 'permissions task source' external reference.</span><a href="https://w3c.github.io/permissions/#permissions-task-source">https://w3c.github.io/permissions/#permissions-task-source</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-permissions-task-source">3.1. Changes to Document</a> <a href="#ref-for-permissions-task-source①">(2)</a> <a href="#ref-for-permissions-task-source②">(3)</a> <a href="#ref-for-permissions-task-source③">(4)</a> <a href="#ref-for-permissions-task-source④">(5)</a>
     <li><a href="#ref-for-permissions-task-source⑤">6. Storage Access API Integration</a> <a href="#ref-for-permissions-task-source⑥">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-powerful-feature">
-   <a href="https://w3c.github.io/permissions/#dfn-powerful-feature">https://w3c.github.io/permissions/#dfn-powerful-feature</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-502996c42f30b37f182905ef22fb89c0" class="dfn-panel" data-for="502996c42f30b37f182905ef22fb89c0" id="infopanel-for-502996c42f30b37f182905ef22fb89c0">
+   <span id="infopaneltitle-for-502996c42f30b37f182905ef22fb89c0" style="display:none">Info about the 'powerful feature' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-powerful-feature">https://w3c.github.io/permissions/#dfn-powerful-feature</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-powerful-feature">4. Permissions Integration</a> <a href="#ref-for-dfn-powerful-feature①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-prompt">
-   <a href="https://w3c.github.io/permissions/#dfn-prompt">https://w3c.github.io/permissions/#dfn-prompt</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f9d73dd21ada38b282d8a12fb959101d" class="dfn-panel" data-for="f9d73dd21ada38b282d8a12fb959101d" id="infopanel-for-f9d73dd21ada38b282d8a12fb959101d">
+   <span id="infopaneltitle-for-f9d73dd21ada38b282d8a12fb959101d" style="display:none">Info about the 'prompt' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-prompt">https://w3c.github.io/permissions/#dfn-prompt</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-prompt">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissions-query">
-   <a href="https://w3c.github.io/permissions/#dom-permissions-query">https://w3c.github.io/permissions/#dom-permissions-query</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-612ceeb18667e86690cafb91a6624f38" class="dfn-panel" data-for="612ceeb18667e86690cafb91a6624f38" id="infopanel-for-612ceeb18667e86690cafb91a6624f38">
+   <span id="infopaneltitle-for-612ceeb18667e86690cafb91a6624f38" style="display:none">Info about the 'query(permissionDesc)' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissions-query">https://w3c.github.io/permissions/#dom-permissions-query</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissions-query">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-request-permission-to-use">
-   <a href="https://w3c.github.io/permissions/#dfn-request-permission-to-use">https://w3c.github.io/permissions/#dfn-request-permission-to-use</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-7761fb406c4d8cdb685b810244d5e5a6" class="dfn-panel" data-for="7761fb406c4d8cdb685b810244d5e5a6" id="infopanel-for-7761fb406c4d8cdb685b810244d5e5a6">
+   <span id="infopaneltitle-for-7761fb406c4d8cdb685b810244d5e5a6" style="display:none">Info about the 'requesting permission to use' external reference.</span><a href="https://w3c.github.io/permissions/#dfn-request-permission-to-use">https://w3c.github.io/permissions/#dfn-request-permission-to-use</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-request-permission-to-use">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-permissionstatus-state">
-   <a href="https://w3c.github.io/permissions/#dom-permissionstatus-state">https://w3c.github.io/permissions/#dom-permissionstatus-state</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-b0d9608d74c0d38907af88ef8f961dbb" class="dfn-panel" data-for="b0d9608d74c0d38907af88ef8f961dbb" id="infopanel-for-b0d9608d74c0d38907af88ef8f961dbb">
+   <span id="infopaneltitle-for-b0d9608d74c0d38907af88ef8f961dbb" style="display:none">Info about the 'state' external reference.</span><a href="https://w3c.github.io/permissions/#dom-permissionstatus-state">https://w3c.github.io/permissions/#dom-permissionstatus-state</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-permissionstatus-state">4. Permissions Integration</a> <a href="#ref-for-dom-permissionstatus-state①">(2)</a> <a href="#ref-for-dom-permissionstatus-state②">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-document-requeststorageaccess">
-   <a href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess">https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-34f832b77e75095936c8a50644147995" class="dfn-panel" data-for="34f832b77e75095936c8a50644147995" id="infopanel-for-34f832b77e75095936c8a50644147995">
+   <span id="infopaneltitle-for-34f832b77e75095936c8a50644147995" style="display:none">Info about the 'requestStorageAccess()' external reference.</span><a href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess">https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-document-requeststorageaccess">6. Storage Access API Integration</a> <a href="#ref-for-dom-document-requeststorageaccess①">(2)</a> <a href="#ref-for-dom-document-requeststorageaccess②">(3)</a> <a href="#ref-for-dom-document-requeststorageaccess③">(4)</a>
     <li><a href="#ref-for-dom-document-requeststorageaccess④">7. Privacy considerations</a> <a href="#ref-for-dom-document-requeststorageaccess⑤">(2)</a>
     <li><a href="#ref-for-dom-document-requeststorageaccess⑥">8. Security considerations</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-document-requeststorageaccess">
-   <a href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess">https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-document-requeststorageaccess">6. Storage Access API Integration</a> <a href="#ref-for-dom-document-requeststorageaccess①">(2)</a> <a href="#ref-for-dom-document-requeststorageaccess②">(3)</a> <a href="#ref-for-dom-document-requeststorageaccess③">(4)</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccess④">7. Privacy considerations</a> <a href="#ref-for-dom-document-requeststorageaccess⑤">(2)</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccess⑥">8. Security considerations</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-url-origin">
-   <a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-eb0e1698348a5ae30cd3aa882b6dff01" class="dfn-panel" data-for="eb0e1698348a5ae30cd3aa882b6dff01" id="infopanel-for-eb0e1698348a5ae30cd3aa882b6dff01">
+   <span id="infopaneltitle-for-eb0e1698348a5ae30cd3aa882b6dff01" style="display:none">Info about the 'origin' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-url-origin">3.2. User Agent top-level storage access policies</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-url-parser">
-   <a href="https://url.spec.whatwg.org/#concept-url-parser">https://url.spec.whatwg.org/#concept-url-parser</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-07df417653faafb38ece7480f2c15a3e" class="dfn-panel" data-for="07df417653faafb38ece7480f2c15a3e" id="infopanel-for-07df417653faafb38ece7480f2c15a3e">
+   <span id="infopaneltitle-for-07df417653faafb38ece7480f2c15a3e" style="display:none">Info about the 'url parser' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-parser">https://url.spec.whatwg.org/#concept-url-parser</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-url-parser">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-DOMException">
-   <a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" class="dfn-panel" data-for="0ab204fb9cc9a746edaff83c0db0740a" id="infopanel-for-0ab204fb9cc9a746edaff83c0db0740a">
+   <span id="infopaneltitle-for-0ab204fb9cc9a746edaff83c0db0740a" style="display:none">Info about the 'DOMException' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-DOMException">https://webidl.spec.whatwg.org/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DOMException">3.1. Changes to Document</a> <a href="#ref-for-idl-DOMException①">(2)</a> <a href="#ref-for-idl-DOMException②">(3)</a> <a href="#ref-for-idl-DOMException③">(4)</a> <a href="#ref-for-idl-DOMException④">(5)</a> <a href="#ref-for-idl-DOMException⑤">(6)</a> <a href="#ref-for-idl-DOMException⑥">(7)</a> <a href="#ref-for-idl-DOMException⑦">(8)</a> <a href="#ref-for-idl-DOMException⑧">(9)</a>
     <li><a href="#ref-for-idl-DOMException⑨">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-invalidstateerror">
-   <a href="https://webidl.spec.whatwg.org/#invalidstateerror">https://webidl.spec.whatwg.org/#invalidstateerror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" class="dfn-panel" data-for="e2a06375a2fb70c61a8b4cd0abe9d4f1" id="infopanel-for-e2a06375a2fb70c61a8b4cd0abe9d4f1">
+   <span id="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" style="display:none">Info about the 'InvalidStateError' external reference.</span><a href="https://webidl.spec.whatwg.org/#invalidstateerror">https://webidl.spec.whatwg.org/#invalidstateerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-invalidstateerror">3.1. Changes to Document</a> <a href="#ref-for-invalidstateerror①">(2)</a> <a href="#ref-for-invalidstateerror②">(3)</a> <a href="#ref-for-invalidstateerror③">(4)</a> <a href="#ref-for-invalidstateerror④">(5)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-notallowederror">
-   <a href="https://webidl.spec.whatwg.org/#notallowederror">https://webidl.spec.whatwg.org/#notallowederror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-aa43258e2b51dc6ebe6268a36e6fd733" class="dfn-panel" data-for="aa43258e2b51dc6ebe6268a36e6fd733" id="infopanel-for-aa43258e2b51dc6ebe6268a36e6fd733">
+   <span id="infopaneltitle-for-aa43258e2b51dc6ebe6268a36e6fd733" style="display:none">Info about the 'NotAllowedError' external reference.</span><a href="https://webidl.spec.whatwg.org/#notallowederror">https://webidl.spec.whatwg.org/#notallowederror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-notallowederror">3.1. Changes to Document</a> <a href="#ref-for-notallowederror①">(2)</a> <a href="#ref-for-notallowederror②">(3)</a>
     <li><a href="#ref-for-notallowederror③">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-promise">
-   <a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c">
+   <span id="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" style="display:none">Info about the 'Promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-promise">https://webidl.spec.whatwg.org/#idl-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-promise">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
-   <a href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror">https://webidl.spec.whatwg.org/#exceptiondef-typeerror</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-3f9c3eac015894a734faa8068fd8c2a1" class="dfn-panel" data-for="3f9c3eac015894a734faa8068fd8c2a1" id="infopanel-for-3f9c3eac015894a734faa8068fd8c2a1">
+   <span id="infopaneltitle-for-3f9c3eac015894a734faa8068fd8c2a1" style="display:none">Info about the 'TypeError' external reference.</span><a href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror">https://webidl.spec.whatwg.org/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exceptiondef-typeerror">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-USVString">
-   <a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" class="dfn-panel" data-for="e270bcd7cdb4abe27bc3bb16a1975937" id="infopanel-for-e270bcd7cdb4abe27bc3bb16a1975937">
+   <span id="infopaneltitle-for-e270bcd7cdb4abe27bc3bb16a1975937" style="display:none">Info about the 'USVString' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-USVString">https://webidl.spec.whatwg.org/#idl-USVString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-USVString">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-idl-USVString①">3.1. Changes to Document</a> <a href="#ref-for-idl-USVString②">(2)</a>
     <li><a href="#ref-for-idl-USVString③">4. Permissions Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-a-new-promise">
-   <a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" class="dfn-panel" data-for="bbe33fc7ac016834e4aaddbfd1b084a1" id="infopanel-for-bbe33fc7ac016834e4aaddbfd1b084a1">
+   <span id="infopaneltitle-for-bbe33fc7ac016834e4aaddbfd1b084a1" style="display:none">Info about the 'a new promise' external reference.</span><a href="https://webidl.spec.whatwg.org/#a-new-promise">https://webidl.spec.whatwg.org/#a-new-promise</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-a-new-promise">3.1. Changes to Document</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-reject">
-   <a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" class="dfn-panel" data-for="f7204c0306e7ffcb24c31adf6e629e1d" id="infopanel-for-f7204c0306e7ffcb24c31adf6e629e1d">
+   <span id="infopaneltitle-for-f7204c0306e7ffcb24c31adf6e629e1d" style="display:none">Info about the 'reject' external reference.</span><a href="https://webidl.spec.whatwg.org/#reject">https://webidl.spec.whatwg.org/#reject</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-reject">3.1. Changes to Document</a> <a href="#ref-for-reject①">(2)</a> <a href="#ref-for-reject②">(3)</a> <a href="#ref-for-reject③">(4)</a> <a href="#ref-for-reject④">(5)</a> <a href="#ref-for-reject⑤">(6)</a> <a href="#ref-for-reject⑥">(7)</a> <a href="#ref-for-reject⑦">(8)</a> <a href="#ref-for-reject⑧">(9)</a>
     <li><a href="#ref-for-reject⑨">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-resolve">
-   <a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-f4f973f92274819781816b033aea1f11" class="dfn-panel" data-for="f4f973f92274819781816b033aea1f11" id="infopanel-for-f4f973f92274819781816b033aea1f11">
+   <span id="infopaneltitle-for-f4f973f92274819781816b033aea1f11" style="display:none">Info about the 'resolve' external reference.</span><a href="https://webidl.spec.whatwg.org/#resolve">https://webidl.spec.whatwg.org/#resolve</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-resolve">3.1. Changes to Document</a> <a href="#ref-for-resolve①">(2)</a> <a href="#ref-for-resolve②">(3)</a>
     <li><a href="#ref-for-resolve③">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-idl-undefined">
-   <a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" class="dfn-panel" data-for="cee863f1f2ec91066cfb7f5d309d59dc" id="infopanel-for-cee863f1f2ec91066cfb7f5d309d59dc">
+   <span id="infopaneltitle-for-cee863f1f2ec91066cfb7f5d309d59dc" style="display:none">Info about the 'undefined' external reference.</span><a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-undefined">3.1. Changes to Document</a>
    </ul>
@@ -1444,103 +1445,103 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-document">Document</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document-origin">origin</span>
+     <li><span class="dfn-paneled" id="07886e33695d0e7b473ef18f656ad7ac">Document</span>
+     <li><span class="dfn-paneled" id="9c5cdbb5c3dd225a70ea0af45a02c608">origin</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-http-access-control-allow-credentials">access-control-allow-credentials</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-client">client</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-credentials-mode">credentials mode</span>
-     <li><span class="dfn-paneled" id="term-for-http-network-or-cache-fetch">http network or cache fetch</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-mode">mode</span>
-     <li><span class="dfn-paneled" id="term-for-http-origin">origin</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
-     <li><span class="dfn-paneled" id="term-for-subresource-request">subresource request</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-url">url</span>
+     <li><span class="dfn-paneled" id="c95eca01532ba80a53e096fe3368501d">access-control-allow-credentials</span>
+     <li><span class="dfn-paneled" id="136f2700e84634abd2f3d42487ba7f41">client</span>
+     <li><span class="dfn-paneled" id="28b697a3fde8f7519842ff0d1ae51f77">credentials mode</span>
+     <li><span class="dfn-paneled" id="31faf4a93cb5e3a5c6c24d0740dce3be">http network or cache fetch</span>
+     <li><span class="dfn-paneled" id="731849104592df0f69027b4122c950f6">mode</span>
+     <li><span class="dfn-paneled" id="e72e329609567607510ee102a25fd5b4">origin</span>
+     <li><span class="dfn-paneled" id="491791562dd138987138e7051a96c07c">request</span>
+     <li><span class="dfn-paneled" id="f4ed69327f3d25382050c1ca8bbc60b6">subresource request</span>
+     <li><span class="dfn-paneled" id="6f4775873c70787775f9c70f0f110709">url</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-window">Window</span>
-     <li><span class="dfn-paneled" id="term-for-nav-document">active document</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document-window">associated document</span>
-     <li><span class="dfn-paneled" id="term-for-consume-user-activation">consume user activation</span>
-     <li><span class="dfn-paneled" id="term-for-dom-document-cookie">cookie</span>
-     <li><span class="dfn-paneled" id="term-for-environment-settings-object">environment settings object</span>
-     <li><span class="dfn-paneled" id="term-for-fully-active">fully active</span>
-     <li><span class="dfn-paneled" id="term-for-the-img-element">img</span>
-     <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
-     <li><span class="dfn-paneled" id="term-for-node-navigable">node navigable</span>
-     <li><span class="dfn-paneled" id="term-for-obtain-a-site">obtain a site</span>
-     <li><span class="dfn-paneled" id="term-for-concept-origin-opaque">opaque origin</span>
-     <li><span class="dfn-paneled" id="term-for-concept-origin">origin</span>
-     <li><span class="dfn-paneled" id="term-for-concept-settings-object-origin">origin <small>(for environment settings object)</small></span>
-     <li><span class="dfn-paneled" id="term-for-queue-a-global-task">queue a global task</span>
-     <li><span class="dfn-paneled" id="term-for-concept-relevant-global">relevant global object</span>
-     <li><span class="dfn-paneled" id="term-for-relevant-settings-object">relevant settings object</span>
-     <li><span class="dfn-paneled" id="term-for-same-origin">same origin</span>
-     <li><span class="dfn-paneled" id="term-for-concept-site-same-site">same site</span>
-     <li><span class="dfn-paneled" id="term-for-secure-context">secure context</span>
-     <li><span class="dfn-paneled" id="term-for-site">site</span>
-     <li><span class="dfn-paneled" id="term-for-top-level-browsing-context">top-level browsing context</span>
-     <li><span class="dfn-paneled" id="term-for-concept-environment-top-level-origin">top-level origin</span>
-     <li><span class="dfn-paneled" id="term-for-transient-activation">transient activation</span>
-     <li><span class="dfn-paneled" id="term-for-traversable-navigable">traversable navigable</span>
+     <li><span class="dfn-paneled" id="d1f0a86fd49be388d8b0159e241a1172">Window</span>
+     <li><span class="dfn-paneled" id="de11cdc07a64c79878f1c3074e81554a">active document</span>
+     <li><span class="dfn-paneled" id="04e6c32034490f45e4757ead7871de18">associated document</span>
+     <li><span class="dfn-paneled" id="293dcd27f7228c1698581dc6518812f9">consume user activation</span>
+     <li><span class="dfn-paneled" id="47cac6013aef2815a6f57a6a42eaafce">cookie</span>
+     <li><span class="dfn-paneled" id="d815dc723d8b4fe4b1166e2013ec62b7">environment settings object</span>
+     <li><span class="dfn-paneled" id="7594a09aa0c77c9e24726559a3a6da9d">fully active</span>
+     <li><span class="dfn-paneled" id="abfedd7f01779095e32057f505b061f5">img</span>
+     <li><span class="dfn-paneled" id="3a2763fcaa6bc82693554cf36780c0dd">in parallel</span>
+     <li><span class="dfn-paneled" id="d5ad1e20f67eb03bd0608119efdd55f5">node navigable</span>
+     <li><span class="dfn-paneled" id="27e69640e8fd1e1522b5ace8391212ba">obtain a site</span>
+     <li><span class="dfn-paneled" id="23307d34220e7159f8e5d8c231db141f">opaque origin</span>
+     <li><span class="dfn-paneled" id="e66f9f7d45934e77669cb907bd0c7636">origin</span>
+     <li><span class="dfn-paneled" id="a95cc6f0be910557a60537e0256920b2">origin <small>(for environment settings object)</small></span>
+     <li><span class="dfn-paneled" id="a8756513b792b8f203588906035a13bb">queue a global task</span>
+     <li><span class="dfn-paneled" id="2233058c8f0998915af8393ee2abbc1d">relevant global object</span>
+     <li><span class="dfn-paneled" id="bfb9cb6617f81a424ab20212af73bae3">relevant settings object</span>
+     <li><span class="dfn-paneled" id="3bd07dd1ec2f367091cfd0df47c118a5">same origin</span>
+     <li><span class="dfn-paneled" id="2d5fefde630d1aaf5a5a6d18417c70aa">same site</span>
+     <li><span class="dfn-paneled" id="613400696de3e8f8a5001430db03abe8">secure context</span>
+     <li><span class="dfn-paneled" id="f7e6800046257cc9fe726534da6b862b">site</span>
+     <li><span class="dfn-paneled" id="c104b697744f6f246969dcc26b898f11">top-level browsing context</span>
+     <li><span class="dfn-paneled" id="fad46e4a016cd6e3ca0c81a3c004e4c3">top-level origin</span>
+     <li><span class="dfn-paneled" id="5b762d09d78e8674458b84982b3cb3c9">transient activation</span>
+     <li><span class="dfn-paneled" id="9df064b89e8130a9d4cee056b2fdeb2f">traversable navigable</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-implementation-defined">implementation-defined</span>
+     <li><span class="dfn-paneled" id="fd74d8159933c4a74d0b23390bed43e3">implementation-defined</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PERMISSIONS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-permissiondescriptor">PermissionDescriptor</span>
-     <li><span class="dfn-paneled" id="term-for-dom-permissionstatus">PermissionStatus</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-denied">denied</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-granted">granted</span>
-     <li><span class="dfn-paneled" id="term-for-dom-permissiondescriptor-name">name <small>(for PermissionDescriptor)</small></span>
-     <li><span class="dfn-paneled" id="term-for-dfn-name">name <small>(for powerful feature)</small></span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-key">permission key</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-key-comparison-algorithm">permission key comparison algorithm</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-key-generation-algorithm">permission key generation algorithm</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-key-type">permission key type</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-query-algorithm">permission query algorithm</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-permission-state">permission state</span>
-     <li><span class="dfn-paneled" id="term-for-permissions-task-source">permissions task source</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-powerful-feature">powerful feature</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-prompt">prompt</span>
-     <li><span class="dfn-paneled" id="term-for-dom-permissions-query">query(permissionDesc)</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-request-permission-to-use">requesting permission to use</span>
-     <li><span class="dfn-paneled" id="term-for-dom-permissionstatus-state">state</span>
+     <li><span class="dfn-paneled" id="43348714678be2dd068b6e59f237b20f">PermissionDescriptor</span>
+     <li><span class="dfn-paneled" id="765630ad06480a49b1773153409b6085">PermissionStatus</span>
+     <li><span class="dfn-paneled" id="051ae412f992e353615fc47e5159e3de">denied</span>
+     <li><span class="dfn-paneled" id="697f6a092b2d003a98fd492ec23942db">granted</span>
+     <li><span class="dfn-paneled" id="ead23067700e8f952e9e56b02297f81d">name <small>(for PermissionDescriptor)</small></span>
+     <li><span class="dfn-paneled" id="72b3319b6b09527dc28c520f687017f6">name <small>(for powerful feature)</small></span>
+     <li><span class="dfn-paneled" id="fbcb5ae7310f953d65cb9ae636968a9b">permission key</span>
+     <li><span class="dfn-paneled" id="88f0d3e39c0bd193549cad006c6dec35">permission key comparison algorithm</span>
+     <li><span class="dfn-paneled" id="81fceb9a9bd274a9697c0d406ca6ab51">permission key generation algorithm</span>
+     <li><span class="dfn-paneled" id="426da6446deb9f9bcaad1319a7aa6392">permission key type</span>
+     <li><span class="dfn-paneled" id="45e4be68c2e45dae228854bea2090403">permission query algorithm</span>
+     <li><span class="dfn-paneled" id="7e061092254567e08202b79a0f3450e7">permission state</span>
+     <li><span class="dfn-paneled" id="23009417c11fcc1b42c8fd86132d7272">permission store entry</span>
+     <li><span class="dfn-paneled" id="073cfa170359aab618d74bf28b7be2ab">permissions task source</span>
+     <li><span class="dfn-paneled" id="502996c42f30b37f182905ef22fb89c0">powerful feature</span>
+     <li><span class="dfn-paneled" id="f9d73dd21ada38b282d8a12fb959101d">prompt</span>
+     <li><span class="dfn-paneled" id="612ceeb18667e86690cafb91a6624f38">query(permissionDesc)</span>
+     <li><span class="dfn-paneled" id="7761fb406c4d8cdb685b810244d5e5a6">requesting permission to use</span>
+     <li><span class="dfn-paneled" id="b0d9608d74c0d38907af88ef8f961dbb">state</span>
     </ul>
    <li>
     <a data-link-type="biblio">[STORAGE-ACCESS]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-document-requeststorageaccess">requestStorageAccess()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-document-requeststorageaccess①">requeststorageaccess</span>
+     <li><span class="dfn-paneled" id="34f832b77e75095936c8a50644147995">requestStorageAccess()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
-     <li><span class="dfn-paneled" id="term-for-concept-url-parser">url parser</span>
+     <li><span class="dfn-paneled" id="eb0e1698348a5ae30cd3aa882b6dff01">origin</span>
+     <li><span class="dfn-paneled" id="07df417653faafb38ece7480f2c15a3e">url parser</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-idl-DOMException">DOMException</span>
-     <li><span class="dfn-paneled" id="term-for-invalidstateerror">InvalidStateError</span>
-     <li><span class="dfn-paneled" id="term-for-notallowederror">NotAllowedError</span>
-     <li><span class="dfn-paneled" id="term-for-idl-promise">Promise</span>
-     <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror">TypeError</span>
-     <li><span class="dfn-paneled" id="term-for-idl-USVString">USVString</span>
-     <li><span class="dfn-paneled" id="term-for-a-new-promise">a new promise</span>
-     <li><span class="dfn-paneled" id="term-for-reject">reject</span>
-     <li><span class="dfn-paneled" id="term-for-resolve">resolve</span>
-     <li><span class="dfn-paneled" id="term-for-idl-undefined">undefined</span>
+     <li><span class="dfn-paneled" id="0ab204fb9cc9a746edaff83c0db0740a">DOMException</span>
+     <li><span class="dfn-paneled" id="e2a06375a2fb70c61a8b4cd0abe9d4f1">InvalidStateError</span>
+     <li><span class="dfn-paneled" id="aa43258e2b51dc6ebe6268a36e6fd733">NotAllowedError</span>
+     <li><span class="dfn-paneled" id="93669c631ec1ef8e696b4c083bdbe12c">Promise</span>
+     <li><span class="dfn-paneled" id="3f9c3eac015894a734faa8068fd8c2a1">TypeError</span>
+     <li><span class="dfn-paneled" id="e270bcd7cdb4abe27bc3bb16a1975937">USVString</span>
+     <li><span class="dfn-paneled" id="bbe33fc7ac016834e4aaddbfd1b084a1">a new promise</span>
+     <li><span class="dfn-paneled" id="f7204c0306e7ffcb24c31adf6e629e1d">reject</span>
+     <li><span class="dfn-paneled" id="f4f973f92274819781816b033aea1f11">resolve</span>
+     <li><span class="dfn-paneled" id="cee863f1f2ec91066cfb7f5d309d59dc">undefined</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1567,7 +1568,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a>> <a href="#dom-document-requeststorageaccessfororigin"><code><c- g>requestStorageAccessForOrigin</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a href="#dom-document-requeststorageaccessfororigin-origin-origin"><code><c- g>origin</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfororigin"><c- g>requestStorageAccessForOrigin</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a href="#dom-document-requeststorageaccessfororigin-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code></a>);
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></a> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor"><c- n>PermissionDescriptor</c-></a> {
@@ -1579,44 +1580,45 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <div style="counter-reset:issue">
    <div class="issue"> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessForOrigin/issues/15">[Issue #privacycg/requestStorageAccessForOrigin#15]</a> <a class="issue-return" href="#issue-9521f17b" title="Jump to section">↵</a></div>
   </div>
-  <aside class="dfn-panel" data-for="unpartitioned-data">
-   <b><a href="#unpartitioned-data">#unpartitioned-data</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-unpartitioned-data" class="dfn-panel" data-for="unpartitioned-data" id="infopanel-for-unpartitioned-data">
+   <span id="infopaneltitle-for-unpartitioned-data" style="display:none">Info about the 'Unpartitioned data' definition.</span><b><a href="#unpartitioned-data">#unpartitioned-data</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-unpartitioned-data">3. The requestStorageAccessForOrigin API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="first-party-site-context">
-   <b><a href="#first-party-site-context">#first-party-site-context</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-first-party-site-context" class="dfn-panel" data-for="first-party-site-context" id="infopanel-for-first-party-site-context">
+   <span id="infopaneltitle-for-first-party-site-context" style="display:none">Info about the 'first-party-site context' definition.</span><b><a href="#first-party-site-context">#first-party-site-context</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-first-party-site-context">3. The requestStorageAccessForOrigin API</a> <a href="#ref-for-first-party-site-context①">(2)</a> <a href="#ref-for-first-party-site-context②">(3)</a> <a href="#ref-for-first-party-site-context③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="third-party-context">
-   <b><a href="#third-party-context">#third-party-context</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-third-party-context" class="dfn-panel" data-for="third-party-context" id="infopanel-for-third-party-context">
+   <span id="infopaneltitle-for-third-party-context" style="display:none">Info about the 'third party context' definition.</span><b><a href="#third-party-context">#third-party-context</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-third-party-context">3. The requestStorageAccessForOrigin API</a>
     <li><a href="#ref-for-third-party-context①">8.1. Subresource Requests</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-document-requeststorageaccessfororigin">
-   <b><a href="#dom-document-requeststorageaccessfororigin">#dom-document-requeststorageaccessfororigin</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-document-requeststorageaccessfororigin" class="dfn-panel" data-for="dom-document-requeststorageaccessfororigin" id="infopanel-for-dom-document-requeststorageaccessfororigin">
+   <span id="infopaneltitle-for-dom-document-requeststorageaccessfororigin" style="display:none">Info about the 'requestStorageAccessForOrigin(requestedOrigin)' definition.</span><b><a href="#dom-document-requeststorageaccessfororigin">#dom-document-requeststorageaccessfororigin</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-document-requeststorageaccessfororigin">1. Introduction</a>
     <li><a href="#ref-for-dom-document-requeststorageaccessfororigin①">3. The requestStorageAccessForOrigin API</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin②">(2)</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin③">5. Fetch Integration</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin④">6. Storage Access API Integration</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑤">(2)</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin⑥">7. Privacy considerations</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑦">(2)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑧">(3)</a>
-    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin⑨">8. Security considerations</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①⓪">(2)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①①">(3)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①②">(4)</a>
+    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin③">3.1. Changes to Document</a>
+    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin④">5. Fetch Integration</a>
+    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin⑤">6. Storage Access API Integration</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑥">(2)</a>
+    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin⑦">7. Privacy considerations</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑧">(2)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin⑨">(3)</a>
+    <li><a href="#ref-for-dom-document-requeststorageaccessfororigin①⓪">8. Security considerations</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①①">(2)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①②">(3)</a> <a href="#ref-for-dom-document-requeststorageaccessfororigin①③">(4)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="determine-if-a-request-has-top-level-storage-access">
-   <b><a href="#determine-if-a-request-has-top-level-storage-access">#determine-if-a-request-has-top-level-storage-access</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-determine-if-a-request-has-top-level-storage-access" class="dfn-panel" data-for="determine-if-a-request-has-top-level-storage-access" id="infopanel-for-determine-if-a-request-has-top-level-storage-access">
+   <span id="infopaneltitle-for-determine-if-a-request-has-top-level-storage-access" style="display:none">Info about the 'determine if a request has top-level storage access' definition.</span><b><a href="#determine-if-a-request-has-top-level-storage-access">#determine-if-a-request-has-top-level-storage-access</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-determine-if-a-request-has-top-level-storage-access">5. Fetch Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="permissiondef-top-level-storage-access">
-   <b><a href="#permissiondef-top-level-storage-access">#permissiondef-top-level-storage-access</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-permissiondef-top-level-storage-access" class="dfn-panel" data-for="permissiondef-top-level-storage-access" id="infopanel-for-permissiondef-top-level-storage-access">
+   <span id="infopaneltitle-for-permissiondef-top-level-storage-access" style="display:none">Info about the 'top-level-storage-access' definition.</span><b><a href="#permissiondef-top-level-storage-access">#permissiondef-top-level-storage-access</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-permissiondef-top-level-storage-access">3.1. Changes to Document</a> <a href="#ref-for-permissiondef-top-level-storage-access①">(2)</a>
     <li><a href="#ref-for-permissiondef-top-level-storage-access②">3.2. User Agent top-level storage access policies</a>
@@ -1625,77 +1627,132 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li><a href="#ref-for-permissiondef-top-level-storage-access⑨">7. Privacy considerations</a> <a href="#ref-for-permissiondef-top-level-storage-access①⓪">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dictdef-toplevelstorageaccesspermissiondescriptor">
-   <b><a href="#dictdef-toplevelstorageaccesspermissiondescriptor">#dictdef-toplevelstorageaccesspermissiondescriptor</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dictdef-toplevelstorageaccesspermissiondescriptor" class="dfn-panel" data-for="dictdef-toplevelstorageaccesspermissiondescriptor" id="infopanel-for-dictdef-toplevelstorageaccesspermissiondescriptor">
+   <span id="infopaneltitle-for-dictdef-toplevelstorageaccesspermissiondescriptor" style="display:none">Info about the 'TopLevelStorageAccessPermissionDescriptor' definition.</span><b><a href="#dictdef-toplevelstorageaccesspermissiondescriptor">#dictdef-toplevelstorageaccesspermissiondescriptor</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dictdef-toplevelstorageaccesspermissiondescriptor">3.1. Changes to Document</a>
     <li><a href="#ref-for-dictdef-toplevelstorageaccesspermissiondescriptor①">3.2. User Agent top-level storage access policies</a>
     <li><a href="#ref-for-dictdef-toplevelstorageaccesspermissiondescriptor②">6. Storage Access API Integration</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">
-   <b><a href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin</a></b><b>Referenced in:</b>
+  <aside aria-labelledby="infopaneltitle-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" class="dfn-panel" data-for="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="infopanel-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">
+   <span id="infopaneltitle-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" style="display:none">Info about the 'requestedOrigin' definition.</span><b><a href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin">3.1. Changes to Document</a>
     <li><a href="#ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin①">3.2. User Agent top-level storage access policies</a>
-    <li><a href="#ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin②">4. Permissions Integration</a>
+    <li><a href="#ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin③">6. Storage Access API Integration</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
-
-document.body.addEventListener("click", function(e) {
-    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
-    // Find the dfn element or panel, if any, that was clicked on.
-    var el = e.target;
-    var target;
-    var hitALink = false;
-    while(el.parentElement) {
-        if(el.tagName == "A") {
-            // Clicking on a link in a <dfn> shouldn't summon the panel
-            hitALink = true;
-        }
-        if(el.classList.contains("dfn-paneled")) {
-            target = "dfn";
-            break;
-        }
-        if(el.classList.contains("dfn-panel")) {
-            target = "dfn-panel";
-            break;
-        }
-        el = el.parentElement;
+"use strict";
+{
+    function queryAll(sel) {
+        return [].slice.call(document.querySelectorAll(sel));
     }
-    if(target != "dfn-panel") {
+
+    // Add popup behavior to all dfns to show the corresponding dfn-panel.
+    var dfns = document.querySelectorAll('.dfn-paneled');
+    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+
+    function hideAllDfnPanels() {
         // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
-            el.classList.remove("on");
-            el.classList.remove("activated");
-        });
-    }
-    if(target == "dfn" && !hitALink) {
-        // open the panel
-        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
-        if(dfnPanel) {
-            dfnPanel.classList.add("on");
-            var rect = el.getBoundingClientRect();
-            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
-            dfnPanel.style.top = window.scrollY + rect.top + "px";
-            var panelRect = dfnPanel.getBoundingClientRect();
-            var panelWidth = panelRect.right - panelRect.left;
-            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
-                // Reposition, because the panel is overflowing
-                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
-            }
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
-        }
-    } else if(target == "dfn-panel") {
-        // Switch it to "activated" state, which pins it.
-        el.classList.add("activated");
-        el.style.left = null;
-        el.style.top = null;
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
     }
 
-});
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn) {
+        // Find dfn panel
+        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
+        if (dfnPanel) {
+            const panelWrapper = document.createElement('span');
+            panelWrapper.appendChild(dfnPanel);
+            panelWrapper.style.position = "relative";
+            panelWrapper.style.height = "0px";
+            dfn.insertAdjacentElement("afterend", panelWrapper);
+            dfn.setAttribute('role', 'button');
+            dfn.setAttribute('aria-expanded', 'false')
+            dfn.tabIndex = 0;
+            dfn.classList.add('has-dfn-panel');
+            dfn.addEventListener('click', (event) => {
+                showDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+            });
+            dfn.addEventListener('keypress', (event) => {
+                const kc = event.keyCode;
+                // 32->Space, 13->Enter
+                if(kc == 32 || kc == 13) {
+                    toggleDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            });
+
+            dfnPanel.addEventListener('click', (event) => {
+                pinDfnPanel(dfnPanel);
+                event.stopPropagation();
+            });
+
+            dfnPanel.addEventListener('keydown', (event) => {
+                if(event.keyCode == 27) { // Escape key
+                    hideDfnPanel(dfnPanel, dfn);
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+            })
+
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
+        }
+    }
+}
 </script>
 <script>/* script-var-click-highlighting */
 
