@@ -1,13 +1,13 @@
 01.  What information might this feature expose to Web sites or other parties,
      and for what purposes is that exposure necessary?
 
-The `requestStorageAccessForOrigin` API enables the removal of cross-site cookies. As such, the API provides a way for developers to re-gain access to cross-site cookies, albeit under further constraints.
+The `requestStorageAccessFor` API enables the removal of cross-site cookies. As such, the API provides a way for developers to re-gain access to cross-site cookies, albeit under further constraints.
 
-When the top-level document calls `document.requestStorageAccessForOrigin(origin)` and is returned a resolving Promise, there are two effects:
+When the top-level document calls `document.requestStorageAccessFor(origin)` and is returned a resolving Promise, there are two effects:
 
 * The top-level document begins to send `SameSite=None` cookies on subresource requests to `origin` when the request mode is CORS and credentials mode is `include`.
   * Note that a standard CORS response header is still required for the response to be readable.
-* A nested Document on `origin` is able to gain access to its `SameSite=None` cookies when it calls `document.requestStorageAccess()` to indicate explicit opt-in. The prior grant of `requestStorageAccessForOrigin` waives the user activation requirement.
+* A nested Document on `origin` is able to gain access to its `SameSite=None` cookies when it calls `document.requestStorageAccess()` to indicate explicit opt-in. The prior grant of `requestStorageAccessFor` waives the user activation requirement.
   * After this point, the same security rules as [the Storage Access API](https://github.com/privacycg/storage-access/blob/c4598484df6e77dc70a3d98499573ed44389f15e/tag-security-questionnaire.md) apply.
 
 While this functionality comes with a risk of abuse by third parties for tracking purposes, it is an explicit goal of the API and a key to its design to not undermine the gains of cross-site cookie deprecation. The CORS and explicit `requestStorageAccess` requirements are also intended to protect the embeddee's security.
