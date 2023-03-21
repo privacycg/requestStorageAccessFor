@@ -100,13 +100,13 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 
 1. Let |p| be [=a new promise=].
 1. If |doc| is not [=Document/fully active=], then [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
-1. If |doc|'s [=node navigable=] is not a [=traversable navigable=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
-1. If |doc|'s [=Document/origin=] is an [=opaque origin=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
+1. If |doc|'s [=node navigable=] is not a [=traversable navigable=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
+1. If |doc|'s [=Document/origin=] is an [=opaque origin=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=relevant global object=] is not a [=secure context=], then [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. Let |parsedURL| be the the result of running the [=URL parser=] on |requestedOrigin|.
 1. If |parsedURL| is failure, [=reject=] |p| with a "{{TypeError}}" {{DOMException}} and return |p|.
 1. Let |origin| be |parsedURL|'s [=/origin=].
-1. If |origin| is an [=opaque origin=], [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
+1. If |origin| is an [=opaque origin=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=Document/origin=] is [=same origin=] with |origin|, [=resolve=] and return |p|.
 1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
 1. Let |has activation| be true if |doc|'s {{Window}} object has [=transient activation=], and false otherwise.
@@ -118,11 +118,12 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
         1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
         1. Return.
     1. If |existing state| is [=permission/denied=]:
+        1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
         1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
         1. Return.
     1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
     1. If |has activation| is false:
-        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{InvalidStateError}}" {{DOMException}}.
+        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{NotAllowedError}}" {{DOMException}}.
         1. Return.
     1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
 
