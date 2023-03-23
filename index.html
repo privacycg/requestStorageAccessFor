@@ -4,9 +4,9 @@
   <title>requestStorageAccessFor API</title>
   <meta content="width=device-width" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d9f9c3533, updated Fri Mar 10 11:31:29 2023 -0800" name="generator">
+  <meta content="Bikeshed version 74068a90b, updated Wed Mar 22 17:34:51 2023 -0700" name="generator">
   <link href="https://github.com/privacycg/requestStorageAccessForOrigin" rel="canonical">
-  <meta content="917ea2b9535ea1eb4abf8070ebcea4ec0e58061b" name="document-revision">
+  <meta content="39f323de943ba29c4b58ba23e8d14cc940cf40a2" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -598,13 +598,13 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <header>
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="no-ref" id="title">requestStorageAccessFor API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-03-17">17 March 2023</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-03-23">23 March 2023</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
      <dd><a class="u-url" href="https://github.com/privacycg/requestStorageAccessForOrigin">https://github.com/privacycg/requestStorageAccessForOrigin</a>
      <dt>Issue Tracking:
-     <dd><a href="https://github.com/privacycg/requestStorageAccessForOrigin/issues/">GitHub</a>
+     <dd><a href="https://github.com/privacycg/requestStorageAccessFor/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard" data-editor-id="138889"><a class="p-name fn u-email email" href="mailto:mreichhoff@google.com">Matt Reichhoff</a> (<a class="p-org org" href="https://google.com">Google</a>)
@@ -700,8 +700,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
    <h3 class="heading settled" data-level="3.1" id="the-document-object"><span class="secno">3.1. </span><span class="content">Changes to <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code></span><a class="self-link" href="#the-document-object"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④"><c- g>Document</c-></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor" id="ref-for-dom-document-requeststorageaccessfor③"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Document/requestStorageAccessFor(requestedOrigin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code><a class="self-link" href="#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"></a></dfn>);
-};
-</pre>
+};</pre>
    <div class="algorithm" data-algorithm="requestStorageAccessFor(requestedOrigin)" data-algorithm-for="Document">
      When invoked on <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> <var>doc</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②">USVString</a></code> <var>requestedOrigin</var>, the <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export id="dom-document-requeststorageaccessfor"><code>requestStorageAccessFor(requestedOrigin)</code></dfn> method must run these steps: 
     <ol>
@@ -710,11 +709,11 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
      <li data-md>
       <p>If <var>doc</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code> and return <var>p</var>.</p>
      <li data-md>
-      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable navigable</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror①">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> and return <var>p</var>.</p>
+      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable②">traversable navigable</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> and return <var>p</var>.</p>
      <li data-md>
-      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror②">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code> and return <var>p</var>.</p>
+      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror①">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code> and return <var>p</var>.</p>
      <li data-md>
-      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code> and return <var>p</var>.</p>
+      <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject③">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror②">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code> and return <var>p</var>.</p>
      <li data-md>
       <p>Let <var>parsedURL</var> be the the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-parser" id="ref-for-concept-url-parser">URL parser</a> on <var>requestedOrigin</var>.</p>
      <li data-md>
@@ -722,7 +721,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
      <li data-md>
       <p>Let <var>origin</var> be <var>parsedURL</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin②">origin</a>.</p>
      <li data-md>
-      <p>If <var>origin</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque" id="ref-for-concept-origin-opaque①">opaque origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror③">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑤">DOMException</a></code> and return <var>p</var>.</p>
+      <p>If <var>origin</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque" id="ref-for-concept-origin-opaque①">opaque origin</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">reject</a> <var>p</var> with an "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror③">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑤">DOMException</a></code> and return <var>p</var>.</p>
      <li data-md>
       <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin①">origin</a> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin">same origin</a> with <var>origin</var>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">resolve</a> and return <var>p</var>.</p>
      <li data-md>
@@ -750,7 +749,9 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
         <p>If <var>existing state</var> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-denied" id="ref-for-dfn-denied">denied</a>:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task①">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source①">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror①">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑥">DOMException</a></code>.</p>
+          <p>If <var>doc</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①">Window</a></code> object has <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation" id="ref-for-consume-user-activation">consume user activation</a> with it.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task①">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source①">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror④">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑥">DOMException</a></code>.</p>
          <li data-md>
           <p>Return.</p>
         </ol>
@@ -760,7 +761,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
         <p>If <var>has activation</var> is false:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task②">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source②">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑦">reject</a> <var>p</var> with a n "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#invalidstateerror" id="ref-for-invalidstateerror④">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑦">DOMException</a></code>.</p>
+          <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task②">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source②">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑦">reject</a> <var>p</var> with a n "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror⑤">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑦">DOMException</a></code>.</p>
          <li data-md>
           <p>Return.</p>
         </ol>
@@ -776,9 +777,9 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
           <p>Return.</p>
         </ol>
        <li data-md>
-        <p>If <var>doc</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①">Window</a></code> object has <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation" id="ref-for-consume-user-activation">consume user activation</a> with it.</p>
+        <p>If <var>doc</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window②">Window</a></code> object has <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation②">transient activation</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation" id="ref-for-consume-user-activation①">consume user activation</a> with it.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task④">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source④">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑧">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror②">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑧">DOMException</a></code>.</p>
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task④">Queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source④">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑧">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror⑥">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑧">DOMException</a></code>.</p>
       </ol>
      <li data-md>
       <p>Return <var>p</var>.</p>
@@ -811,8 +812,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
       The "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access③"><code>top-level-storage-access</code></a>" <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-powerful-feature" id="ref-for-dfn-powerful-feature①">powerful feature</a> defines a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor①">PermissionDescriptor</a></code> as follows: 
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></dfn> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor②"><c- n>PermissionDescriptor</c-></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;&quot;" data-dfn-for="TopLevelStorageAccessPermissionDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></dfn> = "";
-};
-</pre>
+};</pre>
     <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-query-algorithm" id="ref-for-dfn-permission-query-algorithm">permission query algorithm</a>
     <dd>
      <div class="algorithm" data-algorithm="top-level-storage-access-query">
@@ -892,7 +892,7 @@ This modification allows <code class="idl"><a data-link-type="idl" href="#dom-do
      <li data-md>
       <p>If <var>descriptor</var>’s <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-state" id="ref-for-dfn-permission-state③">permission state</a> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-granted" id="ref-for-dfn-granted③">granted</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task⑤">queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source⑤">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve③">resolve</a> <var>p</var>, and return.</p>
      <li data-md>
-      <p>If <var>descriptor</var>’s <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-state" id="ref-for-dfn-permission-state④">permission state</a> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-denied" id="ref-for-dfn-denied③">denied</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task⑥">queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source⑥">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑨">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror③">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑨">DOMException</a></code>, and return.</p>
+      <p>If <var>descriptor</var>’s <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-state" id="ref-for-dfn-permission-state④">permission state</a> is <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-denied" id="ref-for-dfn-denied③">denied</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task⑥">queue a global task</a> on the <a data-link-type="dfn" href="https://w3c.github.io/permissions/#permissions-task-source" id="ref-for-permissions-task-source⑥">permissions task source</a> given <var>global</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑨">reject</a> <var>p</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notallowederror" id="ref-for-notallowederror⑦">NotAllowedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException⑨">DOMException</a></code>, and return.</p>
     </ol>
    </div>
    <h2 class="heading settled" data-level="7" id="privacy"><span class="secno">7. </span><span class="content">Privacy considerations</span><a class="self-link" href="#privacy"></a></h2>
@@ -1057,7 +1057,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <aside aria-labelledby="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" class="dfn-panel" data-for="d1f0a86fd49be388d8b0159e241a1172" id="infopanel-for-d1f0a86fd49be388d8b0159e241a1172">
    <span id="infopaneltitle-for-d1f0a86fd49be388d8b0159e241a1172" style="display:none">Info about the 'Window' external reference.</span><a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window">https://html.spec.whatwg.org/multipage/nav-history-apis.html#window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window">3.1. Changes to Document</a> <a href="#ref-for-window①">(2)</a>
+    <li><a href="#ref-for-window">3.1. Changes to Document</a> <a href="#ref-for-window①">(2)</a> <a href="#ref-for-window②">(3)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-de11cdc07a64c79878f1c3074e81554a" class="dfn-panel" data-for="de11cdc07a64c79878f1c3074e81554a" id="infopanel-for-de11cdc07a64c79878f1c3074e81554a">
@@ -1075,7 +1075,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <aside aria-labelledby="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" class="dfn-panel" data-for="293dcd27f7228c1698581dc6518812f9" id="infopanel-for-293dcd27f7228c1698581dc6518812f9">
    <span id="infopaneltitle-for-293dcd27f7228c1698581dc6518812f9" style="display:none">Info about the 'consume user activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation">https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-consume-user-activation">3.1. Changes to Document</a>
+    <li><a href="#ref-for-consume-user-activation">3.1. Changes to Document</a> <a href="#ref-for-consume-user-activation①">(2)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-47cac6013aef2815a6f57a6a42eaafce" class="dfn-panel" data-for="47cac6013aef2815a6f57a6a42eaafce" id="infopanel-for-47cac6013aef2815a6f57a6a42eaafce">
@@ -1210,7 +1210,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <aside aria-labelledby="infopaneltitle-for-5b762d09d78e8674458b84982b3cb3c9" class="dfn-panel" data-for="5b762d09d78e8674458b84982b3cb3c9" id="infopanel-for-5b762d09d78e8674458b84982b3cb3c9">
    <span id="infopaneltitle-for-5b762d09d78e8674458b84982b3cb3c9" style="display:none">Info about the 'transient activation' external reference.</span><a href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation">https://html.spec.whatwg.org/multipage/interaction.html#transient-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-transient-activation">3.1. Changes to Document</a> <a href="#ref-for-transient-activation①">(2)</a>
+    <li><a href="#ref-for-transient-activation">3.1. Changes to Document</a> <a href="#ref-for-transient-activation①">(2)</a> <a href="#ref-for-transient-activation②">(3)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-9df064b89e8130a9d4cee056b2fdeb2f" class="dfn-panel" data-for="9df064b89e8130a9d4cee056b2fdeb2f" id="infopanel-for-9df064b89e8130a9d4cee056b2fdeb2f">
@@ -1384,14 +1384,14 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
   <aside aria-labelledby="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" class="dfn-panel" data-for="e2a06375a2fb70c61a8b4cd0abe9d4f1" id="infopanel-for-e2a06375a2fb70c61a8b4cd0abe9d4f1">
    <span id="infopaneltitle-for-e2a06375a2fb70c61a8b4cd0abe9d4f1" style="display:none">Info about the 'InvalidStateError' external reference.</span><a href="https://webidl.spec.whatwg.org/#invalidstateerror">https://webidl.spec.whatwg.org/#invalidstateerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-invalidstateerror">3.1. Changes to Document</a> <a href="#ref-for-invalidstateerror①">(2)</a> <a href="#ref-for-invalidstateerror②">(3)</a> <a href="#ref-for-invalidstateerror③">(4)</a> <a href="#ref-for-invalidstateerror④">(5)</a>
+    <li><a href="#ref-for-invalidstateerror">3.1. Changes to Document</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-aa43258e2b51dc6ebe6268a36e6fd733" class="dfn-panel" data-for="aa43258e2b51dc6ebe6268a36e6fd733" id="infopanel-for-aa43258e2b51dc6ebe6268a36e6fd733">
    <span id="infopaneltitle-for-aa43258e2b51dc6ebe6268a36e6fd733" style="display:none">Info about the 'NotAllowedError' external reference.</span><a href="https://webidl.spec.whatwg.org/#notallowederror">https://webidl.spec.whatwg.org/#notallowederror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-notallowederror">3.1. Changes to Document</a> <a href="#ref-for-notallowederror①">(2)</a> <a href="#ref-for-notallowederror②">(3)</a>
-    <li><a href="#ref-for-notallowederror③">6. Storage Access API Integration</a>
+    <li><a href="#ref-for-notallowederror">3.1. Changes to Document</a> <a href="#ref-for-notallowederror①">(2)</a> <a href="#ref-for-notallowederror②">(3)</a> <a href="#ref-for-notallowederror③">(4)</a> <a href="#ref-for-notallowederror④">(5)</a> <a href="#ref-for-notallowederror⑤">(6)</a> <a href="#ref-for-notallowederror⑥">(7)</a>
+    <li><a href="#ref-for-notallowederror⑦">6. Storage Access API Integration</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-93669c631ec1ef8e696b4c083bdbe12c" class="dfn-panel" data-for="93669c631ec1ef8e696b4c083bdbe12c" id="infopanel-for-93669c631ec1ef8e696b4c083bdbe12c">
@@ -1570,11 +1570,9 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a href="#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code></a>);
 };
-
 <c- b>dictionary</c-> <a href="#dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></a> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor"><c- n>PermissionDescriptor</c-></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-default="&quot;&quot;" data-type="USVString " href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></a> = "";
 };
-
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
