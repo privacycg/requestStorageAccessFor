@@ -4,9 +4,9 @@
   <title>requestStorageAccessFor API</title>
   <meta content="width=device-width" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 74068a90b, updated Wed Mar 22 17:34:51 2023 -0700" name="generator">
-  <link href="https://github.com/privacycg/requestStorageAccessForOrigin" rel="canonical">
-  <meta content="39f323de943ba29c4b58ba23e8d14cc940cf40a2" name="document-revision">
+  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
+  <link href="https://github.com/privacycg/requestStorageAccessFor" rel="canonical">
+  <meta content="29f735dd09dace3a529c20d1156da358addc3af8" name="document-revision">
 <style>/* style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -598,11 +598,11 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <header>
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="no-ref" id="title">requestStorageAccessFor API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-03-23">23 March 2023</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2023-03-29">29 March 2023</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://github.com/privacycg/requestStorageAccessForOrigin">https://github.com/privacycg/requestStorageAccessForOrigin</a>
+     <dd><a class="u-url" href="https://github.com/privacycg/requestStorageAccessFor">https://github.com/privacycg/requestStorageAccessFor</a>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/privacycg/requestStorageAccessFor/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
@@ -700,7 +700,8 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
    <h3 class="heading settled" data-level="3.1" id="the-document-object"><span class="secno">3.1. </span><span class="content">Changes to <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code></span><a class="self-link" href="#the-document-object"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④"><c- g>Document</c-></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor" id="ref-for-dom-document-requeststorageaccessfor③"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Document/requestStorageAccessFor(requestedOrigin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code><a class="self-link" href="#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"></a></dfn>);
-};</pre>
+};
+</pre>
    <div class="algorithm" data-algorithm="requestStorageAccessFor(requestedOrigin)" data-algorithm-for="Document">
      When invoked on <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> <var>doc</var> with <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②">USVString</a></code> <var>requestedOrigin</var>, the <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export id="dom-document-requeststorageaccessfor"><code>requestStorageAccessFor(requestedOrigin)</code></dfn> method must run these steps: 
     <ol>
@@ -784,7 +785,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
-    <p class="issue" id="issue-9521f17b"><a class="self-link" href="#issue-9521f17b"></a> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessForOrigin/issues/15">[Issue #privacycg/requestStorageAccessForOrigin#15]</a></p>
+    <p class="issue" id="issue-9521f17b"><a class="self-link" href="#issue-9521f17b"></a> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[Issue #privacycg/requestStorageAccessFor#15]</a></p>
    </div>
    <h3 class="heading settled" data-level="3.2" id="ua-policies"><span class="secno">3.2. </span><span class="content">User Agent top-level storage access policies</span><a class="self-link" href="#ua-policies"></a></h3>
    <div class="algorithm" data-algorithm="determine if a request has top-level storage access">
@@ -812,7 +813,8 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
       The "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access③"><code>top-level-storage-access</code></a>" <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-powerful-feature" id="ref-for-dfn-powerful-feature①">powerful feature</a> defines a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor①">PermissionDescriptor</a></code> as follows: 
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></dfn> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor②"><c- n>PermissionDescriptor</c-></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;&quot;" data-dfn-for="TopLevelStorageAccessPermissionDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></dfn> = "";
-};</pre>
+};
+</pre>
     <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-query-algorithm" id="ref-for-dfn-permission-query-algorithm">permission query algorithm</a>
     <dd>
      <div class="algorithm" data-algorithm="top-level-storage-access-query">
@@ -1570,13 +1572,15 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a href="#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code></a>);
 };
+
 <c- b>dictionary</c-> <a href="#dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></a> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor"><c- n>PermissionDescriptor</c-></a> {
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-default="&quot;&quot;" data-type="USVString " href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></a> = "";
 };
+
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessForOrigin/issues/15">[Issue #privacycg/requestStorageAccessForOrigin#15]</a> <a class="issue-return" href="#issue-9521f17b" title="Jump to section">↵</a></div>
+   <div class="issue"> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[Issue #privacycg/requestStorageAccessFor#15]</a> <a class="issue-return" href="#issue-9521f17b" title="Jump to section">↵</a></div>
   </div>
   <aside aria-labelledby="infopaneltitle-for-unpartitioned-data" class="dfn-panel" data-for="unpartitioned-data" id="infopanel-for-unpartitioned-data">
    <span id="infopaneltitle-for-unpartitioned-data" style="display:none">Info about the 'Unpartitioned data' definition.</span><b><a href="#unpartitioned-data">#unpartitioned-data</a></b><b>Referenced in:</b>
