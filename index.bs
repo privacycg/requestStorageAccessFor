@@ -5,7 +5,7 @@ Abstract: The requestStorageAccessFor API allows top-level sites to request acce
 Status Text: This specification is intended to be merged into the HTML Living Standard. It is neither a WHATWG Living Standard nor is it on the standards track at W3C.
 Text Macro: LICENSE <a href=https://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License</a>
 Group: privacycg
-ED: https://github.com/privacycg/requestStorageAccessForOrigin
+ED: https://github.com/privacycg/requestStorageAccessFor
 Status: CG-DRAFT
 Editor: Matt Reichhoff, w3cid 138889, Google https://google.com, mreichhoff@google.com
 Editor: Johann Hofmann, w3cid 120436, Google https://google.com, johannhof@google.com
@@ -52,7 +52,7 @@ urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
 
 <em>This section is non-normative.</em>
 
-Many User Agents prevent content from accessing non-[=same site=] data stored in cookies. 
+Many User Agents prevent content from accessing non-[=same site=] data stored in cookies.
 This can break embedded content which relies on having access to non-[=same site=] cookies.
 
 The requestStorageAccessFor API enables developers to request access to non-[=same site=] cookies for embedded resources such as iframes, scripts, or images.
@@ -136,7 +136,7 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
     1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
 1. Return |p|.
 
-ISSUE(privacycg/requestStorageAccessForOrigin#15): The permissions task source shouldn't be used directly.
+ISSUE(privacycg/requestStorageAccessFor#15): The permissions task source shouldn't be used directly.
 
 </div>
 
