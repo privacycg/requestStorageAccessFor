@@ -127,7 +127,7 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
         1. Return.
     1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
 
-        NOTE: Note that when requesting permissions and deciding whether to show a prompt, user agents apply implementation-defined behavior to shape the end user experience. Particularly for `top-level-storage-access`, user agents are known to apply custom rules that will grant or deny a permission without showing a prompt.
+        NOTE: Note that when requesting permissions and deciding whether to show a prompt, user agents apply implementation-defined behavior to shape the end user experience. Particularly for `top-level-storage-access`, user agents are known to apply custom rules that will grant or deny a permission without showing a prompt. User agents may also treat the `top-level-storage-access` permission as a "superset" of other permissions, and may grant those other permissions when `top-level-storage-access` permission is granted.
 
     1. If |permissionState| is [=permission/granted=]:
         1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
@@ -229,18 +229,9 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
 
 Note: even after a successful {{Document/requestStorageAccessFor(requestedOrigin)}} call, frames have to explicitly invoke {{Document/requestStorageAccess()}} for cookie access.
-This modification allows {{Document/requestStorageAccessFor(requestedOrigin)}} to allow resolution of {{Document/requestStorageAccess()}} calls similarly to a prior successful {{Document/requestStorageAccess()}} grant.
 
-<div algorithm='storage-access-policy-modification'>
-Modify {{Document/requestStorageAccess()}} to insert the following steps before step 13.4 (i.e. before checking transient activation):
+As noted above, user agents may choose to grant the corresponding `storage-access` permission when granting `top-level-storage-access` permission.
 
-1. Let |settings| be <var ignore>doc</var>'s [=relevant settings object=].
-1. Let |origin| be |settings|' [=environment settings object/origin=].
-1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
-1. If |descriptor|'s [=permission state=] is [=permission/granted=], [=queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|, and return.
-1. If |descriptor|'s [=permission state=] is [=permission/denied=], [=queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return.
-
-</div>
 
 <h2 id="privacy">Privacy considerations</h2>
 
