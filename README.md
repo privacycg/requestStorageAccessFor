@@ -13,7 +13,7 @@
 
 ## Introduction
 
-Enabled-by-default cross-site cookie access is in the process of being deprecated (or is already deprecated) by several major browsers. Multiple substitutes have been proposed, like [the Storage Access API](https://webkit.org/blog/8124/introducing-storage-access-api/), the [SameParty cookie attribute](https://github.com/WICG/first-party-sets#sameparty-cookies-and-first-party-sets) in the [First-Party Sets](https://github.com/WICG/first-party-sets) proposal, and partitioned cookies in [the CHIPS proposal](https://developer.chrome.com/en/docs/privacy-sandbox/chips/).
+Enabled-by-default cross-site cookie access is in the process of being deprecated (or is already deprecated) by several major browsers. Multiple substitutes have been proposed, like [the Storage Access API](https://webkit.org/blog/8124/introducing-storage-access-api/), the [SameParty cookie attribute](https://github.com/WICG/first-party-sets#sameparty-cookies-and-first-party-sets) in the [Related Website Sets](https://github.com/WICG/first-party-sets) (formerly known as First-Party Sets) proposal, and partitioned cookies in [the CHIPS proposal](https://developer.chrome.com/en/docs/privacy-sandbox/chips/).
 
 However, the Storage Access API is primarily [intended](https://github.com/privacycg/storage-access/issues/122) for authenticated embeds, a use case which entails `<iframe>` use, `SameParty` [has been abandoned](https://github.com/WICG/first-party-sets/issues/92), and partitioned cookies (while preferred for most cases) aren't always applicable. This raises questions like:
 
@@ -46,11 +46,11 @@ Since the `requestStorageAccess` API was [originally designed](https://webkit.or
 
 This document proposes a similar, but separate, API,` document.requestStorageAccessFor`, which would allow the embedding site to request access it knows it needs on behalf of its embedded content. 
 
-This new API would be somewhat similar to the existing `requestStorageAccess`. It would still require activation, though of the top-level document; would still delegate to per-browser logic, so that each browser can customize the experience to their users’ expectations (for example, user prompts like those of `requestStorageAccess` could be used, or First-Party Sets could help gate access); and would gate a permission that is similar to the prior page-level `requestStorageAccess` grant.
+This new API would be somewhat similar to the existing `requestStorageAccess`. It would still require activation, though of the top-level document; would still delegate to per-browser logic, so that each browser can customize the experience to their users’ expectations (for example, user prompts like those of `requestStorageAccess` could be used, or Related Website Sets could help gate access); and would gate a permission that is similar to the prior page-level `requestStorageAccess` grant.
 
 This API could be treated as similar in principle to browser-specific compatibility measures, implemented in [Safari](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp#L1131-L1163) and [Firefox](https://searchfox.org/mozilla-central/rev/287583a4a605eee8cd2d41381ffaea7a93d7b987/dom/base/Document.cpp#17051), where an internal API is invoked, based on browser-defined domain allowlists, that requests cross-site cookie access on behalf of embedded sites.
 
-Requiring user interaction in `<iframe>` elements helps the original `requestStorageAccess` API deter spam and abuse from both embedders and embeddees, and the requirement that the embeddee call `requestStorageAccess` indicates its willingness to be embedded. To compensate for the lack of these protections with the proposed API, browsers should require additional trust signals, such as FPS membership, to grant access. This is discussed in Privacy & Security Considerations.
+Requiring user interaction in `<iframe>` elements helps the original `requestStorageAccess` API deter spam and abuse from both embedders and embeddees, and the requirement that the embeddee call `requestStorageAccess` indicates its willingness to be embedded. To compensate for the lack of these protections with the proposed API, browsers should require additional trust signals, such as RWS membership, to grant access. This is discussed in Privacy & Security Considerations.
 
 
 ## Key scenarios
@@ -58,22 +58,22 @@ Requiring user interaction in `<iframe>` elements helps the original `requestSto
 ### Top-level Requests on Behalf of Another Party
 In contrast with the existing `requestStorageAccess` API, the proposed extension would allow non-iframe use, and would afford more control to the top-level site over what access is requested when.
 
-With implementation-defined grant logic based on First-Party Set membership, example use could be:
+With implementation-defined grant logic based on Related Website Set membership, example use could be:
 
 ```
 <!--
-Top-level site: fps-member1.example. fps-member2.example is in the same First-Party Set. other-party.example is not.
+Top-level site: rws-member1.example. rws-member2.example is in the same Related Website Set. other-party.example is not.
 
 Note that all <script> tags below would be new post-3rd party cookie deprecation.
 
-Assume fps-member2.example has previously set two cookies:
+Assume rws-member2.example has previously set two cookies:
 Set-Cookie: sameSiteLax=123; SameSite=Lax 
 Set-Cookie: sameSiteNone=456; SameSite=None; Secure
 -->
 <html>
 <head>
   <script>
-    document.requestStorageAccessFor('https://fps-member2.example')
+    document.requestStorageAccessFor('https://rws-member2.example')
      .then(
            /*not called;no activation.*/)
      .catch(/*called due to top-level document lacking activation at load time*/);
@@ -85,10 +85,10 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
 <script>
   const playButton = document.getElementById('play-button');
   playButton.addEventListener('click', function(){
-    document.requestStorageAccessFor('https://fps-member2.example')
+    document.requestStorageAccessFor('https://rws-member2.example')
      .then(
        /*
-       called;has activation, same First-Party Set is sufficient.
+       called;has activation, same Related Website Set is sufficient.
        Cookie `sameSiteNone=456` available. Cookie `sameSiteLax=123` is not.
        Image tags or other assets could be requested: 
        */
@@ -98,26 +98,26 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
        // This helps protect the embeddee from attacks by the embedder.
        img.crossOrigin = 'use-credentials';
 
-       img.src='https://fps-member2.example/profile_pic.png';
+       img.src='https://rws-member2.example/profile_pic.png';
        document.body.appendChild(img);
      )
      .catch(/*not called due to lacking activation*/);
   
     document.requestStorageAccessFor('https://other-party.example')
-     .then(/*for v1, rejected; not in the same First-Party Set*/)
-     .catch(/*called due to not being in the same First-Party Set*/);
+     .then(/*for v1, rejected; not in the same Related Website Set*/)
+     .catch(/*called due to not being in the same Related Website Set*/);
   });
 </script>
 <!--initial page load: would not have cookies; see event handler above-->
-<img src='https://fps-member2.example/profile_pic.png'>
+<img src='https://rws-member2.example/profile_pic.png'>
 <!--
 Would have access to its cross-site cookies, after the button is clicked and the process runs as expected. Future page-loads would remember this for some TBD period of time.
 -->
-<iframe src='https://fps-member2.example'></iframe>
+<iframe src='https://rws-member2.example'></iframe>
 <!--
 Would require a separate call to requestStorageAccessFor, because of origin, not site, scoping.
 -->
-<iframe src='https://sub-domain.fps-member2.example'></iframe>
+<iframe src='https://sub-domain.rws-member2.example'></iframe>
 </body>
 </html>
 ```
@@ -213,7 +213,7 @@ Forward declaration of storage access requirements [remains under discussion](ht
 
 ### HTTP Header Access Requests
 
-The proposed API introduces a dependency on JavaScript for a site wanting to use cookies within a First-Party Set context. While this may be a fairly small selection of sites, the sites and their clients may not have previously required JavaScript, which increases the effort for adoption.
+The proposed API introduces a dependency on JavaScript for a site wanting to use cookies within a Related Website Set context. While this may be a fairly small selection of sites, the sites and their clients may not have previously required JavaScript, which increases the effort for adoption.
 
 In a similar way to using the `allow` attribute on an `iframe` to enable specific features for a domain map to an equivalent Permissions Policy, it would be possible to provide an equivalent for a storage access call.
 
@@ -221,7 +221,7 @@ For example, the JavaScript call:
 
 
 ```
-document.requestStorageAccessFor('https://fps-member2.example')
+document.requestStorageAccessFor('https://rws-member2.example')
 ```
 
 
@@ -229,11 +229,11 @@ Could be equivalent to an HTTP header, possibly using [permissions policy syntax
 
 
 ```
-Permissions-Policy: storage-access=(self "https://fps-member2.example")
+Permissions-Policy: storage-access=(self "https://rws-member2.example")
 ```
 
 
-While this option may be attractive in the future, and would be doable in a First-Party Set membership-driven approval system, it is outside the scope of this document. Such an option is instead considered a potential future work item.
+While this option may be attractive in the future, and would be doable in a Related Website Set membership-driven approval system, it is outside the scope of this document. Such an option is instead considered a potential future work item.
 
 
 ## Privacy and Security Considerations
@@ -247,9 +247,9 @@ Generally, there are two separate issues that must both be addressed: abuse and 
 
 There is a risk of abuse of the API by top-level documents, for example by attempting to associate an embeddee with an unrelated embedder (e.g., showing a prompt that would link `we-hate-puppies.example` with `reputable-news-site.example` could harm the news site’s reputation). Excessive prompting must also be avoided; this is especially true because of the ubiquity of third-party scripts included in top-level contexts. 
 
-To mitigate abuse concerns, browsers must seek additional trust signals. Gating access on First-Party Sets is one mechanism by which this concern can be mitigated. Note that First-Party Sets guarantee mutual exclusivity, preventing a single domain from linking data across sets, and that there [are policy checks](https://github.com/WICG/first-party-sets#abuse-mitigation-measures) that should ensure a valid relationship between the domains in each set. The service domain subset can also be used to disallow less-privileged domains from requesting access.
+To mitigate abuse concerns, browsers must seek additional trust signals. Gating access on Related Website Sets is one mechanism by which this concern can be mitigated. Note that Related Website Sets guarantee mutual exclusivity, preventing a single domain from linking data across sets, and that there [are policy checks](https://github.com/WICG/first-party-sets#abuse-mitigation-measures) that should ensure a valid relationship between the domains in each set. The service domain subset can also be used to disallow less-privileged domains from requesting access.
 
-Other potential embeddee opt-in mechanisms, especially for those user agents that do not support First-Party Sets, could include:
+Other potential embeddee opt-in mechanisms, especially for those user agents that do not support Related Website Sets, could include:
 
 *   Specification of a `.well-known` configuration that can be checked to ensure embeddee opt-in.
 *   Checking the passed-in origin against the origin of the script making the call.
