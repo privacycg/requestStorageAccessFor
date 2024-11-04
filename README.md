@@ -133,7 +133,7 @@ Authenticated embeds are the primary use case targeted by the `requestStorageAcc
 
 ### Proposed Draft Spec Addition
 
-**NOTE:** These steps are a simplified version of [the actual spec](https://privacycg.github.io/requestStorageAccessForOrigin), which is the authoritative version.
+**NOTE:** These steps are a simplified version of [the actual spec](https://privacycg.github.io/requestStorageAccessFor), which is the authoritative version.
 
 The proposed spec could include a set of steps for the browser to follow that are somewhat similar to those done with [`requestStorageAccess`](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess#conditions_for_granting_storage_access). The spec could include a function that takes a `string` as the origin:
 
