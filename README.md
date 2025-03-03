@@ -94,10 +94,8 @@ Set-Cookie: sameSiteNone=456; SameSite=None; Secure
        */
        let img = document.createElement('img');
        
-       // CORS would be required for the SameSite=None cookies to be attached.
+       // SAH would be required for the SameSite=None cookies to be attached.
        // This helps protect the embeddee from attacks by the embedder.
-       img.crossOrigin = 'use-credentials';
-
        img.src='https://rws-member2.example/profile_pic.png';
        document.body.appendChild(img);
      )
