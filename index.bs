@@ -100,115 +100,77 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
 
 1. Let |p| be [=a new promise=].
 1. If |doc| is not [=Document/fully active=], then [=reject=] |p| with an "{{InvalidStateError}}" {{DOMException}} and return |p|.
+1. Let |global| be |doc|'s [=relevant global object=].
+1. Let |settings| be |doc|'s [=relevant settings object=].
+1. If |global| is not a [=secure context=], then [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
+1. If |doc| is not [=allowed to use=] "`storage-access`", [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=node navigable=] is not a [=traversable navigable=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
 1. If |doc|'s [=Document/origin=] is an [=opaque origin=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
-1. If |doc|'s [=relevant global object=] is not a [=secure context=], then [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
+1. If |doc|'s [=active sandboxing flag set=] has its [=sandbox storage access by user activation flag=] set, [=/reject=] |p| with a "{{NotAllowedError}}" {{DOMException}} and return |p|.
+1. Let |browsingContext| be |doc|'s [=Document/browsing context=].
+1. Let |topLevelOrigin| be the [=top-level origin=] of |doc|'s [=relevant settings object=].
+1. Let |topLevelSite| be the result of [=obtain a site|obtaining a site=] from |topLevelOrigin|.
 1. Let |parsedURL| be the the result of running the [=URL parser=] on |requestedOrigin|.
 1. If |parsedURL| is failure, [=reject=] |p| with a {{TypeError}} and return |p|.
-1. Let |origin| be |parsedURL|'s [=/origin=].
-1. If |origin| is an [=opaque origin=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
-1. If |doc|'s [=Document/origin=] is [=same origin=] with |origin|, [=resolve=] and return |p|.
-1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
+
+1. Let |embeddedOrigin| be |parsedURL|'s [=/origin=].
+1. If |embeddedOrigin| is an [=opaque origin=], [=reject=] |p| with an "{{NotAllowedError}}" {{DOMException}} and return |p|.
+1. If |doc|'s [=Document/origin=] is [=same origin=] with |embeddedOrigin|, [=resolve=] and return |p|.
 1. Let |has activation| be true if |doc|'s {{Window}} object has [=transient activation=], and false otherwise.
-1. Run these steps [=in parallel=]:
-    1. Let |settings| be |doc|'s [=relevant settings object=].
-    1. Let |global| be |doc|'s [=relevant global object=].
-    1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
-    1. If |existing state| is [=permission/granted=]:
-        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
-        1. Return.
-    1. If |existing state| is [=permission/denied=]:
-        1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
-        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
-        1. Return.
-    1. Assert that |doc|'s [=node navigable=] is a [=traversable navigable=].
-    1. If |has activation| is false:
-        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a n "{{NotAllowedError}}" {{DOMException}}.
-        1. Return.
-    1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>" with |descriptor|.
+1. Run the following steps [=in parallel=]:
+    1. Let |process permission state| be an algorithm that, given a [=permission state=] |state|, runs the following steps:
+        1. [=Queue a global task=] on the [=networking task source=] given |global| to:
+            1. If |state| is [=permission/granted=]:
+                1. Set |global|'s [=environment/has storage access=] to true.
+                1. [=/Resolve=] |p| with {{undefined}}.
+            1. Else:
+                1. [=Consume user activation=] given |global|.
+                1. [=/Reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+    1. Let |explicitSetting| be the result of [=determine whether the user agent explicitly allows unpartitioned cookie access|determining whether the user agent explicitly allows unpartitioned cookie access=] with (|topLevelSite|, |embeddedSite|).
+    1. If |explicitSetting| is "`disallow`":
+        1. Run |process permission state| with [=permission/denied=].
+        1. Abort these steps.
+    1. If |explicitSetting| is "`allow`":
+        1. Run |process permission state| with [=permission/granted=].
+        1. Abort these steps.
+    1. [=Assert=]: |explicitSetting| is "`none`".
+    1. If |browsingContext| is a [=top-level browsing context=]:
+        1. Run |process permission state| with [=permission/granted=].
+        1. Abort these steps.
+    1. If |embeddedSite| is [=site/same site=] with |topLevelSite|:
 
-        NOTE: Note that when requesting permissions and deciding whether to show a prompt, user agents apply implementation-defined behavior to shape the end user experience. Particularly for `top-level-storage-access`, user agents are known to apply custom rules that will grant or deny a permission without showing a prompt.
+        NOTE: This check is [=site/same site=] on purpose, to allow embedded sites to use `requestStorageAccess()` to opt into storage access without involvement from the end user in scenarios where storage access is restricted for security and not privacy purposes.
 
-    1. If |permissionState| is [=permission/granted=]:
-        1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|.
-        1. Return.
-    1. If |doc|'s {{Window}} object has [=transient activation=], [=consume user activation=] with it.
-    1. [=Queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
+        1. Run |process permission state| with [=permission/granted=].
+        1. Abort these steps.
+    1. Let |previous permission state| be the result of [=getting the current permission state=] given "<a permission><code>storage-access</code></a>" and |global|.
+    1. If |previous permission state| is not [=permission/prompt=]:
+        1. Run |process permission state| with |previous permission state|.
+        1. Abort these steps.
+    1. Let |connected| be the result of [=Determine the effective FedCM connection status|determining the effective FedCM connection status=] given |topLevelOrigin|, |embeddedOrigin|, |doc|.
+    1. If |connected|:
+
+        NOTE: User agents are encouraged to keep track of which (site, site) tuples have been allowed to access storage due to existing FedCM connections, and double-check that list when accessing cookies to catch malicious attackers that have tricked an [=environment=] into using an incorrect [=environment/has storage access=] bit.
+
+        1. Run |process permission state| with [=permission/granted=].
+        1. Abort these steps.
+    1. Let |permissionState| be the result of [=requesting permission to use=] "<a permission><code>storage-access</code></a>".
+
+        NOTE: Note that when requesting permissions and deciding whether to show a prompt, user agents apply implementation-defined behavior to shape the end user experience. Particularly for `storage-access`, user agents are known to apply custom rules that will grant or deny a permission without showing a prompt.
+
+    1. Run |process permission state| with |permissionState|.
 1. Return |p|.
+
+NOTE: The intent of this algorithm is to always require user activation before a storage-access permission will be set. Though it is within the means of user agents to set storage-access permissions based on custom heuristics without prior user activation, this specification strongly discourages such behavior, as it could lead to interoperability issues.
 
 ISSUE(privacycg/requestStorageAccessFor#15): The permissions task source shouldn't be used directly.
 
 </div>
 
-<h3 id="ua-policies">User Agent top-level storage access policies</h3>
-
-<div algorithm>
-To <dfn>determine if a request has top-level storage access</dfn> with [=request=] |request|, run these steps:
-
-1. Let |settings| be |request|'s [=request/client=]'s [=relevant global object=]'s [=relevant settings object=].
-1. Let |embedded origin| be |request|'s [=request/url=]'s [=url/origin=].
-1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |embedded origin|.
-1. Let |existing state| be |descriptor|'s [=permission state=] with |settings|.
-1. If |existing state| is [=permission/granted=], return true.
-1. Return false.
-
-</div>
-
 <h2 id="permissions-integration">Permissions Integration</h2>
 
-The requestStorageAccessFor API defines a [=powerful feature=] identified by the [=powerful feature/name=] "<dfn export permission><code>top-level-storage-access</code></dfn>". It defines the following permission-related algorithms:
+The requestStorageAccessFor API utilizes the existing [=powerful feature=] identified by the [=powerful feature/name=] "<dfn export permission><code>storage-access</code></dfn>" and the integration with permissions is defined in the spec where the permission was defined.
 
-<dl>
-  <dt>{{PermissionDescriptor}}</dt>
-  <dd>
-    The "<a permission><code>top-level-storage-access</code></a>" [=powerful feature=] defines a {{PermissionDescriptor}} as follows:
-    <pre class="idl">
-        dictionary TopLevelStorageAccessPermissionDescriptor : PermissionDescriptor {
-            USVString requestedOrigin = "";
-        };
-    </pre>
-  </dd>
-  <dt>[=powerful feature/permission query algorithm=]</dt>
-  <dd>
-    <div algorithm='top-level-storage-access-query'>
-    To query the "<a permission><code>top-level-storage-access</code></a>" permission, given a {{PermissionDescriptor}} |permissionDesc| and a {{PermissionStatus}} |status|, run the following steps:
-
-    1. Set |status|'s {{PermissionStatus/state}} to |permissionDesc|'s [=permission state=].
-    1. If |status|'s {{PermissionStatus/state}} is [=permission/denied=], set |status|'s {{PermissionStatus/state}} to [=permission/prompt=].
-
-        Note: The [=permission/denied=] permission state is not revealed to avoid exposing the user's decision to developers. This is done to prevent retaliation against the user and repeated prompting to the detriment of the user experience.
-
-    </div>
-  </dd>
-  <dt>[=powerful feature/permission key type=]</dt>
-  <dd>
-    A [=permission key=] of the "<a permission><code>top-level-storage-access</code></a>" feature has the type [=site=].
-
-        Note: the {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} field ensures that the [=permission store entry=] is double-keyed.
-  </dd>
-  <dt>[=powerful feature/permission key generation algorithm=]</dt>
-  <dd>
-    <div algorithm='top-level-storage-access-key-generation'>
-    To generate a new [=permission key=] for the "<a permission><code>top-level-storage-access</code></a>" feature, given an [=environment settings object=] |settings|, run the following steps:
-    1. Let |current origin| be |settings|' [=environment settings object/origin=].
-    1. If |current origin| is not [=same site=] with |settings|' [=top-level origin=], return null.
-    1. Return the result of [=obtain a site|obtaining a site=] from |settings|' [=top-level origin=].
-
-        Note: the check for whether |settings|' [=environment settings object/origin=] is [=same site=] with |settings|' [=top-level origin=] is intended to disallow permission queries from cross-site frames.
-        This depends on the invariant that `top-level-storage-access` permission requests are only allowed in a [=top-level browsing context=]. As such, this check is only relevant in {{Permissions/query(permissionDesc)}}.
-
-    </div>
-  </dd>
-  <dt>[=powerful feature/permission key comparison algorithm=]</dt>
-  <dd>
-    <div algorithm='top-level-storage-access-key-comparison'>
-    To compare [=permission keys=] |key1| and |key2| for the "<a permission><code>top-level-storage-access</code></a>" feature, run the following steps:
-    1. If |key1| is null or |key2| is null, return false.
-    1. Return |key1| is [=same site=] with |key2|.
-
-    </div>
-  </dd>
-</dl>
 
 <h2 id="fetch-integration">Fetch Integration</h2>
 
@@ -226,21 +188,6 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 
 </div>
 
-<h2 id="storage-access-api-integration">Storage Access API Integration</h2>
-
-Note: even after a successful {{Document/requestStorageAccessFor(requestedOrigin)}} call, frames have to explicitly invoke {{Document/requestStorageAccess()}} for cookie access.
-This modification allows {{Document/requestStorageAccessFor(requestedOrigin)}} to allow resolution of {{Document/requestStorageAccess()}} calls similarly to a prior successful {{Document/requestStorageAccess()}} grant.
-
-<div algorithm='storage-access-policy-modification'>
-Modify {{Document/requestStorageAccess()}} to insert the following steps before step 13.4 (i.e. before checking transient activation):
-
-1. Let |settings| be <var ignore>doc</var>'s [=relevant settings object=].
-1. Let |origin| be |settings|' [=environment settings object/origin=].
-1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
-1. If |descriptor|'s [=permission state=] is [=permission/granted=], [=queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|, and return.
-1. If |descriptor|'s [=permission state=] is [=permission/denied=], [=queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return.
-
-</div>
 
 <h2 id="privacy">Privacy considerations</h2>
 
