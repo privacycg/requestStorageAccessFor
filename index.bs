@@ -30,9 +30,27 @@ urlPrefix: https://privacycg.github.io/storage-access/#; spec: storage-access
     type: dfn
         text: determine the storage access policy; url: determine-the-storage-access-policy
         text: determine if a site has storage access; url: determine-if-a-site-has-storage-access
+        text: has storage access; url: environment-has-storage-access
+        text: determine whether the user agent explicitly allows unpartitioned cookie access;url: determine-whether-the-user-agent-explicitly-allows-unpartitioned-cookie-access
 urlPrefix: https://fetch.spec.whatwg.org/#; spec: fetch
     type: dfn
         text: http network or cache fetch; url: http-network-or-cache-fetch
+
+urlPrefix: https://w3c-fedid.github.io/FedCM/; spec: fedcm
+    type: dfn
+        text: connected accounts set; url: browser-connected-accounts-set
+        text: IDP; url: idp
+        text: RP; url: rp
+        text: determining the effective FedCM connection status; url: determine-the-fedcm-site-connection-status
+
+urlPrefix: https://privacycg.github.io/storage-access-headers/#; spec: storage-access-headers
+    type: dfn
+        text: storage access headers retry check; url: perform-a-storage-access-retry-check
+        text: storage access status; url : storage-access-status
+        text: active url: storage-access-status-active
+
+
+
 </pre>
 <pre class="biblio">
 {
@@ -121,12 +139,12 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
     1. Let |process permission state| be an algorithm that, given a [=permission state=] |state|, runs the following steps:
         1. [=Queue a global task=] on the [=networking task source=] given |global| to:
             1. If |state| is [=permission/granted=]:
-                1. Set |global|'s [=environment/has storage access=] to true.
+                1. Set |global|'s [=has storage access=] to true.
                 1. [=/Resolve=] |p| with {{undefined}}.
             1. Else:
                 1. [=Consume user activation=] given |global|.
                 1. [=/Reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}.
-    1. Let |explicitSetting| be the result of [=determine whether the user agent explicitly allows unpartitioned cookie access|determining whether the user agent explicitly allows unpartitioned cookie access=] with (|topLevelSite|, |embeddedSite|).
+    1. Let |explicitSetting| be the result of [=determine whether the user agent explicitly allows unpartitioned cookie access=] with (|topLevelSite|, |embeddedSite|).
     1. If |explicitSetting| is "`disallow`":
         1. Run |process permission state| with [=permission/denied=].
         1. Abort these steps.
@@ -147,10 +165,10 @@ When invoked on {{Document}} |doc| with {{USVString}} |requestedOrigin|, the <df
     1. If |previous permission state| is not [=permission/prompt=]:
         1. Run |process permission state| with |previous permission state|.
         1. Abort these steps.
-    1. Let |connected| be the result of [=Determine the effective FedCM connection status|determining the effective FedCM connection status=] given |topLevelOrigin|, |embeddedOrigin|, |doc|.
+    1. Let |connected| be the result of [=determining the effective FedCM connection status=] given |topLevelOrigin|, |embeddedOrigin|, |doc|.
     1. If |connected|:
 
-        NOTE: User agents are encouraged to keep track of which (site, site) tuples have been allowed to access storage due to existing FedCM connections, and double-check that list when accessing cookies to catch malicious attackers that have tricked an [=environment=] into using an incorrect [=environment/has storage access=] bit.
+        NOTE: User agents are encouraged to keep track of which (site, site) tuples have been allowed to access storage due to existing FedCM connections, and double-check that list when accessing cookies to catch malicious attackers that have tricked an [=environment=] into using an incorrect [=has storage access=] bit.
 
         1. Run |process permission state| with [=permission/granted=].
         1. Abort these steps.
@@ -178,10 +196,10 @@ The {{Document/requestStorageAccessFor(requestedOrigin)}} only directly affects 
 
 <div algorithm='cookie-blocking-modification'>
 In [=http network or cache fetch=], when determining whether to block cookies, run the following algorithm. A true result means cookies can be unblocked:
-1. Let |has top-level access| be the result of running [=determine if a request has top-level storage access=] on |request|.
-1. If |has top-level access| is false, return false.
+1. Let |has storage access| be the result of running [=storage access headers retry check=] on |request|.
+1. If |has storage access| is false, return false.
 1. Let |is subresource| be true if |request| is a [=subresource request=] and false otherwise.
-1. Let |allowed subresource mode| be true if |request|'s [=request/storage access status=] is "<code>[=storage access status/active=]</code>", and false otherwise.
+1. Let |allowed subresource mode| be true if |request|'s [=storage access status=] is "<code>[=active=]</code>", and false otherwise.
 1. If |is subresource| is true and |allowed subresource mode| is false, return false.
 1. If |request|'s [=request/client=]'s [=relevant global object=]'s [=associated document=] is not a [=traversable navigable=], return false.
 1. Return true.
@@ -203,11 +221,6 @@ The prompts used have to be careful to indicate the direction of the request, su
 As with {{Document/requestStorageAccess()}}, the same tension between user consent and prompt fatigue exists with {{Document/requestStorageAccessFor(requestedOrigin)}}; much like the Storage Access API,
 [=implementation-defined=] acceptance and rejection steps are intended to enable implementers with differing stances on this question to make compromises as they see fit.
 
-Another difference is that queries for the permission can be more sensitive, depending on the context. Note that a frame has to be unable to request the state of either of:
-* Whether it was [=permission/granted=] a "<a permission><code>top-level-storage-access</code></a>" permission for some origin while a top-level document.
-* Whether arbitrary other origins were [=permission/granted=] the "<a permission><code>top-level-storage-access</code></a>" on the current top-level site.
-
-In the former case, this would allow bogus domains (or combinations thereof) to be used as identifiers; in the latter case, it would reveal state under unrelated origins.
 
 <h2 id="security">Security considerations</h2>
 
@@ -224,7 +237,7 @@ For frame access, {{Document/requestStorageAccessFor(requestedOrigin)}} merely s
 
 The specific security controls proposed by the API are:
 * Any cookies included with the subresource request have to be explicitly marked `SameSite=None`, indicating intent for use in [=third party contexts=].
-* For any `SameSite=None` cookies to be included, the request's [=request/storage access status=] must be "<code>[=storage access status/active=]</code>".
+* For any `SameSite=None` cookies to be included, the request's [=storage access status=] must be "<code>[=active=]</code>".
 
 Additionally, only requests initiated from the top-level document will be eligible for inclusion of `SameSite=None` cookies. This ensures that other embedded frames do not receive escalated privileges.
 
