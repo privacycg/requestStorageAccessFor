@@ -4,9 +4,12 @@
   <title>requestStorageAccessFor API</title>
   <meta content="width=device-width" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
+  <meta content="Bikeshed version 4b8aed3f7, updated Thu Mar 6 12:35:01 2025 -0800" name="generator">
   <link href="https://github.com/privacycg/requestStorageAccessFor" rel="canonical">
-  <meta content="1ec31c2bfec9241595b3c1c9ee05b39809edd7e1" name="document-revision">
+  <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
+  <meta content="92e8f2d1301f4d17f5dd926d2f2b6f22e078968a" name="revision">
+  <meta content="dark light" name="color-scheme">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -78,7 +81,6 @@ pre .property::before, pre .property::after {
 }
 </style>
 <style>/* Boilerplate: style-colors */
-
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
 :root {
     color-scheme: light dark;
@@ -332,11 +334,15 @@ figcaption:not(.no-marker)::before {
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
+    --dfnpanel-target-bg: #ffc;
+    --dfnpanel-target-outline: orange;
 }
 @media (prefers-color-scheme: dark) {
     :root {
         --dfnpanel-bg: #222;
         --dfnpanel-text: var(--text);
+        --dfnpanel-target-bg: #333;
+        --dfnpanel-target-outline: silver;
     }
 }
 .dfn-panel {
@@ -359,11 +365,13 @@ figcaption:not(.no-marker)::before {
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel a:focus {
+    outline: 5px auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+}
 .dfn-panel > b + b { margin-top: 0.25em; }
 .dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
 .dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
     max-width: calc(300px - 1.5em - 1em);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -372,67 +380,84 @@ figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
-    left: .5em;
+    left: 8px;
     bottom: 2em;
     margin: 0 auto;
     max-width: calc(100vw - 1.5em - .4em - .5em);
     max-height: 30vh;
+    transition: left 1s ease-out, bottom 1s ease-out;
 }
 
-.dfn-paneled[role="button"] { cursor: pointer; }
+.dfn-panel .link-item:hover {
+    text-decoration: underline;
+}
+.dfn-panel .link-item .copy-icon {
+    opacity: 0;
+}
+.dfn-panel .link-item:hover .copy-icon,
+.dfn-panel .link-item .copy-icon:focus {
+    opacity: 1;
+}
+
+.dfn-panel .copy-icon {
+    display: inline-block;
+    margin-right: 0.5em;
+    width: 0.85em;
+    height: 1em;
+    border-radius: 3px;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.dfn-panel .copy-icon .icon {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.dfn-panel .copy-icon .icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #ccc;
+    opacity: 0.25;
+    transform: translate(3px, -3px);
+}
+
+.dfn-panel .copy-icon:active .icon::before {
+    opacity: 1;
+}
+
+.dfn-paneled[role="button"] { cursor: help; }
+
+.highlighted {
+    animation: target-fade 3s;
+}
+
+@keyframes target-fade {
+    from {
+        background-color: var(--dfnpanel-target-bg);
+        outline: 5px solid var(--dfnpanel-target-outline);
+    }
+    to {
+        color: var(--a-normal-text);
+        background-color: transparent;
+        outline: transparent;
+    }
+}
 </style>
-<style>/* Boilerplate: style-dfn-panel */
-:root {
-    --dfnpanel-bg: #ddd;
-    --dfnpanel-text: var(--text);
+<style>/* Boilerplate: style-idl-highlighting */
+pre.idl.highlight {
+    background: var(--borderedblock-bg, var(--def-bg));
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --dfnpanel-bg: #222;
-        --dfnpanel-text: var(--text);
-    }
-}
-.dfn-panel {
-    position: absolute;
-    z-index: 35;
-    width: 20em;
-    width: 300px;
-    height: auto;
-    max-height: 500px;
-    overflow: auto;
-    padding: 0.5em 0.75em;
-    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-    background: var(--dfnpanel-bg);
-    color: var(--dfnpanel-text);
-    border: outset 0.2em;
-    white-space: normal; /* in case it's moved into a pre */
-}
-.dfn-panel:not(.on) { display: none; }
-.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-.dfn-panel > b { display: block; }
-.dfn-panel a { color: var(--dfnpanel-text); }
-.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-.dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
-.dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
-    max-width: calc(300px - 1.5em - 1em);
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dfn-panel.activated {
-    display: inline-block;
-    position: fixed;
-    left: .5em;
-    bottom: 2em;
-    margin: 0 auto;
-    max-width: calc(100vw - 1.5em - .4em - .5em);
-    max-height: 30vh;
-}
-
-.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* Boilerplate: style-issues */
 a[href].issue-return {
@@ -453,8 +478,40 @@ a[href].issue-return {
     margin-bottom: 0;
 }
 </style>
-<style>/* Boilerplate: style-selflinks */
+<style>/* Boilerplate: style-ref-hints */
+:root {
+    --ref-hint-bg: #ddd;
+    --ref-hint-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ref-hint-bg: #222;
+        --ref-hint-text: var(--text);
+    }
+}
 
+.ref-hint {
+    display: inline-block;
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.5em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--ref-hint-bg);
+    color: var(--ref-hint-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+
+.ref-hint * { margin: 0; padding: 0; text-indent: 0; }
+
+.ref-hint ul { padding: 0 0 0 1em; list-style: none; }
+</style>
+<style>/* Boilerplate: style-selflinks */
 :root {
     --selflink-text: white;
     --selflink-bg: gray;
@@ -514,14 +571,6 @@ a.self-link::before            { content: "¶"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
 <style>/* Boilerplate: style-syntax-highlighting */
-
-            pre.idl.highlight {
-                background: var(--borderedblock-bg, var(--def-bg));
-            }
-            
-</style>
-<style>/* Boilerplate: style-syntax-highlighting */
-
 code.highlight { padding: .1em; border-radius: .3em; }
 pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
 
@@ -578,7 +627,6 @@ c-[vc] { color: #0077aa } /* Name.Variable.Class */
 c-[vg] { color: #0077aa } /* Name.Variable.Global */
 c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-
 
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
@@ -654,21 +702,43 @@ D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
 4 = lab(85,5,15)
 5 = lab(85,-10,-50)
 6 = lab(85,35,-15)
+
+For darkmode:
+0 = oklab(50%   0%  108%)
+1 = oklab(50% -51%   51%)
+2 = oklab(50% -64%  -20%)
+3 = oklab(50%   6%   19%)
+4 = oklab(50% -12%  -64%)
+5 = oklab(50%  44%  -19%)  
+6 = oklab(50% 102%   38%)
 */
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+
+[data-algorithm] var { cursor: pointer; }
+var[data-var-color] { background-color: var(--var-bg); box-shadow: 0 0 0 2px var(--var-bg); }
+
+var[data-var-color] { --var-bg: #F4D200; }
+var[data-var-color="1"] { --var-bg: #FF87A2; }
+var[data-var-color="2"] { --var-bg: #96E885; }
+var[data-var-color="3"] { --var-bg: #3EEED2; }
+var[data-var-color="4"] { --var-bg: #EACFB6; }
+var[data-var-color="5"] { --var-bg: #82DDFF; }
+var[data-var-color="6"] { --var-vg: #FFBCF2; }
+
+@media (prefers-color-scheme: dark) {
+	var[data-var-color] { --var-bg: #bc1a00; }
+	var[data-var-color="1"] { --var-bg: #007f00; }
+	var[data-var-color="2"] { --var-bg: #008698; }
+	var[data-var-color="3"] { --var-bg: #7f5b2b; }
+	var[data-var-color="4"] { --var-bg: #004df3; }
+	var[data-var-color="5"] { --var-bg: #a1248a; }
+	var[data-var-color="6"] { --var-vg: #ff0000; }
+}
 </style>
  <body>
   <header>
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="no-ref" id="title">requestStorageAccessFor API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2024-11-04">4 November 2024</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time datetime="2025-03-13">13 March 2025</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -682,7 +752,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 the Contributors to “requestStorageAccessFor API”, published by the <a href="http://www.w3.org/community/privacycg/">Privacy Community Group</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2025 the Contributors to “requestStorageAccessFor API”, published by the <a href="http://www.w3.org/community/privacycg/">Privacy Community Group</a>.
 
 This document is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 
@@ -768,7 +838,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
    <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> is in a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="third-party-context">third party context</dfn> if it is not in a <a data-link-type="dfn" href="#first-party-site-context" id="ref-for-first-party-site-context③">first-party-site context</a>.</p>
    <h3 class="heading settled" data-level="3.1" id="the-document-object"><span class="secno">3.1. </span><span class="content">Changes to <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code></span><a class="self-link" href="#the-document-object"></a></h3>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④"><c- g>Document</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor" id="ref-for-dom-document-requeststorageaccessfor③"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="idl-code" data-dfn-for="Document/requestStorageAccessFor(requestedOrigin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code><a class="self-link" href="#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-document-requeststorageaccessfor" id="ref-for-dom-document-requeststorageaccessfor③"><c- g>requestStorageAccessFor</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Document/requestStorageAccessFor(requestedOrigin)" data-dfn-type="argument" data-export id="dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"><code><c- g>requestedOrigin</c-></code></dfn>);
 };
 </pre>
    <div class="algorithm" data-algorithm="requestStorageAccessFor(requestedOrigin)" data-algorithm-for="Document">
@@ -854,16 +924,16 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
-    <p class="issue" id="issue-9521f17b"><a class="self-link" href="#issue-9521f17b"></a> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[Issue #privacycg/requestStorageAccessFor#15]</a></p>
+    <p class="issue" id="issue-9521f17b"><a class="self-link" href="#issue-9521f17b"></a> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[privacycg/requestStorageAccessFor Issue #15]</a></p>
    </div>
    <h3 class="heading settled" data-level="3.2" id="ua-policies"><span class="secno">3.2. </span><span class="content">User Agent top-level storage access policies</span><a class="self-link" href="#ua-policies"></a></h3>
    <div class="algorithm" data-algorithm="determine if a request has top-level storage access">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="determine-if-a-request-has-top-level-storage-access">determine if a request has top-level storage access</dfn> with <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> <var>request</var>, run these steps: 
     <ol>
      <li data-md>
-      <p>Let <var>settings</var> be <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>.</p>
+      <p>Let <var>settings</var> be <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object②">relevant settings object</a>.</p>
      <li data-md>
-      <p>Let <var>embedded origin</var> be <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin">origin</a>.</p>
+      <p>Let <var>embedded origin</var> be <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin">origin</a>.</p>
      <li data-md>
       <p>Let <var>descriptor</var> be a newly created <code class="idl"><a data-link-type="idl" href="#dictdef-toplevelstorageaccesspermissiondescriptor" id="ref-for-dictdef-toplevelstorageaccesspermissiondescriptor①">TopLevelStorageAccessPermissionDescriptor</a></code> with <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor-name" id="ref-for-dom-permissiondescriptor-name①">name</a></code> set to "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access②"><code>top-level-storage-access</code></a>" and with <code class="idl"><a data-link-type="idl" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin" id="ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin①">requestedOrigin</a></code> set to <var>embedded origin</var>.</p>
      <li data-md>
@@ -881,7 +951,7 @@ to unpartitioned cookies on behalf of another <a data-link-type="dfn" href="http
     <dd>
       The "<a class="idl-code" data-link-type="permission" href="#permissiondef-top-level-storage-access" id="ref-for-permissiondef-top-level-storage-access③"><code>top-level-storage-access</code></a>" <a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-powerful-feature" id="ref-for-dfn-powerful-feature①">powerful feature</a> defines a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor①">PermissionDescriptor</a></code> as follows: 
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></dfn> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor" id="ref-for-dom-permissiondescriptor②"><c- n>PermissionDescriptor</c-></a> {
-    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;&quot;" data-dfn-for="TopLevelStorageAccessPermissionDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></dfn> = "";
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;&quot;" data-dfn-for="TopLevelStorageAccessPermissionDescriptor" data-dfn-type="dict-member" data-export data-type="USVString" id="dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></dfn> = "";
 };
 </pre>
     <dt><a data-link-type="dfn" href="https://w3c.github.io/permissions/#dfn-permission-query-algorithm" id="ref-for-dfn-permission-query-algorithm">permission query algorithm</a>
@@ -943,7 +1013,7 @@ This depends on the invariant that <code>top-level-storage-access</code> permiss
      <li data-md>
       <p>If <var>is subresource</var> is true and <var>allowed subresource mode</var> is false, return false.</p>
      <li data-md>
-      <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client①">client</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated document</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable④">traversable navigable</a>, return false.</p>
+      <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client①">client</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated document</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable" id="ref-for-traversable-navigable④">traversable navigable</a>, return false.</p>
      <li data-md>
       <p>Return true.</p>
     </ol>
@@ -993,7 +1063,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <li data-md>
      <p>Any cookies included with the subresource request have to be explicitly marked <code>SameSite=None</code>, indicating intent for use in <a data-link-type="dfn" href="#third-party-context" id="ref-for-third-party-context①">third party contexts</a>.</p>
     <li data-md>
-     <p>For any <code>SameSite=None</code> cookies to be included, the request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode①">mode</a> has to be "cors", where reading of the response is blocked unless the embeddee opts-in via sending the appropriate <span>`<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-access-control-allow-credentials" id="ref-for-http-access-control-allow-credentials">access-control-allow-credentials</a></code>`</span> header. The sending of the <span>`<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-origin" id="ref-for-http-origin">origin</a></code>`</span> header ensures the embeddee is aware of the embedder’s identity.</p>
+     <p>For any <code>SameSite=None</code> cookies to be included, the request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-mode" id="ref-for-concept-request-mode①">mode</a> has to be "cors", where reading of the response is blocked unless the embeddee opts-in via sending the appropriate `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-access-control-allow-credentials" id="ref-for-http-access-control-allow-credentials">access-control-allow-credentials</a></code>` header. The sending of the `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-origin" id="ref-for-http-origin">origin</a></code>` header ensures the embeddee is aware of the embedder’s identity.</p>
    </ul>
    <p>Additionally, only requests initiated from the top-level document will be eligible for inclusion of <code>SameSite=None</code> cookies. This ensures that other embedded frames do not receive escalated privileges.</p>
    <h3 class="heading settled" data-level="8.2" id="notification-abuse"><span class="secno">8.2. </span><span class="content">Notification Abuse</span><a class="self-link" href="#notification-abuse"></a></h3>
@@ -1029,7 +1099,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     like this: </p>
    <p class="note" role="note">Note, this is an informative note.</p>
   </div>
-<script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
@@ -1053,7 +1123,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="82748635">access-control-allow-credentials</span>
+     <li><span class="dfn-paneled" id="82748635">Access-Control-Allow-Credentials</span>
      <li><span class="dfn-paneled" id="857d5516">client</span>
      <li><span class="dfn-paneled" id="902380f7">credentials mode</span>
      <li><span class="dfn-paneled" id="49b06815">http network or cache fetch</span>
@@ -1061,14 +1131,14 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
      <li><span class="dfn-paneled" id="ddf444bb">origin</span>
      <li><span class="dfn-paneled" id="55213b5b">request</span>
      <li><span class="dfn-paneled" id="839611db">subresource request</span>
-     <li><span class="dfn-paneled" id="dc1cd39b">url</span>
+     <li><span class="dfn-paneled" id="dc1cd39b">URL</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="5d7209e9">Window</span>
      <li><span class="dfn-paneled" id="35972864">active document</span>
-     <li><span class="dfn-paneled" id="3349d69f">associated document</span>
+     <li><span class="dfn-paneled" id="3349d69f">associated Document</span>
      <li><span class="dfn-paneled" id="aca22383">consume user activation</span>
      <li><span class="dfn-paneled" id="a1e6e861">cookie</span>
      <li><span class="dfn-paneled" id="3e12e042">environment settings object</span>
@@ -1129,7 +1199,7 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="959ad97b">origin</span>
-     <li><span class="dfn-paneled" id="ca3ca4ae">url parser</span>
+     <li><span class="dfn-paneled" id="ca3ca4ae">URL parser</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
@@ -1174,401 +1244,16 @@ For frame access, <code class="idl"><a data-link-type="idl" href="#dom-document-
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-toplevelstorageaccesspermissiondescriptor"><code><c- g>TopLevelStorageAccessPermissionDescriptor</c-></code></a> : <a data-link-type="idl-name" href="https://w3c.github.io/permissions/#dom-permissiondescriptor"><c- n>PermissionDescriptor</c-></a> {
-    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-default="&quot;&quot;" data-type="USVString " href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></a> = "";
+    <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-default="&quot;&quot;" data-type="USVString" href="#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"><code><c- g>requestedOrigin</c-></code></a> = "";
 };
 
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[Issue #privacycg/requestStorageAccessFor#15]</a> <a class="issue-return" href="#issue-9521f17b" title="Jump to section">↵</a></div>
+   <div class="issue"> The permissions task source shouldn’t be used directly. <a href="https://github.com/privacycg/requestStorageAccessFor/issues/15">[privacycg/requestStorageAccessFor Issue #15]</a> <a class="issue-return" href="#issue-9521f17b" title="Jump to section">↵</a></div>
   </div>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel-json */
-window.dfnpanelData = {};
-window.dfnpanelData['85394472'] = {"dfnID": "85394472", "url": "https://dom.spec.whatwg.org/#document", "dfnText": "Document", "refSections": [{"refs": [{"id": "ref-for-document"}, {"id": "ref-for-document\u2460"}, {"id": "ref-for-document\u2461"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-document\u2462"}, {"id": "ref-for-document\u2463"}, {"id": "ref-for-document\u2464"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['c62cd7cf'] = {"dfnID": "c62cd7cf", "url": "https://dom.spec.whatwg.org/#concept-document-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-document-origin"}, {"id": "ref-for-concept-document-origin\u2460"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['82748635'] = {"dfnID": "82748635", "url": "https://fetch.spec.whatwg.org/#http-access-control-allow-credentials", "dfnText": "access-control-allow-credentials", "refSections": [{"refs": [{"id": "ref-for-http-access-control-allow-credentials"}], "title": "8.1. Subresource Requests"}], "external": true};
-window.dfnpanelData['857d5516'] = {"dfnID": "857d5516", "url": "https://fetch.spec.whatwg.org/#concept-request-client", "dfnText": "client", "refSections": [{"refs": [{"id": "ref-for-concept-request-client"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-concept-request-client\u2460"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['902380f7'] = {"dfnID": "902380f7", "url": "https://fetch.spec.whatwg.org/#concept-request-credentials-mode", "dfnText": "credentials mode", "refSections": [{"refs": [{"id": "ref-for-concept-request-credentials-mode"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['49b06815'] = {"dfnID": "49b06815", "url": "https://fetch.spec.whatwg.org/#http-network-or-cache-fetch", "dfnText": "http network or cache fetch", "refSections": [{"refs": [{"id": "ref-for-http-network-or-cache-fetch"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['cb98f71f'] = {"dfnID": "cb98f71f", "url": "https://fetch.spec.whatwg.org/#concept-request-mode", "dfnText": "mode", "refSections": [{"refs": [{"id": "ref-for-concept-request-mode"}], "title": "5. Fetch Integration"}, {"refs": [{"id": "ref-for-concept-request-mode\u2460"}], "title": "8.1. Subresource Requests"}], "external": true};
-window.dfnpanelData['ddf444bb'] = {"dfnID": "ddf444bb", "url": "https://fetch.spec.whatwg.org/#http-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-http-origin"}], "title": "8.1. Subresource Requests"}], "external": true};
-window.dfnpanelData['55213b5b'] = {"dfnID": "55213b5b", "url": "https://fetch.spec.whatwg.org/#concept-request", "dfnText": "request", "refSections": [{"refs": [{"id": "ref-for-concept-request"}], "title": "3.2. User Agent top-level storage access policies"}], "external": true};
-window.dfnpanelData['839611db'] = {"dfnID": "839611db", "url": "https://fetch.spec.whatwg.org/#subresource-request", "dfnText": "subresource request", "refSections": [{"refs": [{"id": "ref-for-subresource-request"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['dc1cd39b'] = {"dfnID": "dc1cd39b", "url": "https://fetch.spec.whatwg.org/#concept-request-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-request-url"}], "title": "3.2. User Agent top-level storage access policies"}], "external": true};
-window.dfnpanelData['5d7209e9'] = {"dfnID": "5d7209e9", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window", "dfnText": "Window", "refSections": [{"refs": [{"id": "ref-for-window"}, {"id": "ref-for-window\u2460"}, {"id": "ref-for-window\u2461"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['35972864'] = {"dfnID": "35972864", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document", "dfnText": "active document", "refSections": [{"refs": [{"id": "ref-for-nav-document"}, {"id": "ref-for-nav-document\u2460"}], "title": "3. The requestStorageAccessFor API"}], "external": true};
-window.dfnpanelData['3349d69f'] = {"dfnID": "3349d69f", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window", "dfnText": "associated document", "refSections": [{"refs": [{"id": "ref-for-concept-document-window"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['aca22383'] = {"dfnID": "aca22383", "url": "https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation", "dfnText": "consume user activation", "refSections": [{"refs": [{"id": "ref-for-consume-user-activation"}, {"id": "ref-for-consume-user-activation\u2460"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['a1e6e861'] = {"dfnID": "a1e6e861", "url": "https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie", "dfnText": "cookie", "refSections": [{"refs": [{"id": "ref-for-dom-document-cookie"}], "title": "3. The requestStorageAccessFor API"}], "external": true};
-window.dfnpanelData['3e12e042'] = {"dfnID": "3e12e042", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object", "dfnText": "environment settings object", "refSections": [{"refs": [{"id": "ref-for-environment-settings-object"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['0e3ba9f8'] = {"dfnID": "0e3ba9f8", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active", "dfnText": "fully active", "refSections": [{"refs": [{"id": "ref-for-fully-active"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['f0811ff8'] = {"dfnID": "f0811ff8", "url": "https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element", "dfnText": "img", "refSections": [{"refs": [{"id": "ref-for-the-img-element"}], "title": "3. The requestStorageAccessFor API"}], "external": true};
-window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['13dd6cae'] = {"dfnID": "13dd6cae", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable", "dfnText": "node navigable", "refSections": [{"refs": [{"id": "ref-for-node-navigable"}, {"id": "ref-for-node-navigable\u2460"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['602b1a68'] = {"dfnID": "602b1a68", "url": "https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site", "dfnText": "obtain a site", "refSections": [{"refs": [{"id": "ref-for-obtain-a-site"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['b01b1359'] = {"dfnID": "b01b1359", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque", "dfnText": "opaque origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin-opaque"}, {"id": "ref-for-concept-origin-opaque\u2460"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['086e3aff'] = {"dfnID": "086e3aff", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-origin"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-concept-origin\u2460"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-concept-origin\u2461"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-concept-origin\u2462"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['43ac8374'] = {"dfnID": "43ac8374", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin", "dfnText": "origin (for environment settings object)", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-origin"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-concept-settings-object-origin\u2460"}, {"id": "ref-for-concept-settings-object-origin\u2461"}], "title": "4. Permissions Integration"}, {"refs": [{"id": "ref-for-concept-settings-object-origin\u2462"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['48438eb3'] = {"dfnID": "48438eb3", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task", "dfnText": "queue a global task", "refSections": [{"refs": [{"id": "ref-for-queue-a-global-task"}, {"id": "ref-for-queue-a-global-task\u2460"}, {"id": "ref-for-queue-a-global-task\u2461"}, {"id": "ref-for-queue-a-global-task\u2462"}, {"id": "ref-for-queue-a-global-task\u2463"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-queue-a-global-task\u2464"}, {"id": "ref-for-queue-a-global-task\u2465"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global", "dfnText": "relevant global object", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-global"}, {"id": "ref-for-concept-relevant-global\u2460"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2461"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2462"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['9c4c1e66'] = {"dfnID": "9c4c1e66", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object", "dfnText": "relevant settings object", "refSections": [{"refs": [{"id": "ref-for-relevant-settings-object"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2460"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2461"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-relevant-settings-object\u2462"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['7393da89'] = {"dfnID": "7393da89", "url": "https://html.spec.whatwg.org/multipage/browsers.html#same-origin", "dfnText": "same origin", "refSections": [{"refs": [{"id": "ref-for-same-origin"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['f0482ed2'] = {"dfnID": "f0482ed2", "url": "https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site", "dfnText": "same site", "refSections": [{"refs": [{"id": "ref-for-concept-site-same-site"}, {"id": "ref-for-concept-site-same-site\u2460"}, {"id": "ref-for-concept-site-same-site\u2461"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-concept-site-same-site\u2462"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-concept-site-same-site\u2463"}, {"id": "ref-for-concept-site-same-site\u2464"}, {"id": "ref-for-concept-site-same-site\u2465"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['65181da8'] = {"dfnID": "65181da8", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#secure-context", "dfnText": "secure context", "refSections": [{"refs": [{"id": "ref-for-secure-context"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['fb9bb722'] = {"dfnID": "fb9bb722", "url": "https://html.spec.whatwg.org/multipage/browsers.html#site", "dfnText": "site", "refSections": [{"refs": [{"id": "ref-for-site"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-site\u2460"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['ae2a6342'] = {"dfnID": "ae2a6342", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context", "dfnText": "top-level browsing context", "refSections": [{"refs": [{"id": "ref-for-top-level-browsing-context"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['c63519ed'] = {"dfnID": "c63519ed", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin", "dfnText": "top-level origin", "refSections": [{"refs": [{"id": "ref-for-concept-environment-top-level-origin"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-concept-environment-top-level-origin\u2460"}, {"id": "ref-for-concept-environment-top-level-origin\u2461"}, {"id": "ref-for-concept-environment-top-level-origin\u2462"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['47fe679e'] = {"dfnID": "47fe679e", "url": "https://html.spec.whatwg.org/multipage/interaction.html#transient-activation", "dfnText": "transient activation", "refSections": [{"refs": [{"id": "ref-for-transient-activation"}, {"id": "ref-for-transient-activation\u2460"}, {"id": "ref-for-transient-activation\u2461"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['d0c1b934'] = {"dfnID": "d0c1b934", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable", "dfnText": "traversable navigable", "refSections": [{"refs": [{"id": "ref-for-traversable-navigable"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-traversable-navigable\u2460"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-traversable-navigable\u2461"}, {"id": "ref-for-traversable-navigable\u2462"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-traversable-navigable\u2463"}], "title": "5. Fetch Integration"}], "external": true};
-window.dfnpanelData['860300d4'] = {"dfnID": "860300d4", "url": "https://infra.spec.whatwg.org/#implementation-defined", "dfnText": "implementation-defined", "refSections": [{"refs": [{"id": "ref-for-implementation-defined"}, {"id": "ref-for-implementation-defined\u2460"}], "title": "7. Privacy considerations"}, {"refs": [{"id": "ref-for-implementation-defined\u2461"}], "title": "8.2. Notification Abuse"}], "external": true};
-window.dfnpanelData['ebb01253'] = {"dfnID": "ebb01253", "url": "https://w3c.github.io/permissions/#dom-permissiondescriptor", "dfnText": "PermissionDescriptor", "refSections": [{"refs": [{"id": "ref-for-dom-permissiondescriptor"}, {"id": "ref-for-dom-permissiondescriptor\u2460"}, {"id": "ref-for-dom-permissiondescriptor\u2461"}, {"id": "ref-for-dom-permissiondescriptor\u2462"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['dbf8e074'] = {"dfnID": "dbf8e074", "url": "https://w3c.github.io/permissions/#dom-permissionstatus", "dfnText": "PermissionStatus", "refSections": [{"refs": [{"id": "ref-for-dom-permissionstatus"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['fb4878d7'] = {"dfnID": "fb4878d7", "url": "https://w3c.github.io/permissions/#dfn-denied", "dfnText": "denied", "refSections": [{"refs": [{"id": "ref-for-dfn-denied"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dfn-denied\u2460"}, {"id": "ref-for-dfn-denied\u2461"}], "title": "4. Permissions Integration"}, {"refs": [{"id": "ref-for-dfn-denied\u2462"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['6821ab89'] = {"dfnID": "6821ab89", "url": "https://w3c.github.io/permissions/#dfn-granted", "dfnText": "granted", "refSections": [{"refs": [{"id": "ref-for-dfn-granted"}, {"id": "ref-for-dfn-granted\u2460"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dfn-granted\u2461"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-dfn-granted\u2462"}], "title": "6. Storage Access API Integration"}, {"refs": [{"id": "ref-for-dfn-granted\u2463"}, {"id": "ref-for-dfn-granted\u2464"}], "title": "7. Privacy considerations"}], "external": true};
-window.dfnpanelData['0310eecd'] = {"dfnID": "0310eecd", "url": "https://w3c.github.io/permissions/#dom-permissiondescriptor-name", "dfnText": "name (for PermissionDescriptor)", "refSections": [{"refs": [{"id": "ref-for-dom-permissiondescriptor-name"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dom-permissiondescriptor-name\u2460"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-dom-permissiondescriptor-name\u2461"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['e740d7e5'] = {"dfnID": "e740d7e5", "url": "https://w3c.github.io/permissions/#dfn-name", "dfnText": "name (for powerful feature)", "refSections": [{"refs": [{"id": "ref-for-dfn-name"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['2f495016'] = {"dfnID": "2f495016", "url": "https://w3c.github.io/permissions/#dfn-permission-key", "dfnText": "permission key", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-key"}, {"id": "ref-for-dfn-permission-key\u2460"}, {"id": "ref-for-dfn-permission-key\u2461"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['a98e2e2c'] = {"dfnID": "a98e2e2c", "url": "https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm", "dfnText": "permission key comparison algorithm", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-key-comparison-algorithm"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['951ae231'] = {"dfnID": "951ae231", "url": "https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm", "dfnText": "permission key generation algorithm", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-key-generation-algorithm"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['79bfe9df'] = {"dfnID": "79bfe9df", "url": "https://w3c.github.io/permissions/#dfn-permission-key-type", "dfnText": "permission key type", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-key-type"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['7ee1f942'] = {"dfnID": "7ee1f942", "url": "https://w3c.github.io/permissions/#dfn-permission-query-algorithm", "dfnText": "permission query algorithm", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-query-algorithm"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['d124397f'] = {"dfnID": "d124397f", "url": "https://w3c.github.io/permissions/#dfn-permission-state", "dfnText": "permission state", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-state"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dfn-permission-state\u2460"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-dfn-permission-state\u2461"}], "title": "4. Permissions Integration"}, {"refs": [{"id": "ref-for-dfn-permission-state\u2462"}, {"id": "ref-for-dfn-permission-state\u2463"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['2a381665'] = {"dfnID": "2a381665", "url": "https://w3c.github.io/permissions/#dfn-permission-store-entry", "dfnText": "permission store entry", "refSections": [{"refs": [{"id": "ref-for-dfn-permission-store-entry"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['03af1875'] = {"dfnID": "03af1875", "url": "https://w3c.github.io/permissions/#permissions-task-source", "dfnText": "permissions task source", "refSections": [{"refs": [{"id": "ref-for-permissions-task-source"}, {"id": "ref-for-permissions-task-source\u2460"}, {"id": "ref-for-permissions-task-source\u2461"}, {"id": "ref-for-permissions-task-source\u2462"}, {"id": "ref-for-permissions-task-source\u2463"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-permissions-task-source\u2464"}, {"id": "ref-for-permissions-task-source\u2465"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['6c2d7879'] = {"dfnID": "6c2d7879", "url": "https://w3c.github.io/permissions/#dfn-powerful-feature", "dfnText": "powerful feature", "refSections": [{"refs": [{"id": "ref-for-dfn-powerful-feature"}, {"id": "ref-for-dfn-powerful-feature\u2460"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['b2915302'] = {"dfnID": "b2915302", "url": "https://w3c.github.io/permissions/#dfn-prompt", "dfnText": "prompt", "refSections": [{"refs": [{"id": "ref-for-dfn-prompt"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['f39015d0'] = {"dfnID": "f39015d0", "url": "https://w3c.github.io/permissions/#dom-permissions-query", "dfnText": "query(permissionDesc)", "refSections": [{"refs": [{"id": "ref-for-dom-permissions-query"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['d357c753'] = {"dfnID": "d357c753", "url": "https://w3c.github.io/permissions/#dfn-request-permission-to-use", "dfnText": "requesting permission to use", "refSections": [{"refs": [{"id": "ref-for-dfn-request-permission-to-use"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['620f832e'] = {"dfnID": "620f832e", "url": "https://w3c.github.io/permissions/#dom-permissionstatus-state", "dfnText": "state", "refSections": [{"refs": [{"id": "ref-for-dom-permissionstatus-state"}, {"id": "ref-for-dom-permissionstatus-state\u2460"}, {"id": "ref-for-dom-permissionstatus-state\u2461"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['aa7820f7'] = {"dfnID": "aa7820f7", "url": "https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess", "dfnText": "requestStorageAccess()", "refSections": [{"refs": [{"id": "ref-for-dom-document-requeststorageaccess"}, {"id": "ref-for-dom-document-requeststorageaccess\u2460"}, {"id": "ref-for-dom-document-requeststorageaccess\u2461"}, {"id": "ref-for-dom-document-requeststorageaccess\u2462"}], "title": "6. Storage Access API Integration"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccess\u2463"}, {"id": "ref-for-dom-document-requeststorageaccess\u2464"}], "title": "7. Privacy considerations"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccess\u2465"}], "title": "8. Security considerations"}], "external": true};
-window.dfnpanelData['959ad97b'] = {"dfnID": "959ad97b", "url": "https://url.spec.whatwg.org/#concept-url-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-url-origin"}], "title": "3.2. User Agent top-level storage access policies"}], "external": true};
-window.dfnpanelData['ca3ca4ae'] = {"dfnID": "ca3ca4ae", "url": "https://url.spec.whatwg.org/#concept-url-parser", "dfnText": "url parser", "refSections": [{"refs": [{"id": "ref-for-concept-url-parser"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['dca2de17'] = {"dfnID": "dca2de17", "url": "https://webidl.spec.whatwg.org/#idl-DOMException", "dfnText": "DOMException", "refSections": [{"refs": [{"id": "ref-for-idl-DOMException"}, {"id": "ref-for-idl-DOMException\u2460"}, {"id": "ref-for-idl-DOMException\u2461"}, {"id": "ref-for-idl-DOMException\u2462"}, {"id": "ref-for-idl-DOMException\u2463"}, {"id": "ref-for-idl-DOMException\u2464"}, {"id": "ref-for-idl-DOMException\u2465"}, {"id": "ref-for-idl-DOMException\u2466"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-idl-DOMException\u2467"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['797018a7'] = {"dfnID": "797018a7", "url": "https://webidl.spec.whatwg.org/#invalidstateerror", "dfnText": "InvalidStateError", "refSections": [{"refs": [{"id": "ref-for-invalidstateerror"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['ba556545'] = {"dfnID": "ba556545", "url": "https://webidl.spec.whatwg.org/#notallowederror", "dfnText": "NotAllowedError", "refSections": [{"refs": [{"id": "ref-for-notallowederror"}, {"id": "ref-for-notallowederror\u2460"}, {"id": "ref-for-notallowederror\u2461"}, {"id": "ref-for-notallowederror\u2462"}, {"id": "ref-for-notallowederror\u2463"}, {"id": "ref-for-notallowederror\u2464"}, {"id": "ref-for-notallowederror\u2465"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-notallowederror\u2466"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['82ca3efc'] = {"dfnID": "82ca3efc", "url": "https://webidl.spec.whatwg.org/#exceptiondef-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-typeerror"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['b0d7f3c3'] = {"dfnID": "b0d7f3c3", "url": "https://webidl.spec.whatwg.org/#idl-USVString", "dfnText": "USVString", "refSections": [{"refs": [{"id": "ref-for-idl-USVString"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-idl-USVString\u2460"}, {"id": "ref-for-idl-USVString\u2461"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-idl-USVString\u2462"}], "title": "4. Permissions Integration"}], "external": true};
-window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}, {"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}, {"id": "ref-for-reject\u2463"}, {"id": "ref-for-reject\u2464"}, {"id": "ref-for-reject\u2465"}, {"id": "ref-for-reject\u2466"}, {"id": "ref-for-reject\u2467"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-reject\u2468"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}, {"id": "ref-for-resolve\u2460"}, {"id": "ref-for-resolve\u2461"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-resolve\u2462"}], "title": "6. Storage Access API Integration"}], "external": true};
-window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.spec.whatwg.org/#idl-undefined", "dfnText": "undefined", "refSections": [{"refs": [{"id": "ref-for-idl-undefined"}], "title": "3.1. Changes to Document"}], "external": true};
-window.dfnpanelData['unpartitioned-data'] = {"dfnID": "unpartitioned-data", "url": "#unpartitioned-data", "dfnText": "Unpartitioned data", "refSections": [{"refs": [{"id": "ref-for-unpartitioned-data"}], "title": "3. The requestStorageAccessFor API"}], "external": false};
-window.dfnpanelData['first-party-site-context'] = {"dfnID": "first-party-site-context", "url": "#first-party-site-context", "dfnText": "first-party-site context", "refSections": [{"refs": [{"id": "ref-for-first-party-site-context"}, {"id": "ref-for-first-party-site-context\u2460"}, {"id": "ref-for-first-party-site-context\u2461"}, {"id": "ref-for-first-party-site-context\u2462"}], "title": "3. The requestStorageAccessFor API"}], "external": false};
-window.dfnpanelData['third-party-context'] = {"dfnID": "third-party-context", "url": "#third-party-context", "dfnText": "third party context", "refSections": [{"refs": [{"id": "ref-for-third-party-context"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-third-party-context\u2460"}], "title": "8.1. Subresource Requests"}], "external": false};
-window.dfnpanelData['dom-document-requeststorageaccessfor'] = {"dfnID": "dom-document-requeststorageaccessfor", "url": "#dom-document-requeststorageaccessfor", "dfnText": "requestStorageAccessFor(requestedOrigin)", "refSections": [{"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2460"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2461"}], "title": "3. The requestStorageAccessFor API"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2462"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2463"}], "title": "5. Fetch Integration"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2464"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2465"}], "title": "6. Storage Access API Integration"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2466"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2467"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2468"}], "title": "7. Privacy considerations"}, {"refs": [{"id": "ref-for-dom-document-requeststorageaccessfor\u2460\u24ea"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2460\u2460"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2460\u2461"}, {"id": "ref-for-dom-document-requeststorageaccessfor\u2460\u2462"}], "title": "8. Security considerations"}], "external": false};
-window.dfnpanelData['determine-if-a-request-has-top-level-storage-access'] = {"dfnID": "determine-if-a-request-has-top-level-storage-access", "url": "#determine-if-a-request-has-top-level-storage-access", "dfnText": "determine if a request has top-level storage access", "refSections": [{"refs": [{"id": "ref-for-determine-if-a-request-has-top-level-storage-access"}], "title": "5. Fetch Integration"}], "external": false};
-window.dfnpanelData['permissiondef-top-level-storage-access'] = {"dfnID": "permissiondef-top-level-storage-access", "url": "#permissiondef-top-level-storage-access", "dfnText": "top-level-storage-access", "refSections": [{"refs": [{"id": "ref-for-permissiondef-top-level-storage-access"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2460"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-permissiondef-top-level-storage-access\u2461"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-permissiondef-top-level-storage-access\u2462"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2463"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2464"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2465"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2466"}], "title": "4. Permissions Integration"}, {"refs": [{"id": "ref-for-permissiondef-top-level-storage-access\u2467"}], "title": "6. Storage Access API Integration"}, {"refs": [{"id": "ref-for-permissiondef-top-level-storage-access\u2468"}, {"id": "ref-for-permissiondef-top-level-storage-access\u2460\u24ea"}], "title": "7. Privacy considerations"}], "external": false};
-window.dfnpanelData['dictdef-toplevelstorageaccesspermissiondescriptor'] = {"dfnID": "dictdef-toplevelstorageaccesspermissiondescriptor", "url": "#dictdef-toplevelstorageaccesspermissiondescriptor", "dfnText": "TopLevelStorageAccessPermissionDescriptor", "refSections": [{"refs": [{"id": "ref-for-dictdef-toplevelstorageaccesspermissiondescriptor"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dictdef-toplevelstorageaccesspermissiondescriptor\u2460"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-dictdef-toplevelstorageaccesspermissiondescriptor\u2461"}], "title": "6. Storage Access API Integration"}], "external": false};
-window.dfnpanelData['dom-toplevelstorageaccesspermissiondescriptor-requestedorigin'] = {"dfnID": "dom-toplevelstorageaccesspermissiondescriptor-requestedorigin", "url": "#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin", "dfnText": "requestedOrigin", "refSections": [{"refs": [{"id": "ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"}], "title": "3.1. Changes to Document"}, {"refs": [{"id": "ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2460"}], "title": "3.2. User Agent top-level storage access policies"}, {"refs": [{"id": "ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2461"}], "title": "4. Permissions Integration"}, {"refs": [{"id": "ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2462"}], "title": "6. Storage Access API Integration"}], "external": false};
-</script>
 <script>/* Boilerplate: script-dom-helper */
+"use strict";
 function query(sel) { return document.querySelector(sel); }
 
 function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
@@ -1762,103 +1447,841 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
+}</script>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+let dfnPanelData = {
+"0310eecd": {"dfnID":"0310eecd","dfnText":"name (for PermissionDescriptor)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissiondescriptor-name"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dom-permissiondescriptor-name\u2460"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-dom-permissiondescriptor-name\u2461"}],"title":"6. Storage Access API Integration"}],"url":"https://w3c.github.io/permissions/#dom-permissiondescriptor-name"},
+"03af1875": {"dfnID":"03af1875","dfnText":"permissions task source","external":true,"refSections":[{"refs":[{"id":"ref-for-permissions-task-source"},{"id":"ref-for-permissions-task-source\u2460"},{"id":"ref-for-permissions-task-source\u2461"},{"id":"ref-for-permissions-task-source\u2462"},{"id":"ref-for-permissions-task-source\u2463"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-permissions-task-source\u2464"},{"id":"ref-for-permissions-task-source\u2465"}],"title":"6. Storage Access API Integration"}],"url":"https://w3c.github.io/permissions/#permissions-task-source"},
+"086e3aff": {"dfnID":"086e3aff","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-concept-origin\u2460"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-concept-origin\u2461"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-concept-origin\u2462"}],"title":"5. Fetch Integration"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
+"0e3ba9f8": {"dfnID":"0e3ba9f8","dfnText":"fully active","external":true,"refSections":[{"refs":[{"id":"ref-for-fully-active"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active"},
+"13dd6cae": {"dfnID":"13dd6cae","dfnText":"node navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-node-navigable"},{"id":"ref-for-node-navigable\u2460"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
+"2a381665": {"dfnID":"2a381665","dfnText":"permission store entry","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-store-entry"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-store-entry"},
+"2f495016": {"dfnID":"2f495016","dfnText":"permission key","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-key"},{"id":"ref-for-dfn-permission-key\u2460"},{"id":"ref-for-dfn-permission-key\u2461"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-key"},
+"3349d69f": {"dfnID":"3349d69f","dfnText":"associated Document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-window"}],"title":"5. Fetch Integration"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window"},
+"35972864": {"dfnID":"35972864","dfnText":"active document","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-document"},{"id":"ref-for-nav-document\u2460"}],"title":"3. The requestStorageAccessFor API"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document"},
+"3b90bdcd": {"dfnID":"3b90bdcd","dfnText":"resolve","external":true,"refSections":[{"refs":[{"id":"ref-for-resolve"},{"id":"ref-for-resolve\u2460"},{"id":"ref-for-resolve\u2461"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-resolve\u2462"}],"title":"6. Storage Access API Integration"}],"url":"https://webidl.spec.whatwg.org/#resolve"},
+"3e12e042": {"dfnID":"3e12e042","dfnText":"environment settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-environment-settings-object"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object"},
+"43ac8374": {"dfnID":"43ac8374","dfnText":"origin (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-origin"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-concept-settings-object-origin\u2460"},{"id":"ref-for-concept-settings-object-origin\u2461"}],"title":"4. Permissions Integration"},{"refs":[{"id":"ref-for-concept-settings-object-origin\u2462"}],"title":"6. Storage Access API Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin"},
+"47fe679e": {"dfnID":"47fe679e","dfnText":"transient activation","external":true,"refSections":[{"refs":[{"id":"ref-for-transient-activation"},{"id":"ref-for-transient-activation\u2460"},{"id":"ref-for-transient-activation\u2461"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation"},
+"48438eb3": {"dfnID":"48438eb3","dfnText":"queue a global task","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-global-task"},{"id":"ref-for-queue-a-global-task\u2460"},{"id":"ref-for-queue-a-global-task\u2461"},{"id":"ref-for-queue-a-global-task\u2462"},{"id":"ref-for-queue-a-global-task\u2463"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-queue-a-global-task\u2464"},{"id":"ref-for-queue-a-global-task\u2465"}],"title":"6. Storage Access API Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task"},
+"49b06815": {"dfnID":"49b06815","dfnText":"http network or cache fetch","external":true,"refSections":[{"refs":[{"id":"ref-for-http-network-or-cache-fetch"}],"title":"5. Fetch Integration"}],"url":"https://fetch.spec.whatwg.org/#http-network-or-cache-fetch"},
+"55213b5b": {"dfnID":"55213b5b","dfnText":"request","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request"}],"title":"3.2. User Agent top-level storage access policies"}],"url":"https://fetch.spec.whatwg.org/#concept-request"},
+"5d7209e9": {"dfnID":"5d7209e9","dfnText":"Window","external":true,"refSections":[{"refs":[{"id":"ref-for-window"},{"id":"ref-for-window\u2460"},{"id":"ref-for-window\u2461"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"},
+"5f90bbfb": {"dfnID":"5f90bbfb","dfnText":"undefined","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-undefined"}],"title":"3.1. Changes to Document"}],"url":"https://webidl.spec.whatwg.org/#idl-undefined"},
+"602b1a68": {"dfnID":"602b1a68","dfnText":"obtain a site","external":true,"refSections":[{"refs":[{"id":"ref-for-obtain-a-site"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site"},
+"620f832e": {"dfnID":"620f832e","dfnText":"state","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissionstatus-state"},{"id":"ref-for-dom-permissionstatus-state\u2460"},{"id":"ref-for-dom-permissionstatus-state\u2461"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dom-permissionstatus-state"},
+"65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
+"6821ab89": {"dfnID":"6821ab89","dfnText":"granted","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-granted"},{"id":"ref-for-dfn-granted\u2460"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dfn-granted\u2461"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-dfn-granted\u2462"}],"title":"6. Storage Access API Integration"},{"refs":[{"id":"ref-for-dfn-granted\u2463"},{"id":"ref-for-dfn-granted\u2464"}],"title":"7. Privacy considerations"}],"url":"https://w3c.github.io/permissions/#dfn-granted"},
+"6c2d7879": {"dfnID":"6c2d7879","dfnText":"powerful feature","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-powerful-feature"},{"id":"ref-for-dfn-powerful-feature\u2460"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-powerful-feature"},
+"7393da89": {"dfnID":"7393da89","dfnText":"same origin","external":true,"refSections":[{"refs":[{"id":"ref-for-same-origin"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin"},
+"797018a7": {"dfnID":"797018a7","dfnText":"InvalidStateError","external":true,"refSections":[{"refs":[{"id":"ref-for-invalidstateerror"}],"title":"3.1. Changes to Document"}],"url":"https://webidl.spec.whatwg.org/#invalidstateerror"},
+"79bfe9df": {"dfnID":"79bfe9df","dfnText":"permission key type","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-key-type"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-key-type"},
+"7ee1f942": {"dfnID":"7ee1f942","dfnText":"permission query algorithm","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-query-algorithm"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-query-algorithm"},
+"82748635": {"dfnID":"82748635","dfnText":"Access-Control-Allow-Credentials","external":true,"refSections":[{"refs":[{"id":"ref-for-http-access-control-allow-credentials"}],"title":"8.1. Subresource Requests"}],"url":"https://fetch.spec.whatwg.org/#http-access-control-allow-credentials"},
+"82ca3efc": {"dfnID":"82ca3efc","dfnText":"TypeError","external":true,"refSections":[{"refs":[{"id":"ref-for-exceptiondef-typeerror"}],"title":"3.1. Changes to Document"}],"url":"https://webidl.spec.whatwg.org/#exceptiondef-typeerror"},
+"839611db": {"dfnID":"839611db","dfnText":"subresource request","external":true,"refSections":[{"refs":[{"id":"ref-for-subresource-request"}],"title":"5. Fetch Integration"}],"url":"https://fetch.spec.whatwg.org/#subresource-request"},
+"85394472": {"dfnID":"85394472","dfnText":"Document","external":true,"refSections":[{"refs":[{"id":"ref-for-document"},{"id":"ref-for-document\u2460"},{"id":"ref-for-document\u2461"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-document\u2462"},{"id":"ref-for-document\u2463"},{"id":"ref-for-document\u2464"}],"title":"3.1. Changes to Document"}],"url":"https://dom.spec.whatwg.org/#document"},
+"857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-concept-request-client\u2460"}],"title":"5. Fetch Integration"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
+"860300d4": {"dfnID":"860300d4","dfnText":"implementation-defined","external":true,"refSections":[{"refs":[{"id":"ref-for-implementation-defined"},{"id":"ref-for-implementation-defined\u2460"}],"title":"7. Privacy considerations"},{"refs":[{"id":"ref-for-implementation-defined\u2461"}],"title":"8.2. Notification Abuse"}],"url":"https://infra.spec.whatwg.org/#implementation-defined"},
+"902380f7": {"dfnID":"902380f7","dfnText":"credentials mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-credentials-mode"}],"title":"5. Fetch Integration"}],"url":"https://fetch.spec.whatwg.org/#concept-request-credentials-mode"},
+"951ae231": {"dfnID":"951ae231","dfnText":"permission key generation algorithm","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-key-generation-algorithm"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm"},
+"959ad97b": {"dfnID":"959ad97b","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-origin"}],"title":"3.2. User Agent top-level storage access policies"}],"url":"https://url.spec.whatwg.org/#concept-url-origin"},
+"9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-relevant-settings-object\u2460"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-relevant-settings-object\u2461"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-relevant-settings-object\u2462"}],"title":"6. Storage Access API Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"a1e6e861": {"dfnID":"a1e6e861","dfnText":"cookie","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-document-cookie"}],"title":"3. The requestStorageAccessFor API"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie"},
+"a72449dd": {"dfnID":"a72449dd","dfnText":"in parallel","external":true,"refSections":[{"refs":[{"id":"ref-for-in-parallel"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
+"a98e2e2c": {"dfnID":"a98e2e2c","dfnText":"permission key comparison algorithm","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-key-comparison-algorithm"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm"},
+"aa7820f7": {"dfnID":"aa7820f7","dfnText":"requestStorageAccess()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-document-requeststorageaccess"},{"id":"ref-for-dom-document-requeststorageaccess\u2460"},{"id":"ref-for-dom-document-requeststorageaccess\u2461"},{"id":"ref-for-dom-document-requeststorageaccess\u2462"}],"title":"6. Storage Access API Integration"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccess\u2463"},{"id":"ref-for-dom-document-requeststorageaccess\u2464"}],"title":"7. Privacy considerations"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccess\u2465"}],"title":"8. Security considerations"}],"url":"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess"},
+"aca22383": {"dfnID":"aca22383","dfnText":"consume user activation","external":true,"refSections":[{"refs":[{"id":"ref-for-consume-user-activation"},{"id":"ref-for-consume-user-activation\u2460"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation"},
+"ae2a6342": {"dfnID":"ae2a6342","dfnText":"top-level browsing context","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-browsing-context"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context"},
+"b01b1359": {"dfnID":"b01b1359","dfnText":"opaque origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin-opaque"},{"id":"ref-for-concept-origin-opaque\u2460"}],"title":"3.1. Changes to Document"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
+"b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-idl-USVString\u2460"},{"id":"ref-for-idl-USVString\u2461"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-idl-USVString\u2462"}],"title":"4. Permissions Integration"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
+"b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"},{"id":"ref-for-reject\u2461"},{"id":"ref-for-reject\u2462"},{"id":"ref-for-reject\u2463"},{"id":"ref-for-reject\u2464"},{"id":"ref-for-reject\u2465"},{"id":"ref-for-reject\u2466"},{"id":"ref-for-reject\u2467"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-reject\u2468"}],"title":"6. Storage Access API Integration"}],"url":"https://webidl.spec.whatwg.org/#reject"},
+"b2915302": {"dfnID":"b2915302","dfnText":"prompt","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-prompt"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-prompt"},
+"ba556545": {"dfnID":"ba556545","dfnText":"NotAllowedError","external":true,"refSections":[{"refs":[{"id":"ref-for-notallowederror"},{"id":"ref-for-notallowederror\u2460"},{"id":"ref-for-notallowederror\u2461"},{"id":"ref-for-notallowederror\u2462"},{"id":"ref-for-notallowederror\u2463"},{"id":"ref-for-notallowederror\u2464"},{"id":"ref-for-notallowederror\u2465"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-notallowederror\u2466"}],"title":"6. Storage Access API Integration"}],"url":"https://webidl.spec.whatwg.org/#notallowederror"},
+"bdbd19d1": {"dfnID":"bdbd19d1","dfnText":"Promise","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-promise"}],"title":"3.1. Changes to Document"}],"url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"},{"id":"ref-for-concept-document-origin\u2460"}],"title":"3.1. Changes to Document"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
+"c63519ed": {"dfnID":"c63519ed","dfnText":"top-level origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-environment-top-level-origin"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-concept-environment-top-level-origin\u2460"},{"id":"ref-for-concept-environment-top-level-origin\u2461"},{"id":"ref-for-concept-environment-top-level-origin\u2462"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin"},
+"ca3ca4ae": {"dfnID":"ca3ca4ae","dfnText":"URL parser","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-parser"}],"title":"3.1. Changes to Document"}],"url":"https://url.spec.whatwg.org/#concept-url-parser"},
+"cb98f71f": {"dfnID":"cb98f71f","dfnText":"mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-mode"}],"title":"5. Fetch Integration"},{"refs":[{"id":"ref-for-concept-request-mode\u2460"}],"title":"8.1. Subresource Requests"}],"url":"https://fetch.spec.whatwg.org/#concept-request-mode"},
+"d0c1b934": {"dfnID":"d0c1b934","dfnText":"traversable navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-traversable-navigable"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-traversable-navigable\u2460"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-traversable-navigable\u2461"},{"id":"ref-for-traversable-navigable\u2462"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-traversable-navigable\u2463"}],"title":"5. Fetch Integration"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable"},
+"d124397f": {"dfnID":"d124397f","dfnText":"permission state","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-permission-state"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dfn-permission-state\u2460"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-dfn-permission-state\u2461"}],"title":"4. Permissions Integration"},{"refs":[{"id":"ref-for-dfn-permission-state\u2462"},{"id":"ref-for-dfn-permission-state\u2463"}],"title":"6. Storage Access API Integration"}],"url":"https://w3c.github.io/permissions/#dfn-permission-state"},
+"d357c753": {"dfnID":"d357c753","dfnText":"requesting permission to use","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-request-permission-to-use"}],"title":"3.1. Changes to Document"}],"url":"https://w3c.github.io/permissions/#dfn-request-permission-to-use"},
+"dacde8b5": {"dfnID":"dacde8b5","dfnText":"a new promise","external":true,"refSections":[{"refs":[{"id":"ref-for-a-new-promise"}],"title":"3.1. Changes to Document"}],"url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"dbf8e074": {"dfnID":"dbf8e074","dfnText":"PermissionStatus","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissionstatus"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dom-permissionstatus"},
+"dc1cd39b": {"dfnID":"dc1cd39b","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url"}],"title":"3.2. User Agent top-level storage access policies"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url"},
+"dca2de17": {"dfnID":"dca2de17","dfnText":"DOMException","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMException"},{"id":"ref-for-idl-DOMException\u2460"},{"id":"ref-for-idl-DOMException\u2461"},{"id":"ref-for-idl-DOMException\u2462"},{"id":"ref-for-idl-DOMException\u2463"},{"id":"ref-for-idl-DOMException\u2464"},{"id":"ref-for-idl-DOMException\u2465"},{"id":"ref-for-idl-DOMException\u2466"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-idl-DOMException\u2467"}],"title":"6. Storage Access API Integration"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"ddf444bb": {"dfnID":"ddf444bb","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-http-origin"}],"title":"8.1. Subresource Requests"}],"url":"https://fetch.spec.whatwg.org/#http-origin"},
+"determine-if-a-request-has-top-level-storage-access": {"dfnID":"determine-if-a-request-has-top-level-storage-access","dfnText":"determine if a request has top-level storage access","external":false,"refSections":[{"refs":[{"id":"ref-for-determine-if-a-request-has-top-level-storage-access"}],"title":"5. Fetch Integration"}],"url":"#determine-if-a-request-has-top-level-storage-access"},
+"dictdef-toplevelstorageaccesspermissiondescriptor": {"dfnID":"dictdef-toplevelstorageaccesspermissiondescriptor","dfnText":"TopLevelStorageAccessPermissionDescriptor","external":false,"refSections":[{"refs":[{"id":"ref-for-dictdef-toplevelstorageaccesspermissiondescriptor"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dictdef-toplevelstorageaccesspermissiondescriptor\u2460"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-dictdef-toplevelstorageaccesspermissiondescriptor\u2461"}],"title":"6. Storage Access API Integration"}],"url":"#dictdef-toplevelstorageaccesspermissiondescriptor"},
+"dom-document-requeststorageaccessfor": {"dfnID":"dom-document-requeststorageaccessfor","dfnText":"requestStorageAccessFor(requestedOrigin)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2460"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2461"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2462"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2463"}],"title":"5. Fetch Integration"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2464"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2465"}],"title":"6. Storage Access API Integration"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2466"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2467"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2468"}],"title":"7. Privacy considerations"},{"refs":[{"id":"ref-for-dom-document-requeststorageaccessfor\u2460\u24ea"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2460\u2460"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2460\u2461"},{"id":"ref-for-dom-document-requeststorageaccessfor\u2460\u2462"}],"title":"8. Security considerations"}],"url":"#dom-document-requeststorageaccessfor"},
+"dom-document-requeststorageaccessfor-requestedorigin-requestedorigin": {"dfnID":"dom-document-requeststorageaccessfor-requestedorigin-requestedorigin","dfnText":"requestedOrigin","external":false,"refSections":[],"url":"#dom-document-requeststorageaccessfor-requestedorigin-requestedorigin"},
+"dom-toplevelstorageaccesspermissiondescriptor-requestedorigin": {"dfnID":"dom-toplevelstorageaccesspermissiondescriptor-requestedorigin","dfnText":"requestedOrigin","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2460"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2461"}],"title":"4. Permissions Integration"},{"refs":[{"id":"ref-for-dom-toplevelstorageaccesspermissiondescriptor-requestedorigin\u2462"}],"title":"6. Storage Access API Integration"}],"url":"#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"},
+"e740d7e5": {"dfnID":"e740d7e5","dfnText":"name (for powerful feature)","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-name"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dfn-name"},
+"e99bd18e": {"dfnID":"e99bd18e","dfnText":"relevant global object","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-global"},{"id":"ref-for-concept-relevant-global\u2460"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-concept-relevant-global\u2461"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-concept-relevant-global\u2462"}],"title":"5. Fetch Integration"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
+"ebb01253": {"dfnID":"ebb01253","dfnText":"PermissionDescriptor","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissiondescriptor"},{"id":"ref-for-dom-permissiondescriptor\u2460"},{"id":"ref-for-dom-permissiondescriptor\u2461"},{"id":"ref-for-dom-permissiondescriptor\u2462"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dom-permissiondescriptor"},
+"f0482ed2": {"dfnID":"f0482ed2","dfnText":"same site","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-site-same-site"},{"id":"ref-for-concept-site-same-site\u2460"},{"id":"ref-for-concept-site-same-site\u2461"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-concept-site-same-site\u2462"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-concept-site-same-site\u2463"},{"id":"ref-for-concept-site-same-site\u2464"},{"id":"ref-for-concept-site-same-site\u2465"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site"},
+"f0811ff8": {"dfnID":"f0811ff8","dfnText":"img","external":true,"refSections":[{"refs":[{"id":"ref-for-the-img-element"}],"title":"3. The requestStorageAccessFor API"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element"},
+"f39015d0": {"dfnID":"f39015d0","dfnText":"query(permissionDesc)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-permissions-query"}],"title":"4. Permissions Integration"}],"url":"https://w3c.github.io/permissions/#dom-permissions-query"},
+"fb4878d7": {"dfnID":"fb4878d7","dfnText":"denied","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-denied"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-dfn-denied\u2460"},{"id":"ref-for-dfn-denied\u2461"}],"title":"4. Permissions Integration"},{"refs":[{"id":"ref-for-dfn-denied\u2462"}],"title":"6. Storage Access API Integration"}],"url":"https://w3c.github.io/permissions/#dfn-denied"},
+"fb9bb722": {"dfnID":"fb9bb722","dfnText":"site","external":true,"refSections":[{"refs":[{"id":"ref-for-site"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-site\u2460"}],"title":"4. Permissions Integration"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#site"},
+"first-party-site-context": {"dfnID":"first-party-site-context","dfnText":"first-party-site context","external":false,"refSections":[{"refs":[{"id":"ref-for-first-party-site-context"},{"id":"ref-for-first-party-site-context\u2460"},{"id":"ref-for-first-party-site-context\u2461"},{"id":"ref-for-first-party-site-context\u2462"}],"title":"3. The requestStorageAccessFor API"}],"url":"#first-party-site-context"},
+"permissiondef-top-level-storage-access": {"dfnID":"permissiondef-top-level-storage-access","dfnText":"top-level-storage-access","external":false,"refSections":[{"refs":[{"id":"ref-for-permissiondef-top-level-storage-access"},{"id":"ref-for-permissiondef-top-level-storage-access\u2460"}],"title":"3.1. Changes to Document"},{"refs":[{"id":"ref-for-permissiondef-top-level-storage-access\u2461"}],"title":"3.2. User Agent top-level storage access policies"},{"refs":[{"id":"ref-for-permissiondef-top-level-storage-access\u2462"},{"id":"ref-for-permissiondef-top-level-storage-access\u2463"},{"id":"ref-for-permissiondef-top-level-storage-access\u2464"},{"id":"ref-for-permissiondef-top-level-storage-access\u2465"},{"id":"ref-for-permissiondef-top-level-storage-access\u2466"}],"title":"4. Permissions Integration"},{"refs":[{"id":"ref-for-permissiondef-top-level-storage-access\u2467"}],"title":"6. Storage Access API Integration"},{"refs":[{"id":"ref-for-permissiondef-top-level-storage-access\u2468"},{"id":"ref-for-permissiondef-top-level-storage-access\u2460\u24ea"}],"title":"7. Privacy considerations"}],"url":"#permissiondef-top-level-storage-access"},
+"third-party-context": {"dfnID":"third-party-context","dfnText":"third party context","external":false,"refSections":[{"refs":[{"id":"ref-for-third-party-context"}],"title":"3. The requestStorageAccessFor API"},{"refs":[{"id":"ref-for-third-party-context\u2460"}],"title":"8.1. Subresource Requests"}],"url":"#third-party-context"},
+"unpartitioned-data": {"dfnID":"unpartitioned-data","dfnText":"Unpartitioned data","external":false,"refSections":[{"refs":[{"id":"ref-for-unpartitioned-data"}],"title":"3. The requestStorageAccessFor API"}],"url":"#unpartitioned-data"},
+};
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    genAllDfnPanels();
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+});
+
+window.addEventListener("resize", () => {
+    // Pin any visible dfn panel
+    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
+});
+
+function genAllDfnPanels() {
+    for(const panelData of Object.values(dfnPanelData)) {
+        const dfnID = panelData.dfnID;
+        const dfn = document.getElementById(dfnID);
+        if(!dfn) {
+            console.log(`Can't find dfn#${dfnID}.`, panelData);
+            continue;
+        }
+        dfn.panelData = panelData;
+        insertDfnPopupAction(dfn);
+    }
+}
+
+function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
+    const dfnPanel = mk.aside({
+        class: "dfn-panel on",
+        id: `infopanel-for-${dfnID}`,
+        "data-for": dfnID,
+        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        },
+        mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+            `Info about the '${dfnText}' ${external?"external":""} reference.`),
+        mk.a({href:url, class:"dfn-link"}, url),
+        refSections.length == 0 ? [] :
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({ href: `#${ref.id}` },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        genLinkingSyntaxes(dfn),
+    );
+
+    dfnPanel.addEventListener('click', (event) => {
+        if (event.target.nodeName == 'A') {
+            scrollToTargetAndHighlight(event);
+            pinDfnPanel(dfnPanel);
+        }
+        event.stopPropagation();
+        refocusOnTarget(event);
+    });
+    dfnPanel.addEventListener('keydown', (event) => {
+        if(event.keyCode == 27) { // Escape key
+            hideDfnPanel({dfnPanel});
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+
+    dfnPanel.dfn = dfn;
+    dfn.dfnPanel = dfnPanel;
+    return dfnPanel;
+}
+
+
+
+function hideAllDfnPanels() {
+    // Delete the currently-active dfn panel.
+    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
+}
+
+function showDfnPanel(dfn) {
+    hideAllDfnPanels(); // Only display one at a time.
+
+    dfn.setAttribute("aria-expanded", "true");
+
+    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
+
+    // Give the dfn a unique tabindex, and then
+    // give all the tabbable panel bits successive indexes.
+    let tabIndex = 100;
+    dfn.tabIndex = tabIndex++;
+    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
+    for (const el of tabbable) {
+        el.tabIndex = tabIndex++;
+    }
+
+    append(document.body, dfnPanel);
+    positionDfnPanel(dfnPanel);
+}
+
+function positionDfnPanel(dfnPanel) {
+    const dfn = dfnPanel.dfn;
+    const dfnPos = getBounds(dfn);
+    dfnPanel.style.top = dfnPos.bottom + "px";
+    dfnPanel.style.left = dfnPos.left + "px";
+
+    const panelPos = dfnPanel.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
+        dfnPanel.style.left = newLeft + "px";
+    }
+}
+
+function pinDfnPanel(dfnPanel) {
+    // Switch it to "activated" state, which pins it.
+    dfnPanel.classList.add("activated");
+    dfnPanel.style.position = "fixed";
+    dfnPanel.style.left = null;
+    dfnPanel.style.top = null;
+}
+
+function hideDfnPanel({dfn, dfnPanel}) {
+    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
+    if(!dfn) dfn = dfnPanel.dfn;
+    dfn.dfnPanel = undefined;
+    dfnPanel.dfn = undefined;
+    dfn.setAttribute("aria-expanded", "false");
+    dfn.tabIndex = undefined;
+    dfnPanel.remove()
+}
+
+function toggleDfnPanel(dfn) {
+    if(dfn.dfnPanel) {
+        hideDfnPanel(dfn);
+    } else {
+        showDfnPanel(dfn);
+    }
+}
+
+function insertDfnPopupAction(dfn) {
+    dfn.setAttribute('role', 'button');
+    dfn.setAttribute('aria-expanded', 'false')
+    dfn.tabIndex = 0;
+    dfn.classList.add('has-dfn-panel');
+    dfn.addEventListener('click', (event) => {
+        toggleDfnPanel(dfn);
+        event.stopPropagation();
+    });
+    dfn.addEventListener('keypress', (event) => {
+        const kc = event.keyCode;
+        // 32->Space, 13->Enter
+        if(kc == 32 || kc == 13) {
+            toggleDfnPanel(dfn);
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+}
+
+function refocusOnTarget(event) {
+    const target = event.target;
+    setTimeout(() => {
+        // Refocus on the event.target element.
+        // This is needed after browser scrolls to the destination.
+        target.focus();
+    });
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function scrollToTargetAndHighlight(event) {
+    let hash = event.target.hash;
+    if (hash) {
+        hash = decodeURIComponent(hash.substring(1));
+        const dest = document.getElementById(hash);
+        if (dest) {
+            dest.classList.add('highlighted');
+            setTimeout(() => dest.classList.remove('highlighted'), 1000);
+        }
+    }
+}
+
+// Functions, divided by link type, that wrap an autolink's
+// contents with the appropriate outer syntax.
+// Alternately, a string naming another type they format
+// the same as.
+function needsFor(type) {
+    switch(type) {
+        case "descriptor":
+        case "value":
+        case "element-attr":
+        case "attr-value":
+        case "element-state":
+        case "method":
+        case "constructor":
+        case "argument":
+        case "attribute":
+        case "const":
+        case "dict-member":
+        case "event":
+        case "enum-value":
+        case "stringifier":
+        case "serializer":
+        case "iterator":
+        case "maplike":
+        case "setlike":
+        case "state":
+        case "mode":
+        case "context":
+        case "facet": return true;
+
+        default: return false;
+    }
+}
+function refusesFor(type) {
+    switch(type) {
+        case "property":
+        case "element":
+        case "interface":
+        case "namespace":
+        case "callback":
+        case "dictionary":
+        case "enum":
+        case "exception":
+        case "typedef":
+        case "http-header":
+        case "permission": return true;
+
+        default: return false;
+    }
+}
+function linkFormatterFromType(type) {
+    switch(type) {
+        case 'scheme':
+        case 'permission':
+        case 'dfn': return (text) => `[=${text}=]`;
+
+        case 'abstract-op': return (text) => `[\$${text}\$]`;
+
+        case 'function':
+        case 'at-rule':
+        case 'selector':
+        case 'value': return (text) => `''${text}''`;
+
+        case 'http-header': return (text) => `[:${text}:]`;
+
+        case 'interface':
+        case 'constructor':
+        case 'method':
+        case 'argument':
+        case 'attribute':
+        case 'callback':
+        case 'dictionary':
+        case 'dict-member':
+        case 'enum':
+        case 'enum-value':
+        case 'exception':
+        case 'const':
+        case 'typedef':
+        case 'stringifier':
+        case 'serializer':
+        case 'iterator':
+        case 'maplike':
+        case 'setlike':
+        case 'extended-attribute':
+        case 'event':
+        case 'idl': return (text) => `{{${text}}}`;
+
+        case 'element-state':
+        case 'element-attr':
+        case 'attr-value':
+        case 'element': return (element) => `<{${element}}>`;
+
+        case 'grammar': return (text) => `${text} (within a <pre class=prod>)`;
+
+        case 'type': return (text)=> `<<${text}>>`;
+
+        case 'descriptor':
+        case 'property': return (text) => `'${text}'`;
+
+        default: return;
+    };
+};
+
+function genLinkingSyntaxes(dfn) {
+    if(dfn.tagName != "DFN") return;
+
+    const type = dfn.getAttribute('data-dfn-type');
+    if(!type) {
+        console.log(`<dfn> doesn't have a data-dfn-type:`, dfn);
+        return [];
+    }
+
+    // Return a function that wraps link text based on the type
+    const linkFormatter = linkFormatterFromType(type);
+    if(!linkFormatter) {
+        console.log(`<dfn> has an unknown data-dfn-type:`, dfn);
+        return [];
+    }
+
+    let ltAlts;
+    if(dfn.hasAttribute('data-lt')) {
+        ltAlts = dfn.getAttribute('data-lt')
+            .split("|")
+            .map(x=>x.trim());
+    } else {
+        ltAlts = [dfn.textContent.trim()];
+    }
+    if(type == "type") {
+        // lt of "<foo>", but "foo" is the interior;
+        // <<foo/bar>> is how you write it with a for,
+        // not <foo/<bar>> or whatever.
+        for(var i = 0; i < ltAlts.length; i++) {
+            const lt = ltAlts[i];
+            const match = /<(.*)>/.exec(lt);
+            if(match) { ltAlts[i] = match[1]; }
+        }
+    }
+
+    let forAlts;
+    if(dfn.hasAttribute('data-dfn-for')) {
+        forAlts = dfn.getAttribute('data-dfn-for')
+            .split(",")
+            .map(x=>x.trim());
+    } else {
+        forAlts = [''];
+    }
+
+    let linkingSyntaxes = [];
+    if(!needsFor(type)) {
+        for(const lt of ltAlts) {
+            linkingSyntaxes.push(linkFormatter(lt));
+        }
+    }
+    if(!refusesFor(type)) {
+        for(const f of forAlts) {
+            linkingSyntaxes.push(linkFormatter(`${f}/${ltAlts[0]}`))
+        }
+    }
+    return [
+        mk.b({}, 'Possible linking syntaxes:'),
+        mk.ul({},
+            ...linkingSyntaxes.map(link => {
+                const copyLink = async () =>
+                    await navigator.clipboard.writeText(link);
+                return mk.li({},
+                    mk.div({ class: 'link-item' },
+                        mk.button({
+                            class: 'copy-icon', title: 'Copy',
+                            type: 'button',
+                            _onclick: copyLink,
+                            tabindex: 0,
+                        }, mk.span({ class: 'icon' }) ),
+                        mk.span({}, link)
+                    )
+                );
+            })
+        )
+    ];
+}
+}
+</script>
+<script>/* Boilerplate: script-ref-hints */
+"use strict";
+{
+let refsData = {
+"#determine-if-a-request-has-top-level-storage-access": {"displayText":"determine if a request has top-level storage access","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"determine if a request has top-level storage access","type":"dfn","url":"#determine-if-a-request-has-top-level-storage-access"},
+"#dictdef-toplevelstorageaccesspermissiondescriptor": {"displayText":"TopLevelStorageAccessPermissionDescriptor","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"TopLevelStorageAccessPermissionDescriptor","type":"dictionary","url":"#dictdef-toplevelstorageaccesspermissiondescriptor"},
+"#dom-document-requeststorageaccessfor": {"displayText":"requestStorageAccessFor(requestedOrigin)","export":true,"for_":["Document"],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"requestStorageAccessFor(requestedOrigin)","type":"method","url":"#dom-document-requeststorageaccessfor"},
+"#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin": {"displayText":"requestedOrigin","export":true,"for_":["TopLevelStorageAccessPermissionDescriptor"],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"requestedOrigin","type":"dict-member","url":"#dom-toplevelstorageaccesspermissiondescriptor-requestedorigin"},
+"#first-party-site-context": {"displayText":"first-party-site context","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"first-party-site context","type":"dfn","url":"#first-party-site-context"},
+"#permissiondef-top-level-storage-access": {"displayText":"top-level-storage-access","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"top-level-storage-access","type":"permission","url":"#permissiondef-top-level-storage-access"},
+"#third-party-context": {"displayText":"third party context","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"third party context","type":"dfn","url":"#third-party-context"},
+"#unpartitioned-data": {"displayText":"unpartitioned data","export":true,"for_":[],"level":"","normative":true,"shortname":"storage-access-for-origin","spec":"storage-access-for-origin","status":"local","text":"unpartitioned data","type":"dfn","url":"#unpartitioned-data"},
+"https://dom.spec.whatwg.org/#concept-document-origin": {"displayText":"origin","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"origin","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-document-origin"},
+"https://dom.spec.whatwg.org/#document": {"displayText":"Document","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"Document","type":"interface","url":"https://dom.spec.whatwg.org/#document"},
+"https://fetch.spec.whatwg.org/#concept-request": {"displayText":"request","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"request","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-request"},
+"https://fetch.spec.whatwg.org/#concept-request-client": {"displayText":"client","export":true,"for_":["request"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"client","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-request-client"},
+"https://fetch.spec.whatwg.org/#concept-request-credentials-mode": {"displayText":"credentials mode","export":true,"for_":["request"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"credentials mode","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-request-credentials-mode"},
+"https://fetch.spec.whatwg.org/#concept-request-mode": {"displayText":"mode","export":true,"for_":["request"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"mode","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-request-mode"},
+"https://fetch.spec.whatwg.org/#concept-request-url": {"displayText":"URL","export":true,"for_":["request"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"url","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-request-url"},
+"https://fetch.spec.whatwg.org/#http-access-control-allow-credentials": {"displayText":"Access-Control-Allow-Credentials","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"access-control-allow-credentials","type":"http-header","url":"https://fetch.spec.whatwg.org/#http-access-control-allow-credentials"},
+"https://fetch.spec.whatwg.org/#http-network-or-cache-fetch": {"displayText":"http network or cache fetch","export":true,"for_":[],"level":"","normative":true,"shortname":"fetch","spec":"fetch","status":"anchor-block","text":"http network or cache fetch","type":"dfn","url":"https://fetch.spec.whatwg.org/#http-network-or-cache-fetch"},
+"https://fetch.spec.whatwg.org/#http-origin": {"displayText":"origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"origin","type":"http-header","url":"https://fetch.spec.whatwg.org/#http-origin"},
+"https://fetch.spec.whatwg.org/#subresource-request": {"displayText":"subresource request","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"subresource request","type":"dfn","url":"https://fetch.spec.whatwg.org/#subresource-request"},
+"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin": {"displayText":"origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
+"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque": {"displayText":"opaque origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"opaque origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
+"https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site": {"displayText":"same site","export":true,"for_":["site"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"same site","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-site-same-site"},
+"https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site": {"displayText":"obtain a site","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"obtain a site","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site"},
+"https://html.spec.whatwg.org/multipage/browsers.html#same-origin": {"displayText":"same origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"same origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin"},
+"https://html.spec.whatwg.org/multipage/browsers.html#site": {"displayText":"site","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"site","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#site"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active": {"displayText":"fully active","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"fully active","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document": {"displayText":"active document","export":true,"for_":["navigable"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"active document","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable": {"displayText":"node navigable","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"node navigable","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context": {"displayText":"top-level browsing context","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"top-level browsing context","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable": {"displayText":"traversable navigable","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"traversable navigable","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#traversable-navigable"},
+"https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie": {"displayText":"cookie","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"cookie","type":"attribute","url":"https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie"},
+"https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element": {"displayText":"img","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"img","type":"element","url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element"},
+"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel": {"displayText":"in parallel","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"in parallel","type":"dfn","url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
+"https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation": {"displayText":"consume user activation","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"consume user activation","type":"dfn","url":"https://html.spec.whatwg.org/multipage/interaction.html#consume-user-activation"},
+"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation": {"displayText":"transient activation","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"transient activation","type":"dfn","url":"https://html.spec.whatwg.org/multipage/interaction.html#transient-activation"},
+"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window": {"displayText":"associated Document","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"associated document","type":"dfn","url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window"},
+"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window": {"displayText":"Window","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"Window","type":"interface","url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin": {"displayText":"top-level origin","export":true,"for_":["environment"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"top-level origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global": {"displayText":"relevant global object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant global object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin": {"displayText":"origin","export":true,"for_":["environment settings object"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object": {"displayText":"environment settings object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"environment settings object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task": {"displayText":"queue a global task","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"queue a global task","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object": {"displayText":"relevant settings object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant settings object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context": {"displayText":"secure context","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"secure context","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
+"https://infra.spec.whatwg.org/#implementation-defined": {"displayText":"implementation-defined","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"implementation-defined","type":"dfn","url":"https://infra.spec.whatwg.org/#implementation-defined"},
+"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess": {"displayText":"requestStorageAccess()","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"storage-access","spec":"storage-access","status":"current","text":"requestStorageAccess()","type":"method","url":"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess"},
+"https://url.spec.whatwg.org/#concept-url-origin": {"displayText":"origin","export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"origin","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-origin"},
+"https://url.spec.whatwg.org/#concept-url-parser": {"displayText":"URL parser","export":true,"for_":[],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"url parser","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-parser"},
+"https://w3c.github.io/permissions/#dfn-denied": {"displayText":"denied","export":true,"for_":["permission"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"denied","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-denied"},
+"https://w3c.github.io/permissions/#dfn-granted": {"displayText":"granted","export":true,"for_":["permission"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"granted","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-granted"},
+"https://w3c.github.io/permissions/#dfn-name": {"displayText":"name","export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"name","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-name"},
+"https://w3c.github.io/permissions/#dfn-permission-key": {"displayText":"permission key","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission key","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-key"},
+"https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm": {"displayText":"permission key comparison algorithm","export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission key comparison algorithm","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-key-comparison-algorithm"},
+"https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm": {"displayText":"permission key generation algorithm","export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission key generation algorithm","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-key-generation-algorithm"},
+"https://w3c.github.io/permissions/#dfn-permission-key-type": {"displayText":"permission key type","export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission key type","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-key-type"},
+"https://w3c.github.io/permissions/#dfn-permission-query-algorithm": {"displayText":"permission query algorithm","export":true,"for_":["powerful feature"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission query algorithm","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-query-algorithm"},
+"https://w3c.github.io/permissions/#dfn-permission-state": {"displayText":"permission state","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission state","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-state"},
+"https://w3c.github.io/permissions/#dfn-permission-store-entry": {"displayText":"permission store entry","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"permission store entry","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-permission-store-entry"},
+"https://w3c.github.io/permissions/#dfn-powerful-feature": {"displayText":"powerful feature","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"powerful feature","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-powerful-feature"},
+"https://w3c.github.io/permissions/#dfn-prompt": {"displayText":"prompt","export":true,"for_":["permission"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"prompt","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-prompt"},
+"https://w3c.github.io/permissions/#dfn-request-permission-to-use": {"displayText":"requesting permission to use","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"requesting permission to use","type":"dfn","url":"https://w3c.github.io/permissions/#dfn-request-permission-to-use"},
+"https://w3c.github.io/permissions/#dom-permissiondescriptor": {"displayText":"PermissionDescriptor","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"PermissionDescriptor","type":"dictionary","url":"https://w3c.github.io/permissions/#dom-permissiondescriptor"},
+"https://w3c.github.io/permissions/#dom-permissiondescriptor-name": {"displayText":"name","export":true,"for_":["PermissionDescriptor"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"name","type":"dict-member","url":"https://w3c.github.io/permissions/#dom-permissiondescriptor-name"},
+"https://w3c.github.io/permissions/#dom-permissions-query": {"displayText":"query(permissionDesc)","export":true,"for_":["Permissions"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"query(permissionDesc)","type":"method","url":"https://w3c.github.io/permissions/#dom-permissions-query"},
+"https://w3c.github.io/permissions/#dom-permissionstatus": {"displayText":"PermissionStatus","export":true,"for_":[],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"PermissionStatus","type":"interface","url":"https://w3c.github.io/permissions/#dom-permissionstatus"},
+"https://w3c.github.io/permissions/#dom-permissionstatus-state": {"displayText":"state","export":true,"for_":["PermissionStatus"],"level":"1","normative":true,"shortname":"permissions","spec":"permissions","status":"current","text":"state","type":"attribute","url":"https://w3c.github.io/permissions/#dom-permissionstatus-state"},
+"https://w3c.github.io/permissions/#permissions-task-source": {"displayText":"permissions task source","export":true,"for_":[],"level":"","normative":true,"shortname":"permissions","spec":"permissions","status":"anchor-block","text":"permissions task source","type":"dfn","url":"https://w3c.github.io/permissions/#permissions-task-source"},
+"https://webidl.spec.whatwg.org/#a-new-promise": {"displayText":"a new promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"https://webidl.spec.whatwg.org/#exceptiondef-typeerror": {"displayText":"TypeError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"TypeError","type":"exception","url":"https://webidl.spec.whatwg.org/#exceptiondef-typeerror"},
+"https://webidl.spec.whatwg.org/#idl-DOMException": {"displayText":"DOMException","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMException","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"https://webidl.spec.whatwg.org/#idl-USVString": {"displayText":"USVString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"USVString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-USVString"},
+"https://webidl.spec.whatwg.org/#idl-promise": {"displayText":"Promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Promise","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"https://webidl.spec.whatwg.org/#idl-undefined": {"displayText":"undefined","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"undefined","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-undefined"},
+"https://webidl.spec.whatwg.org/#invalidstateerror": {"displayText":"InvalidStateError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"InvalidStateError","type":"exception","url":"https://webidl.spec.whatwg.org/#invalidstateerror"},
+"https://webidl.spec.whatwg.org/#notallowederror": {"displayText":"NotAllowedError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"NotAllowedError","type":"exception","url":"https://webidl.spec.whatwg.org/#notallowederror"},
+"https://webidl.spec.whatwg.org/#reject": {"displayText":"reject","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"reject","type":"dfn","url":"https://webidl.spec.whatwg.org/#reject"},
+"https://webidl.spec.whatwg.org/#resolve": {"displayText":"resolve","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"resolve","type":"dfn","url":"https://webidl.spec.whatwg.org/#resolve"},
+};
+
+function mkRefHint(link, ref) {
+    const linkText = link.textContent;
+    let dfnTextElements = '';
+    if (ref.displayText.toLowerCase() != linkText.toLowerCase()) {
+        // Give the original term if it's being displayed in a different way.
+        // But allow casing differences, they're insignificant.
+        dfnTextElements =
+            mk.li({},
+                mk.b({}, "Term: "),
+                mk.span({}, ref.displayText)
+            );
+    }
+    const forList = ref.for_;
+    let forListElements;
+    if(forList.length == 0) {
+        forListElements = [];
+    } else if(forList.length == 1) {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.span({}, forList[0]),
+        );
+    } else {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.ul({},
+                ...forList.map(forItem =>
+                    mk.li({},
+                        mk.span({}, forItem)
+                    ),
+                ),
+            ),
+        );
+    }
+    const url = ref.url;
+    const safeUrl = encodeURIComponent(url);
+    const hintPanel = mk.aside({
+        class: "ref-hint",
+        id: `ref-hint-for-${safeUrl}`,
+        "data-for": url,
+        "aria-labelled-by": `ref-hint-for-${safeUrl}`,
+    },
+        mk.ul({},
+            dfnTextElements,
+            mk.li({},
+                mk.b({}, "URL: "),
+                mk.a({ href: url, class: "ref" }, url),
+            ),
+            mk.li({},
+                mk.b({}, "Type: "),
+                mk.span({}, `${ref.type}`),
+            ),
+            mk.li({},
+                mk.b({}, "Spec: "),
+                mk.span({}, `${ref.spec ? ref.spec : ''}`),
+            ),
+            forListElements
+        ),
+    );
+    hintPanel.forLink = link;
+    setupRefHintEventListeners(link, hintPanel);
+    return hintPanel;
+}
+
+function hideAllRefHints() {
+    queryAll(".ref-hint").forEach(el=>hideRefHint(el));
+}
+
+function hideRefHint(refHint) {
+    const link = refHint.forLink;
+    link.setAttribute("aria-expanded", "false");
+    if(refHint.teardownEventListeners) {
+        refHint.teardownEventListeners();
+    }
+    refHint.remove();
+}
+
+function showRefHint(link) {
+    if(link.classList.contains("dfn-link")) return;
+    const url = link.getAttribute("href");
+    const refHintKey = link.getAttribute("data-refhint-key");
+    let key = url;
+    if(refHintKey) {
+        key = refHintKey + "_" + url;
+    }
+    const ref = refsData[key];
+    if(!ref) return;
+
+    hideAllRefHints(); // Only display one at this time.
+
+    const refHint = mkRefHint(link, ref);
+    append(document.body, refHint);
+    link.setAttribute("aria-expanded", "true");
+    positionRefHint(refHint);
+}
+
+function setupRefHintEventListeners(link, refHint) {
+    if (refHint.teardownEventListeners) return;
+    // Add event handlers to hide the refHint after the user moves away
+    // from both the link and refHint, if not hovering either within one second.
+    let timeout = null;
+    const startHidingRefHint = (event) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            hideRefHint(refHint);
+        }, 1000);
+    }
+    const resetHidingRefHint = (event) => {
+        if (timeout) clearTimeout(timeout);
+        timeout = null;
+    };
+    link.addEventListener("mouseleave", startHidingRefHint);
+    link.addEventListener("mouseenter", resetHidingRefHint);
+    link.addEventListener("blur", startHidingRefHint);
+    link.addEventListener("focus", resetHidingRefHint);
+    refHint.addEventListener("mouseleave", startHidingRefHint);
+    refHint.addEventListener("mouseenter", resetHidingRefHint);
+    refHint.addEventListener("blur", startHidingRefHint);
+    refHint.addEventListener("focus", resetHidingRefHint);
+
+    refHint.teardownEventListeners = () => {
+        // remove event listeners
+        resetHidingRefHint();
+        link.removeEventListener("mouseleave", startHidingRefHint);
+        link.removeEventListener("mouseenter", resetHidingRefHint);
+        link.removeEventListener("blur", startHidingRefHint);
+        link.removeEventListener("focus", resetHidingRefHint);
+        refHint.removeEventListener("mouseleave", startHidingRefHint);
+        refHint.removeEventListener("mouseenter", resetHidingRefHint);
+        refHint.removeEventListener("blur", startHidingRefHint);
+        refHint.removeEventListener("focus", resetHidingRefHint);
+    };
+}
+
+function positionRefHint(refHint) {
+    const link = refHint.forLink;
+    const linkPos = getBounds(link);
+    refHint.style.top = linkPos.bottom + "px";
+    refHint.style.left = linkPos.left + "px";
+
+    const panelPos = refHint.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, linkPos.left - overflowAmount);
+        refHint.style.left = newLeft + "px";
+    }
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function showRefHintListener(e) {
+    // If the target isn't in a link (or is a link),
+    // just ignore it.
+    let link = e.target.closest("a");
+    if(!link) return;
+
+    // If the target is in a ref-hint panel
+    // (aka a link in the already-open one),
+    // also just ignore it.
+    if(link.closest(".ref-hint")) return;
+
+    // Otherwise, show the panel for the link.
+    showRefHint(link);
+}
+
+function hideAllHintsListener(e) {
+    // If the click is inside a ref-hint panel, ignore it.
+    if(e.target.closest(".ref-hint")) return;
+    // Otherwise, close all the current panels.
+    hideAllRefHints();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("mousedown", showRefHintListener);
+    document.body.addEventListener("focus", showRefHintListener);
+
+    document.body.addEventListener("click", hideAllHintsListener);
+});
+
+window.addEventListener("resize", () => {
+    // Hide any open ref hint.
+    hideAllRefHints();
+});
 }
 </script>
 <script>/* Boilerplate: script-var-click-highlighting */
+"use strict";
+{
 /*
 Color-choosing design:
 
-Colors are ordered by goodness.
-Each color has a usage count (initially zero).
-Each variable has a last-used color.
-
-* If the var has a last-used color, and that color's usage is 0,
-    return that color.
-* Otherwise, return the lowest-indexed color with the lowest usage.
-    Increment the color's usage and set it as the last-used color
-    for that var.
-* On unclicking, decrement usage of the color.
+* Colors are ordered by goodness.
+* On clicking a var, give it the earliest color
+    with the lowest usage in the algorithm.
+* On re-clicking, re-use the var's most recent color
+    if that's not currently being used elsewhere.
 */
-"use strict";
-{
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
-    const indexCounts = new Map();
-    const indexNames = new Map();
-    function highlightSameAlgoVars(v) {
-        // Find the algorithm container.
-        let algoContainer = null;
-        let searchEl = v;
-        while(algoContainer == null && searchEl != document.body) {
-            searchEl = searchEl.parentNode;
-            if(searchEl.hasAttribute("data-algorithm")) {
-                algoContainer = searchEl;
-            }
-        }
 
-        // Not highlighting document-global vars,
-        // too likely to be unrelated.
-        if(algoContainer == null) return;
+const COLOR_COUNT = 7;
 
-        const algoName = algoContainer.getAttribute("data-algorithm");
-        const varName = getVarName(v);
-        const addClass = !v.classList.contains("selected");
-        let highlightClass = null;
-        if(addClass) {
-            const index = chooseHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] += 1;
-            indexNames.set(algoName+"///"+varName, index);
-            highlightClass = nameFromIndex(index);
-        } else {
-            const index = previousHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] -= 1;
-            highlightClass = nameFromIndex(index);
-        }
+document.addEventListener("click", e=>{
+    if(e.target.nodeName == "VAR") {
+        highlightSameAlgoVars(e.target);
+    }
+});
 
-        // Find all same-name vars, and toggle their class appropriately.
+function highlightSameAlgoVars(v) {
+    // Find the algorithm container.
+    let algoContainer = findAlgoContainer(v);
+
+    // Not highlighting document-global vars,
+    // too likely to be unrelated.
+    if(algoContainer == null) return;
+
+    const varName = nameFromVar(v);
+    if(!v.hasAttribute("data-var-color")) {
+        const newColor = chooseHighlightColor(algoContainer, v);
         for(const el of algoContainer.querySelectorAll("var")) {
-            if(getVarName(el) == varName) {
-                el.classList.toggle("selected", addClass);
-                el.classList.toggle(highlightClass, addClass);
+            if(nameFromVar(el) == varName) {
+                el.setAttribute("data-var-color", newColor);
+                el.setAttribute("data-var-last-color", newColor);
+            }
+        }
+    } else {
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(nameFromVar(el) == varName) {
+                el.removeAttribute("data-var-color");
             }
         }
     }
-    function getVarName(el) {
-        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+}
+function findAlgoContainer(el) {
+    while(el != document.body) {
+        if(el.hasAttribute("data-algorithm")) return el;
+        el = el.parentNode;
     }
-    function chooseHighlightIndex(algoName, varName) {
-        let indexes = null;
-        if(indexCounts.has(algoName)) {
-            indexes = indexCounts.get(algoName);
-        } else {
-            // 7 classes right now
-            indexes = [0,0,0,0,0,0,0];
-            indexCounts.set(algoName, indexes);
-        }
+    return null;
+}
+function nameFromVar(el) {
+    return el.textContent.replace(/(\s|\xa0)+/g, " ").trim();
+}
+function colorCountsFromContainer(container) {
+    const namesFromColor = Array.from({length:COLOR_COUNT}, x=>new Set());
+    for(let v of container.querySelectorAll("var[data-var-color]")) {
+        let color = +v.getAttribute("data-var-color");
+        namesFromColor[color].add(nameFromVar(v));
+    }
 
-        // If the element was recently unclicked,
-        // *and* that color is still unclaimed,
-        // give it back the same color.
-        const lastIndex = previousHighlightIndex(algoName, varName);
-        if(indexes[lastIndex] === 0) return lastIndex;
-
-        // Find the earliest index with the lowest count.
-        const minCount = Math.min.apply(null, indexes);
-        let index = null;
-        for(var i = 0; i < indexes.length; i++) {
-            if(indexes[i] == minCount) {
-                return i;
-            }
+    return namesFromColor.map(x=>x.size);
+}
+function leastUsedColor(colors) {
+    // Find the earliest color with the lowest count.
+    let minCount = Infinity;
+    let minColor = null;
+    for(var i = 0; i < colors.length; i++) {
+        if(colors[i] < minCount) {
+            minColor = i;
+            minCount = colors[i];
         }
     }
-    function previousHighlightIndex(algoName, varName) {
-        return indexNames.get(algoName+"///"+varName);
+    return minColor;
+}
+function chooseHighlightColor(container, v) {
+    const colorCounts = colorCountsFromContainer(container);
+    if(v.hasAttribute("data-var-last-color")) {
+        let color = +v.getAttribute("data-var-last-color");
+        if(colorCounts[color] == 0) return color;
     }
-    function nameFromIndex(index) {
-        return "selected" + index;
-    }
+    return leastUsedColor(colorCounts);
+}
 }
 </script>
