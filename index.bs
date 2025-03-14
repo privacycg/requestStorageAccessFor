@@ -154,9 +154,30 @@ To <dfn>determine if a request has top-level storage access</dfn> with [=request
 
 </div>
 
+<h2 id="changes-to-permissions">Changes to Permissions</h2>
+
+In [=specifies a powerful feature|specifying a powerful feature=], add the following algorithm:
+
+<dl>
+  <dt>
+    A <dfn data-dfn-for="powerful feature" class="export">permission granted algorithm</dfn>:
+  </dt>
+  <dd>
+    Takes a [=permission key=]. Updates any other parts of the implementation that need to be kept in sync with changes in the results of [=permission states=] or [=extra permission data=].
+
+    If unspecified, this defaults to be a no-op.
+  </dd>
+</dl>
+
+When [=requesting permission to use=] "<a permission><code>top-level-storage-access</code></a>", replace step 6 ("Queue a task...") with the following steps:
+
+1. [=Queue a task=] on the [=current settings object=]'s [=responsible event loop=] to run the following steps:
+    1. [=Set a permission store entry=] with <var ignore>descriptor</var>, <var ignore>key</var>, and |current state|.
+    1. If |current state| is "[=permission/granted=]", run the [=permission granted algorithm=].
+
 <h2 id="permissions-integration">Permissions Integration</h2>
 
-The requestStorageAccessFor API defines a [=powerful feature=] identified by the [=powerful feature/name=] "<dfn export permission><code>top-level-storage-access</code></dfn>". It defines the following permission-related algorithms:
+The requestStorageAccessFor API defines a [=powerful feature=] identified by the [=powerful feature/name=] "<dfn permission><code>top-level-storage-access</code></dfn>". It defines the following permission-related algorithms:
 
 <dl>
   <dt>{{PermissionDescriptor}}</dt>
@@ -208,6 +229,17 @@ The requestStorageAccessFor API defines a [=powerful feature=] identified by the
 
     </div>
   </dd>
+  <dt>[=powerful feature/permission granted algorithm=]</dt>
+  <dd>
+    <div algorithm='top-level-storage-access-granted-algorithm'>
+    When permission to use the "<a permission><code>top-level-storage-access</code></a>" feature has been granted for [=permission key=] |key|, run the following steps:
+    1. If |key| is null, return.
+    1. Let |descriptor| be a {{PermissionDescriptor}} with name "<a permission><code>storage-access</code></a>".
+    1. [=Set a permission store entry=] with |descriptor|, |key|, and "[=permission/granted=]".
+    1. Run the [=permission granted algorithm=] for the "<a permission><code>storage-access</code></a>" feature.
+
+    </div>
+  </dd>
 </dl>
 
 <h2 id="fetch-integration">Fetch Integration</h2>
@@ -229,18 +261,9 @@ In [=http network or cache fetch=], when determining whether to block cookies, r
 <h2 id="storage-access-api-integration">Storage Access API Integration</h2>
 
 Note: even after a successful {{Document/requestStorageAccessFor(requestedOrigin)}} call, frames have to explicitly invoke {{Document/requestStorageAccess()}} for cookie access.
-This modification allows {{Document/requestStorageAccessFor(requestedOrigin)}} to allow resolution of {{Document/requestStorageAccess()}} calls similarly to a prior successful {{Document/requestStorageAccess()}} grant.
 
-<div algorithm='storage-access-policy-modification'>
-Modify {{Document/requestStorageAccess()}} to insert the following steps before step 13.4 (i.e. before checking transient activation):
+As noted above, user agents may choose to grant the corresponding `storage-access` permission when granting `top-level-storage-access` permission.
 
-1. Let |settings| be <var ignore>doc</var>'s [=relevant settings object=].
-1. Let |origin| be |settings|' [=environment settings object/origin=].
-1. Let |descriptor| be a newly created {{TopLevelStorageAccessPermissionDescriptor}} with {{PermissionDescriptor/name}} set to "<a permission><code>top-level-storage-access</code></a>" and with {{TopLevelStorageAccessPermissionDescriptor/requestedOrigin}} set to |origin|.
-1. If |descriptor|'s [=permission state=] is [=permission/granted=], [=queue a global task=] on the [=permissions task source=] given |global| to [=resolve=] |p|, and return.
-1. If |descriptor|'s [=permission state=] is [=permission/denied=], [=queue a global task=] on the [=permissions task source=] given |global| to [=reject=] |p| with a "{{NotAllowedError}}" {{DOMException}}, and return.
-
-</div>
 
 <h2 id="privacy">Privacy considerations</h2>
 
