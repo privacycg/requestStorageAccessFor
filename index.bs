@@ -7,8 +7,8 @@ Text Macro: LICENSE <a href=https://creativecommons.org/licenses/by/4.0/>Creativ
 Group: privacycg
 ED: https://github.com/privacycg/requestStorageAccessFor
 Status: CG-DRAFT
-Editor: Matt Reichhoff, w3cid 138889, Google https://google.com, mreichhoff@google.com
 Editor: Johann Hofmann, w3cid 120436, Google https://google.com, johannhof@google.com
+Editor: Chris Fredrickson, w3cid 133873, Google https://google.com, cfredric@google.com
 Level: None
 Markup Shorthands: markdown yes, css no
 Complain About: accidental-2119 true
