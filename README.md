@@ -1,10 +1,9 @@
 # requestStorageAccessFor Explainer
 
 
-## Authors:
-* [Matt Reichhoff](https://github.com/mreichhoff) (mreichhoff@chromium.org)
-* [Kaustubha Govind](https://github.com/krgovind) (kaustubhag@chromium.org)
-* [Johann Hofmann](https://github.com/johannhof) (johannhof@chromium.org)
+## Editors:
+* [Johann Hofmann](https://github.com/johannhof)
+* [Chris Fredrickson](https://github.com/cfredric)
 
 ## Participate
 
