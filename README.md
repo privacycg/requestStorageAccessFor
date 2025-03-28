@@ -293,6 +293,8 @@ A side effect of disabling `SameSite=None` cookies is that attacks like CSRF bec
 
 ## References & acknowledgements
 
+Thank you to former editors [Matt Reichhoff](https://github.com/mreichhoff) and [Kaustubha Govind](https://github.com/krgovind) for their contributions to the explainer and spec.
+
 Many thanks for valuable feedback and advice from:
 
 * [Artur Janc](https://github.com/arturjanc)
