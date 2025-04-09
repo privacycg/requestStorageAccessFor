@@ -46,7 +46,7 @@ Since the `requestStorageAccess` API was [originally designed](https://webkit.or
 
 This document proposes a similar, but separate, API,` document.requestStorageAccessFor`, which would allow the embedding site to request access it knows it needs on behalf of its embedded content. 
 
-This new API would be somewhat similar to the existing `requestStorageAccess`. It would still require activation, though of the top-level document; would still delegate to per-browser logic, so that each browser can customize the experience to their users’ expectations (for example, user prompts like those of `requestStorageAccess` could be used, or Related Website Sets could help gate access); and would grant the same permission as a `requestStorageAccess` grant for the origin of the embed.
+This new API would be somewhat similar to the existing `requestStorageAccess`. It would still require activation, though of the top-level document; would still delegate to per-browser logic, so that each browser can customize the experience to their users’ expectations (for example, user prompts like those of `requestStorageAccess` could be used, or Related Website Sets could help gate access); and would grant the same permission as a `requestStorageAccess` grant for the site of the embed.
 
 This API could be treated as similar in principle to browser-specific compatibility measures, implemented in [Safari](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp#L1131-L1163) and [Firefox](https://searchfox.org/mozilla-central/rev/287583a4a605eee8cd2d41381ffaea7a93d7b987/dom/base/Document.cpp#17051), where an internal API is invoked, based on browser-defined domain allowlists, that requests cross-site cookie access on behalf of embedded sites.
 
