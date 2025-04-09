@@ -32,7 +32,7 @@ This document proposes a version of this API that could be web-exposed, with a r
 
 *   Enable user functionality in legacy use cases by allowing requests for unpartitioned cross-site cookies to be made from top-level browsing contexts, with access applying at the page level (rather than to a specific frame).
     *   Note that page specificity is similar to [the prior behavior](https://github.com/privacycg/storage-access/issues/122) of `requestStorageAccess`. That behavior is being changed to focus the API on authenticated embed use cases and to improve security, which leaves top-level access a gap.
-*   Ensure that the security, privacy, and abuse concerns with legacy cross-site cookie behavior remain mitigated when 3rd party cookies are not available by default.
+*   Ensure that the security, privacy, and abuse concerns with legacy cross-site cookie behavior remain mitigated when 3rd party cookies are blocked.
 
 ## Non-goals
 
