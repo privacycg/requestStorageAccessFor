@@ -59,6 +59,8 @@ The requestStorageAccessFor API enables developers to request access to non-[=sa
 It accomplishes this by specifying {{Document/requestStorageAccessFor(requestedOrigin)}}, which allows [=traversable navigable=]s to request access
 to unpartitioned cookies on behalf of another [=/origin=].
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+
 </section>
 
 <h2 id="infra">Infrastructure</h2>
